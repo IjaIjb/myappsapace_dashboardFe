@@ -1,0 +1,111 @@
+import React from 'react'
+import DashboardLayout from '../../../components/DashboardLayout'
+// import RecentOrders from '../orders/RecentOrders'
+import { IoAddCircleOutline } from 'react-icons/io5'
+import ProductsTable from './ProductsTable'
+
+const Products = () => {
+  return (
+   <DashboardLayout>
+   <div>
+        <div className="flex gap-3 items-end mb-7">
+          <div className="grid lg:grid-cols-4 w-full items gap-2">
+            <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
+              <div className="flex flex-col gap-1">
+                <h5 className="text-[#9D9D9D] text-[12px] font-[600]">
+                  Total Products
+                </h5>
+                <div className="flex justify-between">
+                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">234</h5>
+                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="32" height="32" rx="4" fill="#FF1B1B" fill-opacity="0.1"/>
+<path d="M13 16C13 16.7956 13.3161 17.5587 13.8787 18.1213C14.4413 18.6839 15.2044 19 16 19C16.7956 19 17.5587 18.6839 18.1213 18.1213C18.6839 17.5587 19 16.7956 19 16" stroke="#FF1B1B" stroke-linecap="round"/>
+<path d="M8.5 12.711C8.5 12.11 8.5 11.809 8.586 11.526C8.672 11.243 8.838 10.992 9.172 10.492L9.312 10.282C9.894 9.409 10.184 8.973 10.627 8.737C11.069 8.5 11.593 8.5 12.641 8.5H19.359C20.407 8.5 20.931 8.5 21.373 8.737C21.815 8.973 22.106 9.409 22.687 10.281L22.828 10.492C23.162 10.992 23.328 11.242 23.414 11.526C23.5 11.809 23.5 12.11 23.5 12.711V19.5C23.5 21.386 23.5 22.328 22.914 22.914C22.328 23.5 21.386 23.5 19.5 23.5H12.5C10.614 23.5 9.672 23.5 9.086 22.914C8.5 22.328 8.5 21.386 8.5 19.5V12.711Z" stroke="#FF1B1B"/>
+<path d="M8.5 13.5H23.5" stroke="#FF1B1B" stroke-linecap="round"/>
+</svg>
+
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
+              <div className="flex flex-col gap-1">
+                <h5 className="text-[#9D9D9D] text-[12px] font-[600]">
+                Product Value
+                </h5>
+                <div className="flex justify-between">
+                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">
+                    $8,956.89
+                  </h5>
+                  <img
+                    aria-hidden
+                    src="/images/products/productvalue.svg"
+                    alt="Window icon"
+                    //   className='w-[120px] h-[120px] '
+                    // width={140}
+                    // height={140}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
+              <div className="flex flex-col gap-1">
+                <h5 className="text-[#9D9D9D] text-[12px] font-[600]">
+                 Products Sold
+                </h5>
+                <div className="flex justify-between">
+                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">234</h5>
+                  <img
+                    aria-hidden
+                    src="/images/products/productsold.svg"
+                    alt="Window icon"
+                    //   className='w-[120px] h-[120px] '
+                    // width={140}
+                    // height={140}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
+              <div className="flex flex-col gap-1">
+                <h5 className="text-[#9D9D9D] text-[12px] font-[600]">
+                  Out of Stock
+                </h5>
+                <div className="flex justify-between">
+                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">67</h5>
+                  <img
+                    aria-hidden
+                    src="/images/products/outofstock.svg"
+                    alt="Window icon"
+                    //   className='w-[120px] h-[120px] '
+                    // width={140}
+                    // height={140}
+                  />
+                </div>
+              </div>
+            </div>
+
+        
+          </div>
+          <div
+            className="rounded-full h-fit flex items-center gap-3 px-4 py-2"
+            style={{
+              background: "linear-gradient(to bottom, #382B67, #7056CD)",
+            }}
+          >
+            <IoAddCircleOutline className="text-white" />
+            <h5 className="text-[#FFFFFF] text-[16px] font-[400] whitespace-nowrap">
+              Create Products
+            </h5>
+            {/* <LiaUploadSolid className="text-white" /> */}
+          </div>
+        </div>
+        <ProductsTable />
+      </div>
+   </DashboardLayout>
+  )
+}
+
+export default Products
