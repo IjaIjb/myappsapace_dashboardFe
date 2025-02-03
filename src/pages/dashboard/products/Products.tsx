@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 // import RecentOrders from '../orders/RecentOrders'
 import { IoAddCircleOutline } from "react-icons/io5";
