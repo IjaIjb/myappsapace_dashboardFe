@@ -20,7 +20,7 @@ type Props = {
 const Sidebar = (props: Props) => {
   const dispatch = useDispatch();
  
-  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
+  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore);
   console.log(selectedStore)
   const [stores, setStores] = useState<any>([]);
     
@@ -33,7 +33,7 @@ const Sidebar = (props: Props) => {
           UserApis.getStore()
             .then((response) => {
               if (response?.data) {
-                setStores(response?.data || []);
+                setStores(response?.data);
                 if (!selectedStore && response?.data?.data.length > 0) {
                   const firstStore = response?.data?.data[0].store_code;
                   dispatch(setSelectedStore(firstStore));
