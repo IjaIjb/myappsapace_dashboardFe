@@ -1,45 +1,33 @@
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
-// import { IoAddCircleOutline } from "react-icons/io5";
-// import { MdInfo } from "react-icons/md";
-// import TitleProduct from "./inner/TitleProduct";
-// import ProductPrice from "./inner/ProductPrice";
-// import Variants from "./inner/Variants";
-// import ProductInventory from "./inner/ProductInventory";
-import { useLocation } from "react-router-dom";
+import { IoAddCircleOutline } from "react-icons/io5";
+import { MdInfo } from "react-icons/md";
+import VariantTable from "./inner/VariantTable";
 import { UserApis } from "../../../apis/userApi/userApi";
-import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MdInfo } from "react-icons/md";
-import { IoAddCircleOutline } from "react-icons/io5";
-import VariantTable from "./inner/VariantTable";
+import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 import { FaArrowRight } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 
-type MediaProps = {
+interface MediaProps {
   id: number;
   file: File | null;
-  url?: string; // Add this to handle existing image URLs
-};
+}
 
-const ProductDetails = () => {
+const CreateProduct = () => {
   const navigate = useNavigate();
   const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
   console.log("Selected Store Code:", selectedStore);
       
-  const location = useLocation();
-  const { productId, storeCode } = location.state || {}; // Extract values
+  // const [categoryLogo, setCategoryLogo] = useState<File | null>(null);
   const [isActive, setIsActive] = useState<any>(true);
-
-  console.log("Product ID:", productId);
-  console.log("Store Code:", storeCode);
-  // const [storeId, setStoreId] = useState("");
   const [loader, setLoader] = useState(false);
-  const [category, setCategory] = useState<any>([]);
 
+  // const [stores, setStores] = useState<any>([]);
+  const [category, setCategory] = useState<any>([]);
   const [formValues, setFormValues] = useState({
     product_name: "",
     product_description: "",
@@ -58,37 +46,26 @@ const ProductDetails = () => {
     product_status: "active",
   });
 
-  React.useEffect(() => {
-    UserApis.getSingleProduct(storeCode, productId).then((response) => {
-      if (response?.data) {
-        console.log(response.data);
-    
-      // If product_images contains URLs, convert them to media objects
-      const existingImages = response?.data?.product?.product_images?.map(
-        (imgUrl: string, idx: number) => ({
-          id: idx,
-          file: null, // No file object for existing images
-          url: imgUrl, // Store URL for preview
-        })
-      ) || [];
-
-      setFormValues(response?.data?.product);
-      setMedia(existingImages); // Initialize media with existing images
-        // setStoreId(response?.data?.store?.id);
-      }
-    });
-  }, [storeCode, productId]);
+  // useEffect(() => {
+  //   UserApis.getStore()
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         setStores(response?.data || []); // Adjusting to your API response structure
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching stores:", error));
+  // }, []);
 
   useEffect(() => {
-    UserApis.getCategory(storeCode)
+    UserApis.getCategory(selectedStore)
       .then((response) => {
         if (response?.data) {
           setCategory(response?.data || []); // Adjusting to your API response structure
         }
       })
       .catch((error) => console.error("Error fetching stores:", error));
-  }, [storeCode]);
-
+  }, [selectedStore]);
+  console.log(category);
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -98,79 +75,103 @@ const ProductDetails = () => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const [media, setMedia] = useState<MediaProps[]>([]);
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     setCategoryLogo(file);
+  //   }
+  // };
 
+  const [media, setMedia] = useState<MediaProps[]>(
+    Array(8)
+      .fill(null)
+      .map((_, idx) => ({ id: idx, file: null }))
+  );
+
+  //   const handleFileChange = (file: File, id: number) => {
+  //     setMedia((prev) =>
+  //       prev.map((item) => (item.id === id ? { ...item, file } : item))
+  //     );
+  //   };
   const handleFileChange = (file: File, id: number) => {
     setFormValues((prev: any) => ({
       ...prev,
-      product_images: prev.product_images.map((img: any, index: number) =>
-        index === id ? file : img
-      ),
+      product_images: [...prev.product_images, file], // Append the new file
     }));
-  
+
     setMedia((prev) =>
-      prev.map((item, index) =>
-        index === id ? { ...item, file, url: URL.createObjectURL(file) } : item
-      )
+      prev.map((item) => (item.id === id ? { ...item, file } : item))
     );
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoader(true);
-  
-    const payload: any = {
-      product_name: formValues.product_name,
-      product_description: formValues.product_description,
-      store_code: selectedStore,
-      product_short_description: formValues.product_short_description,
-      tags: formValues.tags,
-      category_id: formValues.category_id,
-      product_type_id: formValues.product_type_id,
-      selling_price: formValues.selling_price,
-      cost_price: formValues.cost_price,
-      stock_quantity: formValues.stock_quantity,
-      stock_unit: formValues.stock_unit,
-      vendor: formValues.vendor,
-      collection_id: formValues.collection_id,
-      product_status: formValues.product_status,
-      // product_images: [], // This will hold both new files and existing URLs
-    };
-  
-    // const formData = new FormData();
-  
-    // media.forEach((item, index) => {
-    //   if (item.file) {
-    //     // Append new files
-    //     formData.append(`product_images[${index}]`, item.file);
-    //   } else if (item.url) {
-    //     // Append existing URLs
-    //     payload.product_images.push(item.url);
-    //   }
-    // });
-  
-    try {
-      console.log("Submitting payload:", payload);
-  
-      const response: any = await UserApis.updateProduct(storeCode, productId, payload);
-      
-      if (response?.data) {
-        toast.success(response?.data?.message || "Product updated successfully!");
-        navigate("/dashboard/products");
-      } else {
-        toast.error(response?.data?.message || "Failed to update product.");
+
+    const formData = new FormData();
+    // if (categoryLogo) {
+    //   formData.append("category_image", categoryLogo);
+    // }
+    formData.append("product_name", formValues.product_name);
+    formData.append("product_description", formValues.product_description);
+    formData.append(
+      "product_short_description",
+      formValues.product_short_description
+    );
+    formData.append("tags", formValues.tags);
+    formData.append("selling_price", formValues.selling_price);
+    formData.append("cost_price", formValues.cost_price);
+    // formData.append("product_type_id", formValues.product_type_id);
+    formData.append("category_id", formValues.category_id);
+    formData.append("stock_quantity", formValues.stock_quantity);
+    formData.append("stock_unit", formValues.stock_unit);
+    formData.append("vendor", formValues.vendor);
+    formData.append("product_status", isActive ? "active" : "inactive");
+
+    // Ensure the correct product_type_id
+    // formData.append(
+    //   "product_type_id",
+    //   String(Number(formValues.product_type_id) || 2)
+    // );
+
+    // Append images correctly
+    media.forEach(({ file }, index) => {
+      if (file) {
+        formData.append(`product_images[${index}]`, file);
       }
-    } catch (error: any) {
-      console.error("Error updating product:", error);
-      toast.error(
-        error?.response?.data?.message || "An error occurred while updating the product."
+    });
+    // console.log("Submitting payload:", formValues);
+    // console.log("Submitting payload:", formData);
+
+    try {
+      console.log("Submitting payload:", formValues);
+
+      const response: any = await UserApis.createProduct(
+        selectedStore,
+        formData
       );
+      console.log(response);
+
+      if (response?.data) {
+        toast.success(
+          response?.data?.message || "Category created successfully!"
+        );
+        setLoader(false);
+
+        navigate("/dashboard/category");
+      } else {
+        toast.error(response?.data?.message || "Failed to create category.");
+        setLoader(false);
+      }
+    } catch (error) {
+      console.error("Error creating category:", error);
+      toast.error("An error occurred while creating the category.");
+      setLoader(false);
     } finally {
       setLoader(false);
     }
   };
-  
-  
+
   return (
     <div>
       <DashboardLayout>
@@ -180,6 +181,7 @@ const ProductDetails = () => {
             className="grid lg:grid-cols-12 gap-3 pb-6"
           >
             <div className="lg:col-span-8 flex flex-col gap-3">
+         
               {/* <TitleProduct /> */}
               <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
                 <div className="">
@@ -233,47 +235,42 @@ const ProductDetails = () => {
                     </h4>
                   </div>
                   <div className="grid grid-cols-4 gap-4">
-                {media.map(({ id, file, url }) => (
-      <div
-        key={id}
-        className="relative flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-blue-400"
-      >
-        <input
-          type="file"
-          accept="image/x-png,image/gif,image/jpeg,application/pdf,video/*"
-          className="absolute inset-0 opacity-0 cursor-pointer"
-          onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
-              handleFileChange(e.target.files[0], id);
-            }
-          }}
-        />
-
-        {file ? (
-          <img
-            src={URL.createObjectURL(file)}
-            alt="Uploaded Preview"
-            className="object-cover w-full h-full rounded-md"
-          />
-        ) : url ? (
-          <img
-            src={url}
-            alt="Existing one"
-            className="object-cover w-full h-full rounded-md"
-          />
-        ) : (
-          <div className="flex flex-col items-center text-gray-400">
-            <img
-              aria-hidden="true"
-              src="/images/products/imageProduct.svg"
-              alt="Placeholder"
-              className="w-12 h-12"
-            />
-            <span className="text-sm">Upload Image</span>
-          </div>
-        )}
-      </div>
-    ))}
+                    {media.map(({ id, file }) => (
+                      <div
+                        key={id}
+                        className="relative flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-blue-400"
+                      >
+                        <input
+                          type="file"
+                          accept="image/x-png,image/gif,image/jpeg,application/pdf,video/*"
+                          name={`product_images_${id}`}
+                          // required
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleFileChange(e.target.files[0], id);
+                            }
+                          }}
+                        />
+                        {file ? (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt="Uploaded Preview"
+                            className="object-cover w-full h-full rounded-md"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center text-gray-400">
+                            <img
+                              aria-hidden="true"
+                              src="/images/products/imageProduct.svg"
+                              alt="Placeholder"
+                              className="w-12 h-12"
+                            />
+                            <span className="text-sm">Upload Image</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -445,9 +442,9 @@ const ProductDetails = () => {
                   <h4 className="text-[12px] font-[400]">Product Type</h4>
                   <input
                     type="text"
-                    name="product_type_id"
-                    value={formValues.product_type_id}
-                    onChange={handleInputChange}
+                      name="product_type_id"
+                      value={formValues.product_type_id}
+                      onChange={handleInputChange}
                     placeholder="Title"
                     className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -501,32 +498,24 @@ const ProductDetails = () => {
                   {!loader && <FaArrowRight />}
                 </button>
               </div>
-              <ToastContainer
-                position="top-right"
-                autoClose={2000}
-                hideProgressBar={true}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-              />
             </div>
+            
+      <ToastContainer
+        position="bottom-left"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
           </form>
-          {/* <div className="grid lg:grid-cols-12 gap-3 pb-6">
-            <div className="col-span-8 flex flex-col gap-3">
-              <TitleProduct />
-              <ProductPrice />
-              <Variants />
-              <ProductInventory />
-            </div>
-            <div className="col-span-4"></div>
-          </div> */}
         </div>
       </DashboardLayout>
     </div>
   );
 };
 
-export default ProductDetails;
+export default CreateProduct;

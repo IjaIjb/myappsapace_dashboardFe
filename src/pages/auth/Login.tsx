@@ -1,6 +1,6 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { FaArrowRight } from "react-icons/fa";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
@@ -19,7 +19,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch: Dispatch = useDispatch();
 
   const initialData = {
@@ -49,18 +49,19 @@ const Login = () => {
       if (response?.data) {
         console.log(response.data)
         if (response?.data?.status === true) {
+          console.log(response.data.data.token)
+          console.log(response.data.data.token.access_token)
           dispatch(
             login({
               login: values.login,
-              token: response.data.token,
+              token: response.data.data.token.access_token,
               id: response.data.data.id,
-              name: response.data.data.first_name,
-              data: response?.data?.data,
+              data: response?.data.data.user,
             })
           );
   
           toast.success(response?.data?.message);
-          history.push("/dashboard/home");
+          navigate("/dashboard/home");
           // window.scrollTo(0, 0); // Scroll to top
         } else {
         console.log(response.data)
@@ -80,7 +81,7 @@ const Login = () => {
 
   // const onSubmit = async () => {
   //   console.log("hhh");
-  //   history.push("/auth/verify-email");
+  //   navigate("/auth/verify-email");
 
   //   window.scrollTo(0, 0); // Scroll to top
   // };

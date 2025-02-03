@@ -1,13 +1,23 @@
 import React, { Suspense } from 'react';
 // import logo from './logo.svg';
-import { Route, Switch } from "react-router-dom";
+import { Route } from "react-router-dom";
 import routes from './routes/Index';
+import { Routes } from 'react-router-dom';
 
 function App() {
   return (
     <div className="">
-     <Suspense>
-        <Switch>
+            <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {routes.map((route: any, i: number) =>
+            route.component ? (
+              <Route key={i} path={route.path} element={<route.component />} />
+            ) : null
+          )}
+        </Routes>
+      </Suspense>
+     {/* <Suspense >
+        <Routes>
           {routes.map((route: any, i: any) => {
             return route.component ? (
               <Route
@@ -18,8 +28,8 @@ function App() {
               />
             ) : null;
           })}
-        </Switch>
-      </Suspense>
+        </Routes>
+      </Suspense> */}
     </div>
   );
 }

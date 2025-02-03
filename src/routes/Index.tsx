@@ -9,12 +9,19 @@ const UsagePage = lazy(() => import("../pages/auth/Usage"));
 const HoldOnPage = lazy(() => import("../pages/auth/Holdon"));
 const DashboardPage = lazy(() => import("../pages/dashboard/home/Home"));
 const CustomerPage = lazy(() => import("../pages/dashboard/customers/Customers"));
+const CreateCustomerPage = lazy(() => import("../pages/dashboard/customers/CreateCustomer"));
 const CustomerDetailsPage = lazy(() => import("../pages/dashboard/customers/CustomerDetails"));
 const ProductPage = lazy(() => import("../pages/dashboard/products/Products"));
+const CreateProductPage = lazy(() => import("../pages/dashboard/products/CreateProduct"));
 const ProductDetailsPage = lazy(() => import("../pages/dashboard/products/ProductDetails"));
 const OrderPage = lazy(() => import("../pages/dashboard/orders/Orders"));
 const OrderDetailPage = lazy(() => import("../pages/dashboard/orders/OrderDetails"));
 const CreateOrderPage = lazy(() => import("../pages/dashboard/orders/CreateOrder"));
+const CategoryPage = lazy(() => import("../pages/dashboard/category/Category"));
+const CreateCategoryPage = lazy(() => import("../pages/dashboard/category/inner/CreateCategory"));
+const StorePage = lazy(() => import("../pages/dashboard/store/Store"));
+const EditStorePage = lazy(() => import("../pages/dashboard/store/EditStore"));
+const CreateStorePage = lazy(() => import("../pages/dashboard/store/CreateStore"));
 const ThemePage = lazy(() => import("../pages/dashboard/theme/Theme"));
 const FinancesPage = lazy(() => import("../pages/dashboard/finances/Finance"));
 const GiftCardPage = lazy(() => import("../pages/dashboard/giftCards/GiftCards"));
@@ -72,6 +79,10 @@ const routes = [
     component: ProductPage,
   },
   {
+    path: "/dashboard/create-product",
+    component: CreateProductPage,
+  },
+  {
     path: "/dashboard/product-details/:productId",
     component: ProductDetailsPage,
   },
@@ -87,6 +98,26 @@ const routes = [
   {
     path: "/dashboard/create-an-order",
     component: CreateOrderPage,
+  },
+  {
+    path: "/dashboard/category",
+    component: CategoryPage,
+  },
+  {
+    path: "/dashboard/create-category",
+    component: CreateCategoryPage,
+  },
+  {
+    path: "/dashboard/store",
+    component: StorePage,
+  },
+  {
+    path: "/edit-store/:id",
+    component: EditStorePage,
+  },
+  {
+    path: "/dashboard/create-store",
+    component: CreateStorePage,
   },
   {
     path: "/dashboard/theme",
@@ -111,6 +142,10 @@ const routes = [
   {
     path: "/dashboard/customers",
     component: CustomerPage,
+  }, 
+  {
+    path: "/dashboard/create-customer",
+    component: CreateCustomerPage,
   }, 
   {
     path: "/dashboard/customer-details/:customerId",

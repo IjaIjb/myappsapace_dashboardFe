@@ -1,12 +1,68 @@
 import React from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import CustomersTable from "./CustomersTable";
+import { IoAddCircleOutline } from "react-icons/io5";
 // import { IoAddCircleOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
+import { UserApis } from "../../../apis/userApi/userApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 
 const Customers = () => {
+  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
+  console.log("Selected Store Code:", selectedStore);
+      
+  // const [stores, setStores] = useState<any>([]);
+  const [customer, setCustomer] = React.useState<any>([]);
+
+  // const [formValues, setFormValues] = useState({
+  //   category_name: "",
+  //   store_code: "", // Use store_code instead of store_name
+  //   category_description: "",
+  //   status: "active",
+  // });
+
+  // useEffect(() => {
+  //   UserApis.getStore()
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         setStores(response?.data || []); // Adjusting to your API response structure
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching stores:", error));
+  // }, []);
+
+  React.useEffect(() => {
+    UserApis.getAllCustomer(selectedStore)
+      .then((response) => {
+        if (response?.data) {
+          console?.log(response?.data);
+          setCustomer(response?.data);
+          //             setTotalProducts(response?.data?.products?.length || 0);
+          //                // Calculate total cost price
+          // const total = response?.data?.products?.reduce((sum: number, prod: any) => sum + (prod.cost_price || 0), 0);
+          // setTotalCost(total);
+        } else {
+          // dispatch(login([]))
+        }
+      })
+      .catch(function (error) {});
+  }, [selectedStore]);
+  console.log(customer)
+
+  // const handleInputChange = (
+  //   e: React.ChangeEvent<
+  //     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  //   >
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormValues((prev) => ({ ...prev, [name]: value }));
+  // };
+
+  // console.log(stores);
   return (
     <DashboardLayout>
-      <div className="flex gap-3 items-end mb-7">
+      <div className="lg:flex gap-3 items-end mb-7">
         <div className="grid lg:grid-cols-5 w-full items gap-2">
           <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
             <div className="flex flex-col gap-1">
@@ -15,7 +71,8 @@ const Customers = () => {
               </h5>
               <div className="flex justify-between">
                 <h5 className="text-[#9D9D9D] text-[16px] font-[300]">
-                  234 (780)
+                  {/* 234 (780) */}
+                  {customer?.data?.customers?.length ?? 0}
                 </h5>
                 <svg
                   width="32"
@@ -91,9 +148,24 @@ const Customers = () => {
             </div>
           </div>
         </div>
+
+        <Link
+          to={"/dashboard/create-customer"}
+          className="rounded-full lg:mt-0 mt-4 h-fit flex items-center gap-3 w-fit px-4 py-2"
+          style={{
+            background: "linear-gradient(to bottom, #382B67, #7056CD)",
+          }}
+        >
+          <IoAddCircleOutline className="text-white" />
+          <h5 className="text-[#FFFFFF] text-[16px] font-[400] whitespace-nowrap">
+            Create Customer
+          </h5>
+          {/* <LiaUploadSolid className="text-white" /> */}
+        </Link>
       </div>
 
-      <CustomersTable />
+
+      <CustomersTable customer={customer} />
     </DashboardLayout>
   );
 };

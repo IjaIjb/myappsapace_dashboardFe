@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa';
 import { UserApis } from '../../apis/userApi/userApi';
 import { toast } from 'react-toastify';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -12,7 +12,7 @@ const VerifyEmail = () => {
 
   const email  = "ijabolu@gmail.com"; // Assumes email is stored in Redux state
   // const { email } = useSelector((state: any) => state.login); // Assumes email is stored in Redux state
-  const history = useHistory();
+  const navigate = useNavigate();
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -61,7 +61,7 @@ const VerifyEmail = () => {
   
       if (response?.data?.user === true) {
         toast.success(response?.message || "Email verified successfully!");
-        history.push("/auth/choose-profession"); // Navigate to the next page
+        navigate("/auth/choose-profession"); // Navigate to the next page
       } else {
         toast.error(response?.message || "Invalid verification code. Please try again.");
       }
@@ -82,7 +82,7 @@ const VerifyEmail = () => {
         console.log(":Verified", response.data);
 
         toast.success(response?.message || "Verification code resent successfully!");
-        history.push("/auth/add-store");
+        navigate("/auth/add-store");
     
       } else {
         toast.error(response?.message || "Failed to resend the verification code.");

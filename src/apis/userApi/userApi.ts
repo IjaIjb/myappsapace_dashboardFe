@@ -64,6 +64,126 @@ export class UserApis {
         }
     }
 
+    static getStore(): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getStore();
+        }
+    } 
+
+    static getSingleStore(identifier:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleStore(identifier);
+        }
+    } 
+
+    static updateStore(store_id:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateStore(store_id, data);
+        }
+    } 
+
+    static deleteStore(id:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.deleteStore(id);
+        }
+    } 
+
+    static createCategory(storeCode:any, data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.createCategory(storeCode,data);
+        }
+    }
+
+    static getCategory(storeCode:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getCategory(storeCode);
+        }
+    } 
+
+    static getSingleCategory(store_code:any, category_id:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleCategory(store_code, category_id);
+        }
+    } 
+
+    static createProduct(storeCode:any, data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.createProduct(storeCode,data);
+        }
+    }
+
+    static getProduct(storeCode:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getProduct(storeCode);
+        }
+    } 
+
+    static getSingleProduct(store_code:any, category_id:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleProduct(store_code, category_id);
+        }
+    } 
+
+    static updateProduct(store_code:any, product_id:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateProduct(store_code, product_id, data);
+        }
+    } 
+
+    static createCustomer(storeCode:any, data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.createCustomer(storeCode,data);
+        }
+    }
+
+    static getAllCustomer(storeCode:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getAllCustomer(storeCode);
+        }
+    } 
+
+    static getSingleCustomer(store_code:any, customer_id:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleCustomer(store_code, customer_id);
+        }
+    } 
+
+    static updateCustomer(store_code:any, customer_id:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateCustomer(store_code, customer_id, data);
+        }
+    } 
+
     static logout(data: any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;

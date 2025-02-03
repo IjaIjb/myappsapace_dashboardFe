@@ -1,7 +1,7 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useState } from "react";
 // import { Link, useNavigate } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { FaArrowRight } from "react-icons/fa";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
@@ -18,7 +18,7 @@ const PersonalSignup = () => {
   const [confirmPassword, setShowConfirmPassword] = useState(false);
   const dispatch: Dispatch = useDispatch();
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const initialData = {
     first_name: "",
@@ -61,13 +61,13 @@ const PersonalSignup = () => {
 
   //     console.log("Registration successful:", response);
   //     toast.success("Login Successful");
-  //     history.push("/auth/verify-email");
+  //     navigate("/auth/verify-email");
   //     window.scrollTo(0, 0); // Scroll to top
   //   } catch (error) {
   //     console.error("Error registering user:", error);
   //   }
   //   // UserApis.register("console.log()")
-  //   //   history.push("/auth/verify-email");
+  //   //   navigate("/auth/verify-email");
 
   //   //   window.scrollTo(0, 0); // Scroll to top
 
@@ -104,14 +104,14 @@ const PersonalSignup = () => {
         dispatch(
           login({
             email: values.email,
-            token: response.data.token,
-            name: response.data.name,
+            // token: response.data.token,
+            // name: response.data.name,
           })
         );
         console.log("Signup created:", response.data);
 
         toast.success("Login Successful");
-        history.push("/auth/verify-email");
+        navigate("/auth/verify-email");
       } else {
         toast.error(response?.data?.errors?.message);
       }

@@ -1,6 +1,6 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { FaArrowRight } from "react-icons/fa";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
@@ -20,7 +20,7 @@ const AddStore = () => {
   // const dispatch: Dispatch = useDispatch();
   const [image, setImage] = useState<any>(undefined);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch: Dispatch = useDispatch();
 
   const initialData = {
@@ -182,7 +182,7 @@ const AddStore = () => {
         toast.success("Store created successfully!");
         // Redirect or reset form
         console.log("Store created:", response.data);
-        history.push("/dashboard/home");
+        navigate("/dashboard/home");
       } else {
         toast.error("Failed to create store. Please try again.");
         console.error("Error response:", response);

@@ -42,9 +42,9 @@ const configs = {
 //   baseRedirect:'http://127.0.0.1:8000',
 
 
-  contextCustomer: "https://myapp.leapbrite.co/v1/customer",
-  contextUser: "https://myapp.leapbrite.co/v1/user",
-  contextAdmin: "https://myapp.leapbrite.co/v1/admin",
+  contextCustomer: "https://api.myappspace.net/v1/customer",
+  contextUser: "https://api.myappspace.net/v1/user",
+  contextAdmin: "https://api.myappspace.net/v1/admin",
 
   history: createBrowserHistory(),
   requestTimeOut: 30000,

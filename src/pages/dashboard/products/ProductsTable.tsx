@@ -1,20 +1,56 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserApis } from "../../../apis/userApi/userApi";
 
-const ProductsTable = () => {
-  const history = useHistory();
+const ProductsTable = (props:any) => { 
+  const { product } = props
+  const [categories, setCategories] = useState<{ [key: string]: any }>({}); 
+  const navigate = useNavigate();
+    // React.useEffect(() => {
+    //   UserApis.getSingleCategory(product?.products?.store_code, product?.products.categori)
+    //     .then((response) => {
+    //       if (response?.data) {
+    //         // console?.log(response?.data);
+    //         setCategories(response?.data);
+    //       } else {
+    //         // dispatch(login([]))
+    //       }
+    //     })
+    //     .catch(function (error) {});
+    //   }, [product?.products?.store_code]);
 
-  const handleRowClick = (productId: any) => {
-    history.push(`/dashboard/product-details/${productId}`); // Navigate to product details page
-  };
+    useEffect(() => {
+      if (product?.products) {
+        product.products.forEach((prod: any) => {
+          if (prod.store_code && prod.category_id && !categories[prod.category_id]) {
+            UserApis.getSingleCategory(prod.store_code, prod.category_id)
+              .then((response) => {
+                if (response?.data) {
+                  setCategories((prevCategories:any) => ({
+                    ...prevCategories,
+                    [prod.category_id]: response.data, // Store category data by ID
+                  }));
+                }
+              })
+              .catch((error) => {
+                console.error("Error fetching category:", error);
+              });
+          }
+        });
+      }
+    }, [product?.products, categories]);
+    // console.log(categories)
+    const handleRowClick = (productId:any, product: any) => {
+      navigate({
+        pathname: `/dashboard/product-details/${productId}`,
+        state: { 
+          productId: product.id, 
+          storeCode: product.store_code 
+        }
+      });
+    };
+    
 
-  const products = [
-    { id: 1, name: "Samsung", collection: "Stores", variations: 5, stock: 30, price: "$45.90", status: "Active" },
-    { id: 2, name: "Apple", collection: "Stores", variations: 3, stock: 15, price: "$99.90", status: "Active" },
-    { id: 3, name: "Sony", collection: "Electronics", variations: 2, stock: 20, price: "$75.00", status: "Active" },
-    { id: 4, name: "LG", collection: "Appliances", variations: 4, stock: 10, price: "$60.00", status: "Active" },
-    { id: 5, name: "Dell", collection: "Computers", variations: 1, stock: 5, price: "$120.00", status: "Active" },
-  ];
 
   return (
     <div>
@@ -81,18 +117,18 @@ const ProductsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {product?.products?.map((product:any) => (
               <tr
                 key={product.id}
-                onClick={() => handleRowClick(product.name)}
+                onClick={() => handleRowClick(product.product_name, product)}
                 className="cursor-pointer hover:bg-gray-200"
               >
                 <td className="text-[12px] font-[300] py-4">{product.id}</td>
-                <td className="text-[12px] font-[300] py-4">{product.name}</td>
-                <td className="text-[12px] font-[300] py-4">{product.collection}</td>
+                <td className="text-[12px] font-[300] py-4">{product.product_name}</td>
+                <td className="text-[12px] font-[300] py-4">  {categories[product.category_id]?.category?.category_name || "Loading..."}</td>
                 <td className="text-[12px] font-[300] py-4">{product.variations}</td>
-                <td className="text-[12px] font-[300] py-4">{product.stock}</td>
-                <td className="text-[12px] font-[300] py-4">{product.price}</td>
+                <td className="text-[12px] font-[300] py-4">{product.stock_unit}</td>
+                <td className="text-[12px] font-[300] py-4">{product.selling_price}</td>
                 <td className=" py-4">
                 <p>
                   <b
@@ -105,7 +141,7 @@ const ProductsTable = () => {
                       padding: "2px 10px",
                     }}
                   >
-                   {product.status}
+                   {product.product_status}
                   </b>
                 </p>
               </td>

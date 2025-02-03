@@ -3,7 +3,7 @@ import {configureStore} from '@reduxjs/toolkit'
 // import storage from 'redux-persist/storage'
 import reducers from "../reducer";
 import { persistStore, persistReducer } from 'redux-persist'
-
+import stateReducer from "./stateSlice"; // Import your stateSlice
 
 
 const persistConfig = {
@@ -18,8 +18,11 @@ const persistConfig = {
    
     reducer:{
          data: persistedReducer,
+         globalState: stateReducer, // Ensure this matches what you're calling in useSelector
     },
      
 })
 
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export const persistor = persistStore(store)

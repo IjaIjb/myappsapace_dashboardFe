@@ -1,13 +1,22 @@
 import React from 'react'
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const CustomersTable = () => {
-    const history = useHistory();
+const CustomersTable = (props:any) => {
+  const { customer } = props
+
+    const navigate = useNavigate();
   
-    const handleRowClick = (customerId:any) => {
-      history.push(`/dashboard/customer-details/${customerId}`); // Navigate to order details page
+    const handleRowClick = (customerName:any, customer: any) => {
+      navigate({
+        pathname: `/dashboard/customer-details/${customerName}`,
+        state: { 
+          productId: customer.id, 
+          storeCode: customer.store_code 
+        }
+      });
     };
 
+console.log(customer)
   return (
     <div>
    
@@ -52,41 +61,41 @@ const CustomersTable = () => {
         </tr>
       </thead>
       <tbody className="px-3">
-        {[
-          { id: 1, name: "Joseph Sanjo", location: "Abuja", orders: "0 Orders", amount: "$45.00", status: "Active" },
-          { id: 2, name: "Jane Doe", location: "Lagos", orders: "3 Orders", amount: "$120.00", status: "Inactive" },
-        ].map((order) => (
+        {customer?.data?.customers?.map((cust:any) => (
           <tr
-            key={order.id}
+            key={cust.id}
             className="cursor-pointer hover:bg-gray-100"
-            onClick={() => handleRowClick(order.name)}
+            onClick={() => handleRowClick(cust.first_name, cust)}
           >
             <td className="text-[12px] font-[300] py-4">
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"
-                  id={`checkbox-${order.id}`}
+                  id={`checkbox-${cust.id}`}
                   name="customCheckbox"
                   className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                 />
               </div>
             </td>
-            <td className="text-[12px] font-[300] py-4">{order.name}</td>
-            <td className="text-[12px] font-[300] py-4">{order.location}</td>
-            <td className="text-[12px] font-[300] py-4">{order.orders}</td>
-            <td className="text-[12px] font-[300] py-4">{order.amount}</td>
+            <td className="text-[12px] font-[300] py-4">{cust.first_name} {cust.last_name}</td>
+            {/* <td className="text-[12px] font-[300] py-4">{cust.location}</td>
+            <td className="text-[12px] font-[300] py-4">{cust.orders}</td> */}
+            <td className="text-[12px] font-[300] py-4 ">{cust.address}</td>
+            <td className="text-[12px] font-[300] py-4">{cust.email}</td>
+            <td className="text-[12px] font-[300] py-4">{cust.username}</td>
+            {/* <td className="text-[12px] font-[300] py-4">{cust.amount}</td> */}
             <td className="py-4">
               <b
                 style={{
                   fontWeight: "500",
                   fontSize: "10px",
-                  backgroundColor: order.status === "Active" ? "#C9F0D0" : "#F3CFCF",
-                  color: order.status === "Active" ? "#51CF66" : "#F56C6C",
+                  backgroundColor: cust.status === "active" ? "#C9F0D0" : "#F3CFCF",
+                  color: cust.status === "active" ? "#51CF66" : "#F56C6C",
                   borderRadius: "10px",
                   padding: "2px 10px",
                 }}
               >
-                {order.status}
+                {cust.status}
               </b>
             </td>
           </tr>

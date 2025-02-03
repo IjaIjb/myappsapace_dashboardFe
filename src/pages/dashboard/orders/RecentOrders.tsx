@@ -1,9 +1,9 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const RecentOrders = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleRowClick = (orderId:any) => {
-    history.push(`/dashboard/order-details/${orderId}`); // Navigate to the order details page with the order ID
+    navigate(`/dashboard/order-details/${orderId}`); // Navigate to the order details page with the order ID
   };
   return (
     <div>

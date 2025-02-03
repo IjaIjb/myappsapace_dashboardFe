@@ -73,7 +73,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <Header />
 
             </div> */}
-              <div className="lg:px-[2%] w-full pt-[1%] bg-[#EFEFEF] rounded-[10px] overflow-y-scroll h-screen my-3 ">
+              <div className="lg:px-[2%] px-3 w-full pt-[1%] bg-[#EFEFEF] rounded-[10px] overflow-y-scroll h-screen my-3 ">
                 <Header />
 
                 {/* Render children */}
