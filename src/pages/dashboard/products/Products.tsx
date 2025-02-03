@@ -13,7 +13,7 @@ const Products = () => {
     (state: RootState) => state.globalState?.selectedStore || null
   );
   console.log("Selected Store Code:", selectedStore);
-  const [stores, setStores] = useState<any>([]);
+  // const [stores, setStores] = useState<any>([]);
   const [product, setProduct] = React.useState<any>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
@@ -24,15 +24,15 @@ const Products = () => {
   //   category_description: "",
   //   status: "active",
   // });
-  useEffect(() => {
-    UserApis.getStore()
-      .then((response) => {
-        if (response?.data) {
-          setStores(response?.data || []); // Adjusting to your API response structure
-        }
-      })
-      .catch((error) => console.error("Error fetching stores:", error));
-  }, []);
+  // useEffect(() => {
+  //   UserApis.getStore()
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         setStores(response?.data || []); // Adjusting to your API response structure
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching stores:", error));
+  // }, []);
 
   React.useEffect(() => {
     UserApis.getProduct(selectedStore)
