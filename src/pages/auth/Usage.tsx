@@ -69,11 +69,13 @@ const Usage = () => {
  <div>
   <div className="my-10">
     <div className="flex justify-center">
-      <img
-        src="/images/logo2.svg"
-        className="text-center"
-        alt="myappspace Logo"
-      />
+    <a href="https://myappspace.net/" rel="noreferrer" target="_blank">
+            <img
+              src="/images/auth/MyAppspace (3).png"
+              className="w-[170px] h-full text-center"
+              alt="Logo"
+            />
+            </a>
     </div>
     <div className="mt-[60px]">
       <div className="max-w-[600px] mx-auto p-4">

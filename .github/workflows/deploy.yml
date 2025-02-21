@@ -1,0 +1,43 @@
+name: Deploy to Shared Hosting
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Clean npm cache and remove old dependencies
+        run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+
+      - name: Downgrade React to 18
+        run: npm install react@18 react-dom@18
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Deploy to Shared Hosting via FTP
+        uses: Penguibird/FTP-Deploy-Action@4.2.0
+        with:
+          server: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          server-dir: /public_html/
+          local-dir: ./build/
+          port: 21

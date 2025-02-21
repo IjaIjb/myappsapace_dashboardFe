@@ -1,6 +1,8 @@
 import React from 'react'
 
-const OrderHome = () => {
+const OrderHome = (props:any) => {
+  const {orders} = props
+  console.log(orders)
   return (
     <div>
                 <div className='bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5'>
@@ -34,151 +36,60 @@ const OrderHome = () => {
                             </thead>
 
                             <tbody>
-                                 <tr className="bg-white  ">
-
-                                                <td className="text-[12px] font-[300] py-4">
-                                                3458
-                                                </td>
-
-                                                <td className="text-[12px] font-[300] py-4">
-                                                  12-14-2024
-                                                </td>
-                                                <td className="text-[12px] font-[300] py-4">
-                                                Rachael Ezeh
-                                                </td>
-                                                <td className="text-[12px] font-[300] py-4">
-                                                 $45.90
-                                                </td>
-                                                <td className="text-[12px] font-[300] py-4">
-                                                  4 Products
-                                                </td>
-
-                                                <td className=" py-4">
-                                                <p>
-                                                    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Paid</b>
-                                                    </p> 
-                                                </td>
-
-                                                <td className=" py-4">
-                                                <p>
-                                                    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Fufilled</b>
-                                                    </p> 
-                                                </td>
-
-
-
-
-
-                                            </tr>
-
-                                            <tr className="bg-white  ">
-
-<td className="text-[12px] font-[300] py-4">
-3458
-</td>
-
-<td className="text-[12px] font-[300] py-4">
-  12-14-2024
-</td>
-<td className="text-[12px] font-[300] py-4">
-Rachael Ezeh
-</td>
-<td className="text-[12px] font-[300] py-4">
- $45.90
-</td>
-<td className="text-[12px] font-[300] py-4">
-  4 Products
-</td>
-
-<td className=" py-4">
-<p>
-    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Paid</b>
-    </p> 
-</td>
-
-<td className=" py-4">
-<p>
-    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Fufilled</b>
-    </p> 
-</td>
-
-
-
-
-
-</tr>
-<tr className="bg-white  ">
-
-<td className="text-[12px] font-[300] py-4">
-3458
-</td>
-
-<td className="text-[12px] font-[300] py-4">
-  12-14-2024
-</td>
-<td className="text-[12px] font-[300] py-4">
-Rachael Ezeh
-</td>
-<td className="text-[12px] font-[300] py-4">
- $45.90
-</td>
-<td className="text-[12px] font-[300] py-4">
-  4 Products
-</td>
-
-<td className=" py-4">
-<p>
-    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Paid</b>
-    </p> 
-</td>
-
-<td className=" py-4">
-<p>
-    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Fufilled</b>
-    </p> 
-</td>
-
-
-
-
-
-</tr>
-<tr className="bg-white  ">
-
-<td className="text-[12px] font-[300] py-4">
-3458
-</td>
-
-<td className="text-[12px] font-[300] py-4">
-  12-14-2024
-</td>
-<td className="text-[12px] font-[300] py-4">
-Rachael Ezeh
-</td>
-<td className="text-[12px] font-[300] py-4">
- $45.90
-</td>
-<td className="text-[12px] font-[300] py-4">
-  4 Products
-</td>
-
-<td className=" py-4">
-<p>
-    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Paid</b>
-    </p> 
-</td>
-
-<td className=" py-4">
-<p>
-    <b style={{ fontWeight: "500", fontSize: '10px', backgroundColor: '#C9F0D0', color: '#51CF66', borderRadius: '10px', padding: '2px 10px' }}>Fufilled</b>
-    </p> 
-</td>
-
-
-
-
-
-</tr>
+     {orders?.slice(0, 5).map((order:any) => (
+        <tr
+        key={order.id}
+        className="bg-white cursor-pointer hover:bg-gray-100"
+        // onClick={() => handleRowClick(order.id)}
+      >
+  <td className="text-[12px] font-[300] py-4">
+                    {order.order_code}
+                  </td>
+                  <td className="text-[12px] font-[300] py-4">
+                    {new Date(order?.created_at).toLocaleDateString()}{" "}
+                    {new Date(order?.created_at).toLocaleTimeString()}
+                    </td>
+                    <td className="text-[12px] font-[300] py-4">
+                    {order.customer?.first_name} {order.customer?.last_name}
+                  </td>
+                  <td className="text-[12px] font-[300] py-4">
+                    {order?.currency}
+                    {order.total}
+                  </td>
+                    <td className="text-[12px] font-[300] py-4">
+                    {order.order_items?.length ?? 0}
+                  </td>
+                  
+                  <td className="py-4">
+                    <b
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "10px",
+                        borderRadius: "10px",
+                        padding: "2px 10px",
+                        backgroundColor:
+                          order?.status === "paid"
+                            ? "#C9F0D0"
+                            : order?.status === "pending"
+                            ? "#FFF3CD"
+                            : order?.status === "failed"
+                            ? "#F8D7DA"
+                            : "#E9ECEF", // Default color
+                        color:
+                          order?.status === "paid"
+                            ? "#51CF66"
+                            : order?.status === "pending"
+                            ? "#FFC107"
+                            : order?.status === "failed"
+                            ? "#DC3545"
+                            : "#6C757D", // Default color
+                      }}
+                    >
+                      {order.status}
+                    </b>
+                  </td>
+        </tr>
+     ))}
                                  
 
                             </tbody>

@@ -91,6 +91,12 @@ export class UserLiveApis extends AxiosGlobal{
             headers: { "Content-Type": "aplication/json", "Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },
           });
     }
+
+    addProductToSale(storeCode:any, product_id:any, data:any): AxiosPromise<any> {
+        return this.axios.post(`${configs.contextUser}/${storeCode}/products/${product_id}/sale`, data,{
+            headers: { "Content-Type": "aplication/json", "Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },
+          });
+    }
  
     getProduct(storeCode:any): AxiosPromise<Array<any>> {
         return this.axios.get(`${configs.contextUser}/${storeCode}/products`, {
@@ -104,6 +110,31 @@ export class UserLiveApis extends AxiosGlobal{
         });
     }
 
+    getOrder(storeCode:any, params ={}): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${storeCode}/orders/getAll`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+            params,
+        });
+    }
+
+    getSingleOrder(store_code:any, order_code:any): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/orders/${order_code}/getOne`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+    
+    getSingleTransaction(store_code:any, transaction_reference:any): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/transactions/${transaction_reference}/getOne`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
+    getTransaction(storeCode:any, params ={}): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${storeCode}/transactions/getAll`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+            params,
+        });
+    }
     
     updateProduct(store_code:any, product_id:any, data:any): AxiosPromise<Array<any>> {
         return this.axios.put(`${configs.contextUser}/${store_code}/products/${product_id}`,  data,{
@@ -132,6 +163,18 @@ export class UserLiveApis extends AxiosGlobal{
 
     updateCustomer(store_code:any, customer_id:any, data:any): AxiosPromise<Array<any>> {
         return this.axios.put(`${configs.contextUser}/${store_code}/customers/update/${customer_id}`,  data,{
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
+    updateSettings(store_code:any,sectionName:any, data:any): AxiosPromise<any> {
+        return this.axios.post(`${configs.contextUser}/${store_code}/settings/${sectionName}/updateSection`, data,{
+            headers: { "Content-Type": "aplication/json", "Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },
+          });
+    }
+
+    getStoreSettings(store_code:any, sectionName:any): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/settings/getSection/${sectionName}`, {
             headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
         });
     }

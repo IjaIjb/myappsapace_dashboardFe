@@ -10,6 +10,7 @@ import { UserApis } from "../../../apis/userApi/userApi";
 const CreateStore = () => {
   const [formValues, setFormValues] = useState({
     store_name: "",
+    domain_name: "",
     store_abbreviation: "",
     industry_type: "",
     product_type: "",
@@ -21,7 +22,9 @@ const CreateStore = () => {
   const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
@@ -42,6 +45,7 @@ const CreateStore = () => {
       formData.append("store_logo", storeLogo); // Attach the file
     }
     formData.append("store_name", formValues.store_name);
+    formData.append("domain_name", formValues.domain_name);
     formData.append("store_abbreviation", formValues.store_abbreviation || "");
     formData.append("industry_type", formValues.industry_type);
     formData.append("product_type", formValues.product_type);
@@ -51,8 +55,8 @@ const CreateStore = () => {
     try {
       console.log("Submitting payload:", formData);
 
-      const response:any = await UserApis.createStore(formData);
-console.log(response)
+      const response: any = await UserApis.createStore(formData);
+      console.log(response);
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "Store created successfully!");
         navigate("/dashboard/store");
@@ -70,16 +74,24 @@ console.log(response)
   return (
     <DashboardLayout>
       <div className="pt-10 px-5">
-        <h5 className="text-[#000000] text-[16px] font-[600]">Business Information</h5>
-        <form onSubmit={handleSubmit} className="flex flex-col max-w-[570px] mt-5 gap-3">
+        <h5 className="text-[#000000] text-[16px] font-[600]">
+          Business Information
+        </h5>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col max-w-[570px] mt-5 gap-3"
+        >
           {/* Add Logo */}
           <div>
-            <label htmlFor="store_logo" className="text-[#2B2C2B] text-[12px] font-[400]">
+            <label
+              htmlFor="store_logo"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
               Add Logo
             </label>
             <div className="flex justify-center text-center">
               <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer relative">
-                <div className="flex flex-col items-center justify-center h-[80px]">
+                <div className="flex flex-col items-center justify-center h-[140px]">
                   {storeLogo ? (
                     <img
                       src={URL.createObjectURL(storeLogo)}
@@ -89,7 +101,9 @@ console.log(response)
                     />
                   ) : (
                     <div className="flex flex-col">
-                      <h4 className="text-[#9D9D9D] text-[12px] font-[400]">Upload Logo Image here</h4>
+                      <h4 className="text-[#9D9D9D] text-[12px] font-[400]">
+                        Upload Logo Image here
+                      </h4>
                       <h4 className="text-[#9D9D9D] text-[10px] font-[400]">
                         Recommended size 32px by 32px
                       </h4>
@@ -108,7 +122,10 @@ console.log(response)
 
           {/* Store Name */}
           <div>
-            <label htmlFor="store_name" className="text-[#2B2C2B] text-[12px] font-[400]">
+            <label
+              htmlFor="store_name"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
               Store Name
             </label>
             <input
@@ -122,9 +139,29 @@ console.log(response)
             />
           </div>
 
+          <div>
+            <label
+              htmlFor="domain_name"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
+              Domain Name
+            </label>
+            <input
+              type="text"
+              name="domain_name"
+              value={formValues.domain_name}
+              onChange={handleInputChange}
+              className="block w-full mt-1 border px-3 py-2 rounded"
+              placeholder="Enter store name"
+              required
+            />
+          </div>
           {/* Store Abbreviation */}
           <div>
-            <label htmlFor="store_abbreviation" className="text-[#2B2C2B] text-[12px] font-[400]">
+            <label
+              htmlFor="store_abbreviation"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
               Store Abbreviation
             </label>
             <input
@@ -140,7 +177,10 @@ console.log(response)
 
           {/* Industry Type */}
           <div>
-            <label htmlFor="industry_type" className="text-[#2B2C2B] text-[12px] font-[400]">
+            <label
+              htmlFor="industry_type"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
               Industry Type
             </label>
             <input
@@ -156,7 +196,10 @@ console.log(response)
 
           {/* Product Type */}
           <div>
-            <label htmlFor="product_type" className="text-[#2B2C2B] text-[12px] font-[400]">
+            <label
+              htmlFor="product_type"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
               Product Type
             </label>
             <input
@@ -172,7 +215,10 @@ console.log(response)
 
           {/* Store Location */}
           <div>
-            <label htmlFor="store_location" className="text-[#2B2C2B] text-[12px] font-[400]">
+            <label
+              htmlFor="store_location"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
               Business Location
             </label>
             <input
@@ -188,7 +234,10 @@ console.log(response)
 
           {/* Store Description */}
           <div>
-            <label htmlFor="store_description" className="text-[#2B2C2B] text-[12px] font-[400]">
+            <label
+              htmlFor="store_description"
+              className="text-[#2B2C2B] text-[12px] font-[400]"
+            >
               Business Description
             </label>
             <textarea
@@ -204,14 +253,14 @@ console.log(response)
 
           {/* Submit Button */}
           <div className="flex justify-end items-end h-full">
-          <button
-            type="submit"
-            disabled={loader}
-            className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:bg-gray-400"
-          >
-            {loader ? <LoadingSpinner /> : "Proceed"}
-            {!loader && <FaArrowRight />}
-          </button>
+            <button
+              type="submit"
+              disabled={loader}
+              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:bg-gray-400"
+            >
+              {loader ? <LoadingSpinner /> : "Proceed"}
+              {!loader && <FaArrowRight />}
+            </button>
           </div>
         </form>
         <ToastContainer autoClose={3000} />
@@ -221,10 +270,6 @@ console.log(response)
 };
 
 export default CreateStore;
-
-
-
-
 
 // import DashboardLayout from '../../../components/DashboardLayout'
 // import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -246,7 +291,7 @@ export default CreateStore;
 //     const [loader, setLoader] = useState(false);
 
 //     const navigate = useNavigate();
-  
+
 //     const initialData = {
 //       store_logo: "",
 //       store_name: "",
@@ -256,7 +301,7 @@ export default CreateStore;
 //       store_description: "",
 //       store_location: "",
 //     };
-  
+
 //     const validation = Yup.object().shape({
 //       store_logo: Yup.mixed()
 //         .required("Store logo is required")
@@ -285,23 +330,23 @@ export default CreateStore;
 //         .min(10, "Description must be at least 10 characters"),
 //       store_location: Yup.string().required("Store location is required"),
 //     });
-  
+
 //     const ImageUpload: React.FC<ImageUploadProps> = ({ image, setImage }) => {
 //       const [loading, setLoading] = useState(false);
-  
+
 //       const handleImageChange = async (
 //         e: React.ChangeEvent<HTMLInputElement>
 //       ) => {
 //         const file = e.target.files?.[0];
 //         if (file) {
 //           setLoading(true); // Show loading spinner or indicator
-  
+
 //           try {
 //             // Create a FormData object
 //             const formData = new FormData();
 //             formData.append("file", file);
 //             formData.append("upload_preset", "urban_image"); // Replace with your Cloudinary preset
-  
+
 //             // Upload to Cloudinary
 //             const response = await fetch(
 //               "https://api.cloudinary.com/v1_1/dngyazspl/image/upload",
@@ -310,13 +355,13 @@ export default CreateStore;
 //                 body: formData,
 //               }
 //             );
-  
+
 //             const result = await response.json();
 //             if (result.secure_url) {
 //               // Set the image URL in the state
 //               setImage(result.secure_url);
 //             }
-  
+
 //             setLoading(false); // Stop loading
 //           } catch (error) {
 //             console.error("Error uploading image", error);
@@ -325,7 +370,7 @@ export default CreateStore;
 //           }
 //         }
 //       };
-  
+
 //       return (
 //         <div className="flex justify-center text-center">
 //           <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer relative">
@@ -369,15 +414,15 @@ export default CreateStore;
 //         </div>
 //       );
 //     };
-  
-//     const onSubmit = async (values: { 
+
+//     const onSubmit = async (values: {
 //       store_logo: string; // Use the image URL directly
-//       store_name: string; 
-//       store_abbreviation: string; 
-//       industry_type: string; 
-//       product_type: string; 
-//       store_description: string; 
-//       store_location: string; 
+//       store_name: string;
+//       store_abbreviation: string;
+//       industry_type: string;
+//       product_type: string;
+//       store_description: string;
+//       store_location: string;
 //      }) => {
 //       setLoader(true);
 //       const payload = {
@@ -391,15 +436,14 @@ export default CreateStore;
 //       };
 //       try {
 //         // Create a JSON object instead of FormData
-    
-    
+
 //         console.log("Submitting payload:", payload);
-    
+
 //         // Send the JSON payload to the API
 //         const response = await UserApis.createStore(payload); // Ensure your `createStore` method supports JSON payloads
-    
+
 //         console.log("API Response:", response);
-    
+
 //         if (response?.data?.status === true) {
 //           toast.success("Store created successfully!");
 //           // Redirect or reset form
@@ -416,16 +460,14 @@ export default CreateStore;
 //         setLoader(false);
 //       }
 //     };
-    
 
-    
 //   return (
 // <DashboardLayout>
 // <div>
 // <div className="md:block flex ">
 //             <div className=" pt-10  px-5">
 //               <div className="">
-        
+
 //                 <div className=" mt-7 ">
 //                   <h5 className="text-[#000000] text-[16px] font-[600] ">
 //                     Business Information
@@ -464,7 +506,7 @@ export default CreateStore;
 //               Store Name
 //             </label>
 //             <Field
-//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-[#969696] bg-[#FBFBFF] border-[#D8D8E2]"
+//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
 //               name="store_name"
 //               type="text"
 //               id="store_name"
@@ -486,7 +528,7 @@ export default CreateStore;
 //               Industry Type
 //             </label>
 //             <Field
-//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-[#969696] bg-[#FBFBFF] border-[#D8D8E2]"
+//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
 //               name="industry_type"
 //               type="text"
 //               id="industry_type"
@@ -510,7 +552,7 @@ export default CreateStore;
 //               Business Location
 //             </label>
 //             <Field
-//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-[#969696] bg-[#FBFBFF] border-[#D8D8E2]"
+//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
 //               name="store_location"
 //               type="text"
 //               id="store_location"
@@ -532,7 +574,7 @@ export default CreateStore;
 //               Products Type
 //             </label>
 //             <Field
-//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-[#969696] bg-[#FBFBFF] border-[#D8D8E2]"
+//               className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
 //               name="product_type"
 //               type="text"
 //               id="product_type"
@@ -557,7 +599,7 @@ export default CreateStore;
 //           <Field
 //             as="textarea"
 //             rows={4}
-//             className="mt-1 block w-full border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-[#969696] bg-[#FBFBFF] border-[#D8D8E2]"
+//             className="mt-1 block w-full border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
 //             name="store_description"
 //             type="text"
 //             id="store_description"

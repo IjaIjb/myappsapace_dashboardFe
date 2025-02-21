@@ -1,14 +1,75 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import ReferAndEarn from "./ReferAndEarn";
 import TopSelling from "./TopSelling";
 import QuickAction from "./QuickAction";
 import OrderHome from "./OrderHome";
 import { useSelector } from "react-redux";
+import OrderChart from "./OrderChart";
+import { UserApis } from "../../../apis/userApi/userApi";
+import { RootState } from "../../../store/store";
+import LoadingSpinnerPage from "../../../components/UI/LoadingSpinnerPage";
 
 const Home = () => {
-  const userLoginData = useSelector((state:any) => state.data.login.value);
-console.log(userLoginData)
+  const userLoginData = useSelector((state: any) => state.data.login.value);
+  console.log(userLoginData);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const selectedStore = useSelector(
+    (state: RootState) => state.globalState?.selectedStore || null
+  );
+
+  const [customer, setCustomer] = React.useState<any>([]);
+
+
+    React.useEffect(() => {
+      UserApis.getAllCustomer(selectedStore)
+        .then((response) => {
+          if (response?.data) {
+            console?.log(response?.data);
+            setCustomer(response?.data);
+          } else {
+            // dispatch(login([]))
+          }
+        })
+        .catch(function (error) {});
+    }, [selectedStore]);
+    console.log(customer)
+
+    const activeCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status === "active").length || 0;
+
+console.log("Total Active Customers:", activeCustomersCount);
+
+  useEffect(() => {
+    setLoading(true);
+    const query = {
+      order_code: "",
+      customer_name: "",
+      email: "",
+      phone_number: "",
+      status: "",
+      payment_method: "",
+      currency: "",
+      start_date: "",
+      end_date: "",
+      min_total: "",
+      max_total: "",
+      sort_by: "",
+      sort_order: "",
+      per_page: "",
+    };
+
+    UserApis.getOrder(selectedStore, query)
+      .then((response) => {
+        if (response?.data) {
+          setOrders(response?.data?.orders?.data);
+        }
+      })
+      .catch((error) => console.error("Error fetching orders:", error))
+      .finally(() => setLoading(false));
+  }, [selectedStore]);
+
   return (
     <div>
       <DashboardLayout>
@@ -23,7 +84,7 @@ console.log(userLoginData)
                     </h5>
                     <div className="flex justify-between">
                       <h5 className="text-[#9D9D9D] text-[16px] font-[300]">
-                        0
+                        {activeCustomersCount}
                       </h5>
                       <img
                         aria-hidden
@@ -100,8 +161,16 @@ console.log(userLoginData)
                   </div>
                 </div>
               </div>
-
-              <OrderHome />
+              {loading ? (
+               <div>
+<LoadingSpinnerPage />
+                </div>
+              ) : (
+                <>
+                  <OrderChart orders={orders} />
+                  <OrderHome orders={orders} />
+                </>
+              )}
             </div>
 
             <div className="col-span-4 flex flex-col gap-3">

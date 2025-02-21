@@ -16,7 +16,7 @@ const Products = () => {
   // const [stores, setStores] = useState<any>([]);
   const [product, setProduct] = React.useState<any>([]);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [totalCost, setTotalCost] = useState(0);
+  // const [totalCost, setTotalCost] = useState(0);
 
   // const [formValues, setFormValues] = useState({
   //   category_name: "",
@@ -42,11 +42,11 @@ const Products = () => {
           setProduct(response?.data);
           setTotalProducts(response?.data?.products?.length || 0);
           // Calculate total cost price
-          const total = response?.data?.products?.reduce(
-            (sum: number, prod: any) => sum + (prod.cost_price || 0),
-            0
-          );
-          setTotalCost(total);
+          // const total = response?.data?.products?.reduce(
+          //   (sum: number, prod: any) => sum + (prod.cost_price || 0),
+          //   0
+          // );
+          // setTotalCost(total);
         } else {
           // dispatch(login([]))
         }
@@ -116,7 +116,7 @@ const Products = () => {
                 </h5>
                 <div className="flex justify-between">
                   <h5 className="text-[#9D9D9D] text-[16px] font-[300]">
-                    ${totalCost}
+                    {/* ${totalCost} */}0
                   </h5>
                   <img
                     aria-hidden
@@ -136,7 +136,7 @@ const Products = () => {
                   Products Sold
                 </h5>
                 <div className="flex justify-between">
-                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">234</h5>
+                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">0</h5>
                   <img
                     aria-hidden
                     src="/images/products/productsold.svg"
@@ -155,7 +155,7 @@ const Products = () => {
                   Out of Stock
                 </h5>
                 <div className="flex justify-between">
-                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">67</h5>
+                  <h5 className="text-[#9D9D9D] text-[16px] font-[300]">0</h5>
                   <img
                     aria-hidden
                     src="/images/products/outofstock.svg"
@@ -182,7 +182,19 @@ const Products = () => {
             {/* <LiaUploadSolid className="text-white" /> */}
           </Link>
         </div>
-
+        <Link
+          to={"/dashboard/add-flash-sales"}
+          className="rounded-full h-fit lg:mt-0 mt-4 w-fit flex mb-5 items-center gap-3 px-4 py-2"
+          style={{
+            background: "linear-gradient(to bottom, #382B67, #7056CD)",
+          }}
+        >
+          <IoAddCircleOutline className="text-white" />
+          <h5 className="text-[#FFFFFF] text-[16px] font-[400] whitespace-nowrap">
+            Add Flash Sales
+          </h5>
+          {/* <LiaUploadSolid className="text-white" /> */}
+        </Link>
         <ProductsTable product={product} />
       </div>
     </DashboardLayout>

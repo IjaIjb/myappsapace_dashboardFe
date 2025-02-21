@@ -1,20 +1,26 @@
 import React, { useRef, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa';
 import { UserApis } from '../../apis/userApi/userApi';
-import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { Dispatch } from "redux";
+import { login } from '../../reducer/loginSlice';
 
 const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [code, setCode] = useState(Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const dispatch: Dispatch = useDispatch();
 
 
-  const email  = "ijabolu@gmail.com"; // Assumes email is stored in Redux state
-  // const { email } = useSelector((state: any) => state.login); // Assumes email is stored in Redux state
+  // const email  = "ijabolu@gmail.com"; // Assumes email is stored in Redux state
+  const { email } = useSelector((state: any) => state?.data?.login.value); // Assumes email is stored in Redux state
   const navigate = useNavigate();
 
-
+// console.log(email)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
     if (/^\d$/.test(value)) {
@@ -58,10 +64,19 @@ const VerifyEmail = () => {
   
     try {
       const response: any = await UserApis.verifyMail({ email, code: verificationCode });
-  
-      if (response?.data?.user === true) {
+  console.log(response)
+      if (response?.data) {
+            dispatch(
+                    login({
+                      login: response.data.data.user.email,
+                      token: response.data.data.token.access_token,
+                      id: response.data.data.id,
+                      data: response?.data.data.user,
+                    })
+                  );
         toast.success(response?.message || "Email verified successfully!");
-        navigate("/auth/choose-profession"); // Navigate to the next page
+        navigate("/auth/add-store"); // Navigate to the next page
+        // navigate("/auth/choose-profession"); // Navigate to the next page
       } else {
         toast.error(response?.message || "Invalid verification code. Please try again.");
       }
@@ -81,8 +96,8 @@ const VerifyEmail = () => {
       if (response) {
         console.log(":Verified", response.data);
 
-        toast.success(response?.message || "Verification code resent successfully!");
-        navigate("/auth/add-store");
+        toast.success(response?.data?.message || "Verification code resent successfully!");
+        // navigate("/auth/add-store");
     
       } else {
         toast.error(response?.message || "Failed to resend the verification code.");
@@ -98,7 +113,13 @@ const VerifyEmail = () => {
         <div className='flex justify-center'>
 <form onSubmit={handleSubmit} className='mt-10'>
     <div className='flex justify-center'>
-<img src="/images/logo2.svg" className="text-center" alt="myappspace Logo" />
+    <a href="https://myappspace.net/" rel="noreferrer" target="_blank">
+            <img
+              src="/images/auth/MyAppspace (3).png"
+              className="w-[170px] h-full text-center"
+              alt="Logo"
+            />
+            </a>
 </div>
 <div className='mt-[60px]'>
 <h4 className='text-[#000000] text-[24px] font-[700] text-center'>Verify email</h4>
@@ -168,6 +189,17 @@ const VerifyEmail = () => {
                       </button>
                     </div>
 </form>
+ <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
         </div>
     </div>
   )

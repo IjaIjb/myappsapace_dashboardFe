@@ -17,7 +17,7 @@ const CustomerDetails = () => {
 
   const [loader, setLoader] = useState(false);
 
-  const { productId, storeCode } = location.state || {}; // Extract values
+  const [ productId, storeCode ] = location.state || {}; // Extract values
   const [formValues, setFormValues] = useState({
     first_name: "",
     last_name: "",

@@ -5,8 +5,11 @@ import { RiSettings4Line } from "react-icons/ri";
 import { TbUserFilled } from "react-icons/tb";
 import { LiaUploadSolid } from "react-icons/lia";
 import { FiSearch } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const userLoginData = useSelector((state:any) => state.data.login.value);
+  // console.log(userLoginData)
   return (
     <div className="">
       {/* desktop screen */}
@@ -45,9 +48,10 @@ const Header = () => {
 
             <div className="rounded-full flex items-center gap-3 bg-[#EF7577] px-6 py-2">
               <TbUserFilled className="text-white" />
-              <h5 className="text-[#FFFFFF] text-[16px] font-[400]">
-                Samuel A
-              </h5>
+              <h5 className="text-[#FFFFFF] whitespace-nowrap text-[16px] font-[400]">
+  {userLoginData?.data?.first_name?.charAt(0)}. {userLoginData?.data?.last_name}
+</h5>
+
             </div>
           </div>
         </div>
@@ -90,7 +94,8 @@ const Header = () => {
           <div className="flex items-center gap-3">
             <div className="h-6 w-6 rounded-full bg-[#D9D9D9]"></div>
             <div className="">
-              <h5 className="text-black text-[14px] ">M. Adebayo</h5>
+              <h5 className="text-black text-[14px] ">  {userLoginData?.data?.first_name?.charAt(0)}. {userLoginData?.data?.last_name}
+              </h5>
               <h5 className="text-[#969696] text-[14px]">Admin</h5>
             </div>
           </div>

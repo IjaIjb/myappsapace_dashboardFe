@@ -30,6 +30,7 @@ const ProductDetails = () => {
   const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
   console.log("Selected Store Code:", selectedStore);
       
+  
   const location = useLocation();
   const { productId, storeCode } = location.state || {}; // Extract values
   const [isActive, setIsActive] = useState<any>(true);

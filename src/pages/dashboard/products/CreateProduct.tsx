@@ -19,16 +19,24 @@ interface MediaProps {
 
 const CreateProduct = () => {
   const navigate = useNavigate();
-  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
+  const selectedStore = useSelector(
+    (state: RootState) => state.globalState?.selectedStore || null
+  );
   console.log("Selected Store Code:", selectedStore);
-      
+  const sectionName = "payment";
+
   // const [categoryLogo, setCategoryLogo] = useState<File | null>(null);
   const [isActive, setIsActive] = useState<any>(true);
   const [loader, setLoader] = useState(false);
 
+  const [currencies, setCurrencies] = useState<any>([]);
+  // const [newCurrency, setNewCurrency] = useState<any>("");
+  // const [defaultCurrency, setDefaultCurrency] = useState("");
+  //   const [storeSettings, setStoreSettings] = useState<any>([]);
+
   // const [stores, setStores] = useState<any>([]);
   const [category, setCategory] = useState<any>([]);
-  const [formValues, setFormValues] = useState({
+  const [formValues, setFormValues] = useState<any>({
     product_name: "",
     product_description: "",
     store_code: "",
@@ -37,8 +45,8 @@ const CreateProduct = () => {
     product_images: [],
     category_id: "",
     product_type_id: "2",
-    selling_price: "",
-    cost_price: "",
+    selling_price: {},
+    cost_price: {},
     stock_quantity: "",
     stock_unit: "",
     vendor: "",
@@ -46,6 +54,48 @@ const CreateProduct = () => {
     product_status: "active",
   });
 
+  useEffect(() => {
+    if (!selectedStore) return;
+
+    setLoader(true);
+    UserApis.getStoreSettings(selectedStore, sectionName)
+      .then((response) => {
+        console.log(response);
+        if (response?.data) {
+          const settings = response.data?.data.settings;
+          // setStoreSettings(settings);
+
+          // Populate the form fields with existing settings
+          setCurrencies(settings.currencies || []);
+          // setDefaultCurrency(settings.default_currency || "");
+          // setCurrencyDisplay(settings.currency_display || "symbol");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching store settings:", error);
+        toast.error("Failed to load store settings.");
+      })
+      .finally(() => {
+        setLoader(false);
+      });
+  }, [selectedStore, sectionName]);
+
+  // Handle input changes for selling and cost price dynamically
+  const handlePriceChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    priceType: "selling_price" | "cost_price",
+    currency: string
+  ) => {
+    const { value } = e.target;
+
+    setFormValues((prev: any) => ({
+      ...prev,
+      [priceType]: {
+        ...prev[priceType],
+        [currency]: value,
+      },
+    }));
+  };
   // useEffect(() => {
   //   UserApis.getStore()
   //     .then((response) => {
@@ -72,7 +122,7 @@ const CreateProduct = () => {
     >
   ) => {
     const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
+    setFormValues((prev: any) => ({ ...prev, [name]: value }));
   };
 
   // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,8 +169,8 @@ const CreateProduct = () => {
       formValues.product_short_description
     );
     formData.append("tags", formValues.tags);
-    formData.append("selling_price", formValues.selling_price);
-    formData.append("cost_price", formValues.cost_price);
+    formData.append("selling_price", JSON.stringify(formValues.selling_price));
+    formData.append("cost_price", JSON.stringify(formValues.cost_price));
     // formData.append("product_type_id", formValues.product_type_id);
     formData.append("category_id", formValues.category_id);
     formData.append("stock_quantity", formValues.stock_quantity);
@@ -181,7 +231,6 @@ const CreateProduct = () => {
             className="grid lg:grid-cols-12 gap-3 pb-6"
           >
             <div className="lg:col-span-8 flex flex-col gap-3">
-         
               {/* <TitleProduct /> */}
               <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
                 <div className="">
@@ -318,30 +367,48 @@ const CreateProduct = () => {
                 </h4>
 
                 <div className="grid md:grid-cols-2 gap-3">
-                  <div className="">
-                    <h4 className="text-[12px] font-[400]">Selling Price</h4>
-                    <input
-                      type="number"
-                      name="selling_price"
-                      value={formValues.selling_price}
-                      onChange={handleInputChange}
-                      placeholder="Title"
-                      required
-                      className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                  {/* Left side - Selling Prices */}
+                  <div>
+                    {currencies.map((currency: any) => (
+                      <div key={currency} className="mb-3">
+                        <h4 className="text-[12px] font-[400]">
+                          Selling Price ({currency})
+                        </h4>
+                        <input
+                          type="number"
+                          name={`selling_price_${currency}`}
+                          value={formValues.selling_price[currency] || ""}
+                          onChange={(e) =>
+                            handlePriceChange(e, "selling_price", currency)
+                          }
+                          placeholder={`Selling Price in ${currency}`}
+                          required
+                          className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                    ))}
                   </div>
 
-                  <div className="">
-                    <h4 className="text-[12px] font-[400]">Cost Price</h4>
-                    <input
-                      type="number"
-                      name="cost_price"
-                      value={formValues.cost_price}
-                      onChange={handleInputChange}
-                      placeholder="Title"
-                      required
-                      className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                  {/* Right side - Cost Prices */}
+                  <div>
+                    {currencies.map((currency: any) => (
+                      <div key={currency} className="mb-3">
+                        <h4 className="text-[12px] font-[400]">
+                          Cost Price ({currency})
+                        </h4>
+                        <input
+                          type="number"
+                          name={`cost_price_${currency}`}
+                          value={formValues.cost_price[currency] || ""}
+                          onChange={(e) =>
+                            handlePriceChange(e, "cost_price", currency)
+                          }
+                          placeholder={`Cost Price in ${currency}`}
+                          required
+                          className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -442,9 +509,9 @@ const CreateProduct = () => {
                   <h4 className="text-[12px] font-[400]">Product Type</h4>
                   <input
                     type="text"
-                      name="product_type_id"
-                      value={formValues.product_type_id}
-                      onChange={handleInputChange}
+                    name="product_type_id"
+                    value={formValues.product_type_id}
+                    onChange={handleInputChange}
                     placeholder="Title"
                     className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   />
@@ -499,18 +566,18 @@ const CreateProduct = () => {
                 </button>
               </div>
             </div>
-            
-      <ToastContainer
-        position="bottom-left"
-        autoClose={2000}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+
+            <ToastContainer
+              position="bottom-left"
+              autoClose={2000}
+              hideProgressBar={true}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+            />
           </form>
         </div>
       </DashboardLayout>

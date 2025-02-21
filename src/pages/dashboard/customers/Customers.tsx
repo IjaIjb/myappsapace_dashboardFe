@@ -49,6 +49,8 @@ const Customers = () => {
       .catch(function (error) {});
   }, [selectedStore]);
   console.log(customer)
+  const activeCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status === "active").length || 0;
+  const notActiveCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status !== "active").length || 0;
 
   // const handleInputChange = (
   //   e: React.ChangeEvent<
@@ -103,7 +105,7 @@ const Customers = () => {
             <div className="flex flex-col gap-1">
               <h5 className="text-[#9D9D9D] text-[12px] font-[600]">Active</h5>
               <div className="flex justify-between">
-                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">54</h5>
+                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">{activeCustomersCount}</h5>
                 <svg
                   width="32"
                   height="32"
@@ -135,7 +137,7 @@ const Customers = () => {
                 Inactive
               </h5>
               <div className="flex justify-between">
-                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">34</h5>
+                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">{notActiveCustomersCount}</h5>
                 <img
                   aria-hidden
                   src="/images/home/customer.svg"

@@ -20,7 +20,7 @@ type Props = {
 const Sidebar = (props: Props) => {
   const dispatch = useDispatch();
  
-  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore);
+  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
   console.log(selectedStore)
   const [stores, setStores] = useState<any>([]);
     
@@ -33,7 +33,7 @@ const Sidebar = (props: Props) => {
           UserApis.getStore()
             .then((response) => {
               if (response?.data) {
-                setStores(response?.data);
+                setStores(response?.data || []);
                 if (!selectedStore && response?.data?.data.length > 0) {
                   const firstStore = response?.data?.data[0].store_code;
                   dispatch(setSelectedStore(firstStore));
@@ -260,6 +260,33 @@ const Sidebar = (props: Props) => {
                     // height={16}
                   />
                   <h5 className=" ">Orders</h5>
+                </div>
+              </Link>
+            </div>
+
+            <div className="">
+              <Link to={"/dashboard/transaction"} className="relative gap-1  ">
+                <div
+                  className={`${
+                    ["dashboard", "transaction"].every((ai) => pathnames.includes(ai))
+                      ? "bg-white text-primary "
+                      : " text-white"
+                  } gap-x-3 flex items-center px-6 text-[14px] hover:text-[16px] hover:font-[600] rounded-[10px] py-[10px] `}
+                >
+                  <img
+                    aria-hidden
+                    src={
+                      ["dashboard", "transaction"].every((ai) =>
+                        pathnames.includes(ai)
+                      )
+                        ? "/images/orders.svg"
+                        : "/images/orders.svg"
+                    }
+                    alt="Window icon"
+                    // width={16}
+                    // height={16}
+                  />
+                  <h5 className=" ">Transactions</h5>
                 </div>
               </Link>
             </div>

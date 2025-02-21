@@ -15,6 +15,8 @@ const ProductPage = lazy(() => import("../pages/dashboard/products/Products"));
 const CreateProductPage = lazy(() => import("../pages/dashboard/products/CreateProduct"));
 const ProductDetailsPage = lazy(() => import("../pages/dashboard/products/ProductDetails"));
 const OrderPage = lazy(() => import("../pages/dashboard/orders/Orders"));
+const TransactionPage = lazy(() => import("../pages/dashboard/transaction/Transaction"));
+const TransactionDetailsPage = lazy(() => import("../pages/dashboard/transaction/TransactionDetails"));
 const OrderDetailPage = lazy(() => import("../pages/dashboard/orders/OrderDetails"));
 const CreateOrderPage = lazy(() => import("../pages/dashboard/orders/CreateOrder"));
 const CategoryPage = lazy(() => import("../pages/dashboard/category/Category"));
@@ -34,6 +36,7 @@ const StaffAndPermissionPage = lazy(() => import("../pages/dashboard/settings/in
 const ThemeSetupPage = lazy(() => import("../pages/dashboard/themeSetup/ThemeSetup"));
 const SubscriptionPage = lazy(() => import("../pages/dashboard/subscription/Subscription"));
 const HelpPage = lazy(() => import("../pages/dashboard/help/Help"));
+const AddFlashSalesPage = lazy(() => import("../pages/dashboard/products/AddFlashSales"));
 // const AnalyticsPage = lazy(() => import("../pages/dashboard/discounts/Discounts"));
 
 const routes = [
@@ -87,8 +90,20 @@ const routes = [
     component: ProductDetailsPage,
   },
   {
+    path: "/dashboard/add-flash-sales",
+    component: AddFlashSalesPage,
+  },
+  {
     path: "/dashboard/order",
     component: OrderPage,
+  },
+  {
+    path: "/dashboard/transaction",
+    component: TransactionPage,
+  },
+  {
+    path: "/dashboard/transaction-details/:trx_ref",
+    component: TransactionDetailsPage,
   },
   {
     path: "/dashboard/order-details/:orderId",

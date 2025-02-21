@@ -128,6 +128,14 @@ export class UserApis {
         }
     }
 
+    static addProductToSale(storeCode:any, product_id:any, data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.addProductToSale(storeCode, product_id, data);
+        }
+    }
+
     static getProduct(storeCode:any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;
@@ -141,6 +149,39 @@ export class UserApis {
             return {} as AxiosPromise;
         } else {
             return this.authLiveApis.getSingleProduct(store_code, category_id);
+        }
+    } 
+
+    
+    static getOrder(storeCode:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getOrder(storeCode, data);
+        }
+    } 
+
+    static getSingleOrder(store_code:any, order_code:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleOrder(store_code, order_code);
+        }
+    } 
+
+    static getSingleTransaction(store_code:any, transaction_ref:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleTransaction(store_code, transaction_ref);
+        }
+    } 
+
+    static getTransaction(storeCode:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getTransaction(storeCode, data);
         }
     } 
 
@@ -181,6 +222,22 @@ export class UserApis {
             return {} as AxiosPromise;
         } else {
             return this.authLiveApis.updateCustomer(store_code, customer_id, data);
+        }
+    } 
+
+    static updateSettings(store_code:any, setcionName:any, data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateSettings(store_code, setcionName, data);
+        }
+    }
+
+    static getStoreSettings(store_code:any, sectionName:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getStoreSettings(store_code, sectionName);
         }
     } 
 
