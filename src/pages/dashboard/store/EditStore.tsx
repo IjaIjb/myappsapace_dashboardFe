@@ -125,18 +125,22 @@ const EditStore = () => {
             <div className="flex justify-center text-center">
               <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer relative">
                 <div className="flex flex-col items-center justify-center h-[140px]">
-                  {storeLogo ? (
+                  {storeLogo ? ( // Show new selected image first
                     <img
-                      src={
-                        storeData?.store_logo
-                          ? storeData?.store_logo
-                          : URL.createObjectURL(storeLogo)
-                      }
+                      src={URL.createObjectURL(storeLogo)}
                       alt="Uploaded logo"
                       width={100}
                       height={100}
                     />
+                  ) : storeData?.store_logo ? ( // Show existing store logo if no new file selected
+                    <img
+                      src={storeData.store_logo}
+                      alt="Store logo"
+                      width={100}
+                      height={100}
+                    />
                   ) : (
+                    // Show placeholder if no logo exists
                     <div className="flex flex-col">
                       <h4 className="text-[#9D9D9D] text-[12px] font-[400]">
                         Upload Logo Image here

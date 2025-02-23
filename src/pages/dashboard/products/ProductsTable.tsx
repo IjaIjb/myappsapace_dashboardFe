@@ -2,55 +2,57 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserApis } from "../../../apis/userApi/userApi";
 
-const ProductsTable = (props:any) => { 
-  const { product } = props
-  const [categories, setCategories] = useState<{ [key: string]: any }>({}); 
+const ProductsTable = (props: any) => {
+  const { product } = props;
+  const [categories, setCategories] = useState<{ [key: string]: any }>({});
   const navigate = useNavigate();
-    // React.useEffect(() => {
-    //   UserApis.getSingleCategory(product?.products?.store_code, product?.products.categori)
-    //     .then((response) => {
-    //       if (response?.data) {
-    //         // console?.log(response?.data);
-    //         setCategories(response?.data);
-    //       } else {
-    //         // dispatch(login([]))
-    //       }
-    //     })
-    //     .catch(function (error) {});
-    //   }, [product?.products?.store_code]);
+  // React.useEffect(() => {
+  //   UserApis.getSingleCategory(product?.products?.store_code, product?.products.categori)
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         // console?.log(response?.data);
+  //         setCategories(response?.data);
+  //       } else {
+  //         // dispatch(login([]))
+  //       }
+  //     })
+  //     .catch(function (error) {});
+  //   }, [product?.products?.store_code]);
 
-    useEffect(() => {
-      if (product?.products) {
-        product.products.forEach((prod: any) => {
-          if (prod.store_code && prod.category_id && !categories[prod.category_id]) {
-            UserApis.getSingleCategory(prod.store_code, prod.category_id)
-              .then((response) => {
-                if (response?.data) {
-                  setCategories((prevCategories:any) => ({
-                    ...prevCategories,
-                    [prod.category_id]: response.data, // Store category data by ID
-                  }));
-                }
-              })
-              .catch((error) => {
-                console.error("Error fetching category:", error);
-              });
-          }
-        });
-      }
-    }, [product?.products, categories]);
-    // console.log(categories)
-    const handleRowClick = (productId:any, product: any) => {
-      navigate({
-        pathname: `/dashboard/product-details/${productId}`,
-        state: { 
-          productId: product.id, 
-          storeCode: product.store_code 
+  useEffect(() => {
+    if (product?.products) {
+      product.products.forEach((prod: any) => {
+        if (
+          prod.store_code &&
+          prod.category_id &&
+          !categories[prod.category_id]
+        ) {
+          UserApis.getSingleCategory(prod.store_code, prod.category_id)
+            .then((response) => {
+              if (response?.data) {
+                setCategories((prevCategories: any) => ({
+                  ...prevCategories,
+                  [prod.category_id]: response.data, // Store category data by ID
+                }));
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching category:", error);
+            });
         }
       });
-    };
-    
-
+    }
+  }, [product?.products, categories]);
+  // console.log(categories)
+  const handleRowClick = (productId: any, product: any) => {
+    navigate({
+      pathname: `/dashboard/product-details/${productId}`,
+      state: {
+        productId: product.id,
+        storeCode: product.store_code,
+      },
+    });
+  };
 
   return (
     <div>
@@ -90,10 +92,10 @@ const ProductsTable = (props:any) => {
             />
           </svg>
         </div>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-          <thead className="text-xs text-gray-700 rounded-[6px] px-3 bg-[#EFF1F3] ">
-            <tr>
-              <th scope="col" className="text-[10px] font-[500] py-3">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+          <thead className="text-xs pl-6 text-gray-700 rounded-[6px] px-3 bg-[#EFF1F3]">
+            <tr className="">
+              <th scope="col" className="text-[10px] font-[500] pl-4 py-3">
                 #
               </th>
               <th scope="col" className="text-[10px] font-[500] py-3">
@@ -117,36 +119,63 @@ const ProductsTable = (props:any) => {
             </tr>
           </thead>
           <tbody>
-            {product?.products?.map((product:any) => (
-              <tr
-                key={product.id}
-                onClick={() => handleRowClick(product.product_name, product)}
-                className="cursor-pointer hover:bg-gray-200"
-              >
-                <td className="text-[12px] font-[300] py-4">{product.id}</td>
-                <td className="text-[12px] font-[300] py-4">{product.product_name}</td>
-                <td className="text-[12px] font-[300] py-4">  {categories[product.category_id]?.category?.category_name || "Loading..."}</td>
-                <td className="text-[12px] font-[300] py-4">{product.variations}</td>
-                <td className="text-[12px] font-[300] py-4">{product.stock_unit}</td>
-                <td className="text-[12px] font-[300] py-4">{product.selling_price}</td>
-                <td className=" py-4">
-                <p>
-                  <b
-                    style={{
-                      fontWeight: "500",
-                      fontSize: "10px",
-                      backgroundColor: "#C9F0D0",
-                      color: "#51CF66",
-                      borderRadius: "10px",
-                      padding: "2px 10px",
-                    }}
-                  >
-                   {product.product_status}
-                  </b>
-                </p>
-              </td>
-              </tr>
-            ))}
+            {product?.products?.map((product: any) => {
+              let prices;
+              try {
+                prices = JSON.parse(product.selling_price); // Parse the string to an object
+              } catch (error) {
+                console.error("Error parsing selling_price:", error);
+                prices = {}; // Fallback if parsing fails
+              }
+
+              return (
+                <tr
+                  key={product.id}
+                  onClick={() => handleRowClick(product.product_name, product)}
+                  className="cursor-pointer hover:bg-gray-200"
+                >
+                  <td className="text-[12px] font-[300] pl-4 py-4">
+                    {product.id}
+                  </td>
+                  <td className="text-[12px] font-[300] py-4">
+                    {product.product_name}
+                  </td>
+                  <td className="text-[12px] font-[300] py-4">
+                    {categories[product.category_id]?.category?.category_name ||
+                      "Loading..."}
+                  </td>
+                  <td className="text-[12px] font-[300] py-4">
+                    {product.variations}
+                  </td>
+                  <td className="text-[12px] font-[300] py-4">
+                    {product.stock_unit}
+                  </td>
+                  <td className="text-[12px] font-[300] py-4">
+                    {Object.entries(prices).map(([currency, amount]: any) => (
+                      <p key={currency} className="text-[10px] font-[400]">
+                        {currency}: {amount}
+                      </p>
+                    ))}
+                  </td>
+                  <td className="py-4">
+                    <p>
+                      <b
+                        style={{
+                          fontWeight: "500",
+                          fontSize: "10px",
+                          backgroundColor: "#C9F0D0",
+                          color: "#51CF66",
+                          borderRadius: "10px",
+                          padding: "2px 10px",
+                        }}
+                      >
+                        {product.product_status}
+                      </b>
+                    </p>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

@@ -1,7 +1,7 @@
 import DashboardLayout from "../../../components/DashboardLayout";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
+// import { FaArrowRight } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
@@ -10,23 +10,35 @@ import { UserApis } from "../../../apis/userApi/userApi";
 const CreateStore = () => {
   const [formValues, setFormValues] = useState({
     store_name: "",
-    domain_name: "",
+    // domain_name: "",
     store_abbreviation: "",
     industry_type: "",
     product_type: "",
     store_description: "",
     store_location: "",
+    already_have_domain: false, // Boolean toggle
+    domain_name: "",
   });
 
   const [storeLogo, setStoreLogo] = useState<File | null>(null); // Store file here
   const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
 
+  // const handleInputChange = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormValues((prev) => ({ ...prev, [name]: value }));
+  // };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    const newValue =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+
+    setFormValues((prev) => ({ ...prev, [name]: newValue }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,24 +48,48 @@ const CreateStore = () => {
     }
   };
 
+  const domainRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/\S*)?$/;
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoader(true);
 
+    // Validate domain name if already_have_domain is true
+    if (
+      formValues.already_have_domain &&
+      !domainRegex.test(formValues.domain_name)
+    ) {
+      toast.error("Invalid domain format. Example: http://example.com");
+      setLoader(false);
+      return;
+    }
+
     const formData = new FormData();
     if (storeLogo) {
-      formData.append("store_logo", storeLogo); // Attach the file
+      formData.append("store_logo", storeLogo);
     }
     formData.append("store_name", formValues.store_name);
-    formData.append("domain_name", formValues.domain_name);
     formData.append("store_abbreviation", formValues.store_abbreviation || "");
     formData.append("industry_type", formValues.industry_type);
     formData.append("product_type", formValues.product_type);
     formData.append("store_description", formValues.store_description);
     formData.append("store_location", formValues.store_location);
 
+    // Ensure it's a proper boolean representation (1 or 0)
+    formData.append(
+      "already_have_domain",
+      formValues.already_have_domain ? "1" : "0"
+    );
+
+    if (formValues.already_have_domain) {
+      formData.append("domain_name", formValues.domain_name);
+    }
+
     try {
-      console.log("Submitting payload:", formData);
+      console.log(
+        "Submitting payload:",
+        Object.fromEntries(formData.entries())
+      );
 
       const response: any = await UserApis.createStore(formData);
       console.log(response);
@@ -73,7 +109,7 @@ const CreateStore = () => {
 
   return (
     <DashboardLayout>
-      <div className="pt-10 px-5">
+      <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
         <h5 className="text-[#000000] text-[16px] font-[600]">
           Business Information
         </h5>
@@ -83,10 +119,7 @@ const CreateStore = () => {
         >
           {/* Add Logo */}
           <div>
-            <label
-              htmlFor="store_logo"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
+            <label className="text-[#2B2C2B] text-[12px] font-[400]">
               Add Logo
             </label>
             <div className="flex justify-center text-center">
@@ -113,7 +146,7 @@ const CreateStore = () => {
                 <input
                   type="file"
                   accept="image/x-png,image/gif,image/jpeg"
-                  className="hidden mb-2 text-sm text-[#6C757D] font-medium"
+                  className="hidden"
                   onChange={handleImageChange}
                 />
               </label>
@@ -122,10 +155,7 @@ const CreateStore = () => {
 
           {/* Store Name */}
           <div>
-            <label
-              htmlFor="store_name"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
+            <label className="text-[#2B2C2B] text-[12px] font-[400]">
               Store Name
             </label>
             <input
@@ -134,34 +164,13 @@ const CreateStore = () => {
               value={formValues.store_name}
               onChange={handleInputChange}
               className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter store name"
               required
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="domain_name"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Domain Name
-            </label>
-            <input
-              type="text"
-              name="domain_name"
-              value={formValues.domain_name}
-              onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter store name"
-              required
-            />
-          </div>
           {/* Store Abbreviation */}
           <div>
-            <label
-              htmlFor="store_abbreviation"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
+            <label className="text-[#2B2C2B] text-[12px] font-[400]">
               Store Abbreviation
             </label>
             <input
@@ -170,17 +179,13 @@ const CreateStore = () => {
               value={formValues.store_abbreviation}
               onChange={handleInputChange}
               className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter abbreviation"
               required
             />
           </div>
 
           {/* Industry Type */}
           <div>
-            <label
-              htmlFor="industry_type"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
+            <label className="text-[#2B2C2B] text-[12px] font-[400]">
               Industry Type
             </label>
             <input
@@ -189,17 +194,13 @@ const CreateStore = () => {
               value={formValues.industry_type}
               onChange={handleInputChange}
               className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="E.g., Retail, Fashion"
               required
             />
           </div>
 
           {/* Product Type */}
           <div>
-            <label
-              htmlFor="product_type"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
+            <label className="text-[#2B2C2B] text-[12px] font-[400]">
               Product Type
             </label>
             <input
@@ -208,17 +209,13 @@ const CreateStore = () => {
               value={formValues.product_type}
               onChange={handleInputChange}
               className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Physical, Digital, Both"
               required
             />
           </div>
 
           {/* Store Location */}
           <div>
-            <label
-              htmlFor="store_location"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
+            <label className="text-[#2B2C2B] text-[12px] font-[400]">
               Business Location
             </label>
             <input
@@ -227,39 +224,50 @@ const CreateStore = () => {
               value={formValues.store_location}
               onChange={handleInputChange}
               className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter business location"
               required
             />
           </div>
 
-          {/* Store Description */}
-          <div>
-            <label
-              htmlFor="store_description"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Business Description
-            </label>
-            <textarea
-              name="store_description"
-              value={formValues.store_description}
+          {/* Already Have Domain Checkbox */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="already_have_domain"
+              checked={formValues.already_have_domain}
               onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              rows={4}
-              placeholder="Enter a short description"
-              required
+              className="w-4 h-4"
             />
+            <label className="text-[#2B2C2B] text-[12px] font-[400]">
+              Already Have a Domain?
+            </label>
           </div>
+
+          {/* Domain Name (Only if already_have_domain is true) */}
+          {formValues.already_have_domain && (
+            <div>
+              <label className="text-[#2B2C2B] text-[12px] font-[400]">
+                Domain Name
+              </label>
+              <input
+                type="text"
+                name="domain_name"
+                value={formValues.domain_name}
+                onChange={handleInputChange}
+                className="block w-full mt-1 border px-3 py-2 rounded"
+                required
+              />
+            </div>
+          )}
 
           {/* Submit Button */}
           <div className="flex justify-end items-end h-full">
             <button
               type="submit"
               disabled={loader}
-              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:bg-gray-400"
+              className="bg-primary text-white py-2 px-4 rounded-full hover:bg-primary/[60%] disabled:bg-gray-400"
             >
               {loader ? <LoadingSpinner /> : "Proceed"}
-              {!loader && <FaArrowRight />}
+              {/* {!loader && <FaArrowRight />} */}
             </button>
           </div>
         </form>

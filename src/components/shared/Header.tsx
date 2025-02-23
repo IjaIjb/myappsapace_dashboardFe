@@ -2,7 +2,7 @@ import React from "react";
 import BreadscrumbDisplay from "./BreadscrumbDisplay";
 import { BiSolidBell } from "react-icons/bi";
 import { RiSettings4Line } from "react-icons/ri";
-import { TbUserFilled } from "react-icons/tb";
+// import { TbUserFilled } from "react-icons/tb";
 import { LiaUploadSolid } from "react-icons/lia";
 import { FiSearch } from "react-icons/fi";
 import { useSelector } from "react-redux";
@@ -46,13 +46,13 @@ const Header = () => {
               <LiaUploadSolid className="text-white" />
             </div>
 
-            <div className="rounded-full flex items-center gap-3 bg-[#EF7577] px-6 py-2">
+            {/* <div className="rounded-full flex items-center gap-3 bg-[#EF7577] px-6 py-2">
               <TbUserFilled className="text-white" />
               <h5 className="text-[#FFFFFF] whitespace-nowrap text-[16px] font-[400]">
   {userLoginData?.data?.first_name?.charAt(0)}. {userLoginData?.data?.last_name}
 </h5>
 
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
