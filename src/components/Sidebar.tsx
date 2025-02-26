@@ -90,6 +90,9 @@ const Sidebar = (props: Props) => {
           </div>
           {/* Store Selector */}
           <div className="mt-5">
+            <div className="bg-secondary  p-3 rounded-[10px] shadow-lg">
+
+         
             <h5 className="text-[#FFFFFF] whitespace-nowrap text-[20px] font-[500]">
               {userLoginData?.data?.first_name?.charAt(0)}.{" "}
               {userLoginData?.data?.last_name}
@@ -126,15 +129,15 @@ const Sidebar = (props: Props) => {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <Listbox.Options className="absolute z-10 mt-1 min-h-[200px] w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    <Listbox.Options className="absolute  -left-10 top-14 z-10 mt-1 min-h-[200px] w-[220px]  rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                       <div className="border-b">
                         {stores.data?.data?.map((store: any) => (
                           <Listbox.Option
                             key={store.id}
                             className={({ active }) =>
-                              `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                              `relative cursor-pointer select-none py-6 pl-10 pr-4 ${
                                 active
-                                  ? "bg-indigo-100 text-indigo-900"
+                                  ? "bg-indigo-100 text-[18px] text-indigo-900"
                                   : "text-gray-900"
                               }`
                             }
@@ -144,7 +147,7 @@ const Sidebar = (props: Props) => {
                               <>
                                 <span
                                   className={`block truncate ${
-                                    selected ? "font-medium" : "font-normal"
+                                    selected ? "font-medium text-[18px]" : "font-normal text-[16px]"
                                   }`}
                                 >
                                   {store.store_name}
@@ -163,38 +166,38 @@ const Sidebar = (props: Props) => {
                         ))}
                       </div>
                       <div className="border-b">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-[14px] pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
                           <Link
                             to="/dashboard/store"
-                            className="relative cursor-pointer whitespace-nowrap select-none pl-10 pr-4"
+                            className="relative cursor-pointer whitespace-nowrap text-[16px] select-none pl-10 pr-4"
                           >
                             Add store
                           </Link>
                         </div>
                       </div>
                       <div className="border-b">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-[14px] pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
                           <Link
                             to="/dashboard/subscription"
-                            className="relative cursor-pointer whitespace-nowrap select-none pl-10 pr-4"
+                            className="relative cursor-pointer whitespace-nowrap text-[16px] select-none pl-10 pr-4"
                           >
                             Subscription
                           </Link>
                         </div>
                       </div>
                       <div className="border-b">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-[14px] pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
                           <Link
                             to="/dashboard/help-and-support"
-                            className="relative cursor-pointer whitespace-nowrap select-none pl-10 pr-4"
+                            className="relative cursor-pointer whitespace-nowrap text-[16px] select-none pl-10 pr-4"
                           >
                             Help and Support
                           </Link>
                         </div>
                       </div>
                       <div className="">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-[2px] pr-4">
-                          <div className="relative cursor-pointer whitespace-nowrap select-none py-2 pl-10 pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
+                          <div className="relative cursor-pointer whitespace-nowrap text-[16px] select-none py-2 pl-10 pr-4">
                             Log out
                           </div>
                         </div>
@@ -204,7 +207,7 @@ const Sidebar = (props: Props) => {
                 </div>
               )}
             </Listbox>
-
+            </div>
             {/* Loader Modal */}
             <Modal
               classNames={{
@@ -742,10 +745,10 @@ const Sidebar = (props: Props) => {
               </Link>
             </div>
           </div>
-
+{/* 
           <h5 className="text-[#FFFFFF]/[40%] py-8 text-[12px] font-[700]">
             Powered by MyAppSpace
-          </h5>
+          </h5> */}
         </div>
       </div>
     </aside>

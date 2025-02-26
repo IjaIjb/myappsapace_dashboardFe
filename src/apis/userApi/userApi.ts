@@ -87,6 +87,13 @@ export class UserApis {
             return this.authLiveApis.updateStore(store_id, data);
         }
     } 
+    static updateStoreLogo(store_id:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateStoreLogo(store_id, data);
+        }
+    }
 
     static deleteStore(id:any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {

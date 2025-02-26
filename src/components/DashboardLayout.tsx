@@ -1,10 +1,14 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 // import BreadscrumbDisplay from "./shared/BreadscrumbDisplay";
 import Sidebar from "./Sidebar";
 import Header from "./shared/Header";
+import { useSelector } from "react-redux";
 // import Sidebar from './Sidebar';
 // import Header from './shared/Header';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -12,7 +16,18 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
+   const navigate = useNavigate();
+  const userLoginData = useSelector((state: any) => state.data.login.value);
 
+  // console.log(userLoginData)
+  useEffect(() => {
+  
+    if (userLoginData.token === "") {
+      toast.error("Please login to access the dashboard.");
+      navigate("/");
+      
+    }
+  }, [navigate, userLoginData.token]);
   // Toggle Side Drawer
   const toggleDrawer = () => {
     setOpenDrawer((prev) => !prev);
@@ -89,6 +104,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {children}
         </div> */}
         </div>
+                <ToastContainer
+                  position="top-right"
+                  autoClose={2000}
+                  hideProgressBar={true}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                />
       </div>
     </div>
   );

@@ -55,20 +55,20 @@ const CreateProduct = () => {
   });
 
   useEffect(() => {
-    if (!selectedStore) return;
-
+    if (!selectedStore) {
+      toast.error("Please select a store");
+      return;
+    }
+  
     setLoader(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
         console.log(response);
         if (response?.data) {
-          const settings = response.data?.data.settings;
-          // setStoreSettings(settings);
-
+          const settings = response.data?.settings.settings;
+  
           // Populate the form fields with existing settings
           setCurrencies(settings.currencies || []);
-          // setDefaultCurrency(settings.default_currency || "");
-          // setCurrencyDisplay(settings.currency_display || "symbol");
         }
       })
       .catch((error) => {
@@ -79,7 +79,7 @@ const CreateProduct = () => {
         setLoader(false);
       });
   }, [selectedStore, sectionName]);
-
+  
   // Handle input changes for selling and cost price dynamically
   const handlePriceChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -208,7 +208,7 @@ const CreateProduct = () => {
         );
         setLoader(false);
 
-        navigate("/dashboard/category");
+        navigate("/dashboard/products");
       } else {
         toast.error(response?.data?.message || "Failed to create category.");
         setLoader(false);

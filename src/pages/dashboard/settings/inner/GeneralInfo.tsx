@@ -4,6 +4,7 @@ import StoreInfoGen from "../../products/inner/StoreInfoGen";
 import DisplayInfoGen from "../../products/inner/DisplayInfoGen";
 import BannerSettings from "./BannerSettings";
 import LogoSettings from "./LogoSettings";
+import SocialAndContact from "./SocialAndContact";
 
 const GeneralInfo = () => {
   return (
@@ -14,6 +15,7 @@ const GeneralInfo = () => {
           <StoreInfoGen />
           <DisplayInfoGen />
           <BannerSettings />
+          <SocialAndContact />
         </div>
         <div className="col-span-4"></div>
       </div>

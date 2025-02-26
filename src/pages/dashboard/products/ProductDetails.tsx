@@ -40,6 +40,8 @@ const ProductDetails = () => {
   // const [storeId, setStoreId] = useState("");
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState<any>([]);
+  const [currencies, setCurrencies] = useState<any>([]);
+  const sectionName = "payment";
 
   const [formValues, setFormValues] = useState({
     product_name: "",
@@ -59,11 +61,47 @@ const ProductDetails = () => {
     product_status: "active",
   });
 
+  useEffect(() => {
+    if (!selectedStore) {
+      toast.error("Please select a store");
+      return;
+    }
+  
+    setLoader(true);
+    UserApis.getStoreSettings(selectedStore, sectionName)
+      .then((response) => {
+        console.log(response);
+        if (response?.data) {
+          const settings = response.data?.settings.settings;
+  
+          // Populate the form fields with existing settings
+          setCurrencies(settings.currencies || []);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching store settings:", error);
+        toast.error("Failed to load store settings.");
+      })
+      .finally(() => {
+        setLoader(false);
+      });
+  }, [selectedStore, sectionName]);
+  
   React.useEffect(() => {
     UserApis.getSingleProduct(storeCode, productId).then((response) => {
       if (response?.data) {
         console.log(response.data);
     
+              // Parse selling and cost price if they exist
+      const sellingPrice =
+      response?.data?.product?.selling_price
+        ? JSON.parse(response.data.product.selling_price)
+        : {};
+    const costPrice =
+      response?.data?.product?.cost_price
+        ? JSON.parse(response.data.product.cost_price)
+        : {};
+
       // If product_images contains URLs, convert them to media objects
       const existingImages = response?.data?.product?.product_images?.map(
         (imgUrl: string, idx: number) => ({
@@ -73,7 +111,12 @@ const ProductDetails = () => {
         })
       ) || [];
 
-      setFormValues(response?.data?.product);
+           setFormValues({
+        ...response?.data?.product,
+        selling_price: sellingPrice,
+        cost_price: costPrice,
+      });
+      
       setMedia(existingImages); // Initialize media with existing images
         // setStoreId(response?.data?.store?.id);
       }
@@ -116,6 +159,23 @@ const ProductDetails = () => {
     );
   };
 
+    // Handle input changes for selling and cost price dynamically
+    const handlePriceChange = (
+      e: React.ChangeEvent<HTMLInputElement>,
+      priceType: "selling_price" | "cost_price",
+      currency: string
+    ) => {
+      const { value } = e.target;
+  
+      setFormValues((prev: any) => ({
+        ...prev,
+        [priceType]: {
+          ...prev[priceType],
+          [currency]: value,
+        },
+      }));
+    };
+    
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoader(true);
@@ -128,8 +188,8 @@ const ProductDetails = () => {
       tags: formValues.tags,
       category_id: formValues.category_id,
       product_type_id: formValues.product_type_id,
-      selling_price: formValues.selling_price,
-      cost_price: formValues.cost_price,
+      selling_price: JSON.stringify(formValues.selling_price),
+      cost_price: JSON.stringify(formValues.cost_price),
       stock_quantity: formValues.stock_quantity,
       stock_unit: formValues.stock_unit,
       vendor: formValues.vendor,
@@ -322,30 +382,48 @@ const ProductDetails = () => {
                 </h4>
 
                 <div className="grid md:grid-cols-2 gap-3">
-                  <div className="">
-                    <h4 className="text-[12px] font-[400]">Selling Price</h4>
-                    <input
-                      type="number"
-                      name="selling_price"
-                      value={formValues.selling_price}
-                      onChange={handleInputChange}
-                      placeholder="Title"
-                      required
-                      className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                  {/* Left side - Selling Prices */}
+                  <div>
+                    {currencies.map((currency: any) => (
+                      <div key={currency} className="mb-3">
+                        <h4 className="text-[12px] font-[400]">
+                          Selling Price ({currency})
+                        </h4>
+                        <input
+                          type="number"
+                          name={`selling_price_${currency}`}
+                          value={formValues.selling_price[currency] || ""}
+                          onChange={(e) =>
+                            handlePriceChange(e, "selling_price", currency)
+                          }
+                          placeholder={`Selling Price in ${currency}`}
+                          required
+                          className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                    ))}
                   </div>
 
-                  <div className="">
-                    <h4 className="text-[12px] font-[400]">Cost Price</h4>
-                    <input
-                      type="number"
-                      name="cost_price"
-                      value={formValues.cost_price}
-                      onChange={handleInputChange}
-                      placeholder="Title"
-                      required
-                      className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                  {/* Right side - Cost Prices */}
+                  <div>
+                    {currencies.map((currency: any) => (
+                      <div key={currency} className="mb-3">
+                        <h4 className="text-[12px] font-[400]">
+                          Cost Price ({currency})
+                        </h4>
+                        <input
+                          type="number"
+                          name={`cost_price_${currency}`}
+                          value={formValues.cost_price[currency] || ""}
+                          onChange={(e) =>
+                            handlePriceChange(e, "cost_price", currency)
+                          }
+                          placeholder={`Cost Price in ${currency}`}
+                          required
+                          className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -441,8 +519,12 @@ const ProductDetails = () => {
                 <h4 className="text-[#000000] text-[14px] font-[600] pb-2">
                   Product Sales Summary
                 </h4>
+                <div className="flex flex-col gap-4">
+                <h4 className="text-[12px] font-[400]">Product Sold</h4>
+                <h4 className="text-[12px] font-[400]">Available Products</h4>
 
-                <div className="">
+                </div>
+                {/* <div className="">
                   <h4 className="text-[12px] font-[400]">Product Type</h4>
                   <input
                     type="text"
@@ -488,7 +570,7 @@ const ProductDetails = () => {
                     placeholder="Title"
                     className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                   />
-                </div>
+                </div> */}
               </div>
 
               {/* Submit Button */}
@@ -498,7 +580,7 @@ const ProductDetails = () => {
                   disabled={loader}
                   className={`disabled:bg-gray-500 flex gap-2 items-center py-2 w-fit px-6 bg-secondary text-white rounded-full hover:bg-secondary/[70%]`}
                 >
-                  {loader ? <LoadingSpinner /> : "Proceed"}
+                  {loader ? <LoadingSpinner /> : "Update"}
                   {!loader && <FaArrowRight />}
                 </button>
               </div>

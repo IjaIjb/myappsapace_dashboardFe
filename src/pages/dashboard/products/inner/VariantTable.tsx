@@ -41,9 +41,9 @@ const VariantTable = () => {
         Add Variant
       </button> */}
           </div>
-          <table className=" ">
-            <thead>
-              <tr className="bg-[#F1F1FB] rounded-[6px]">
+          <table className="w-fit ">
+            <thead className="w-full">
+              <tr className="bg-[#F1F1FB] w-full rounded-[6px]">
                 <th className="px-4 py-2 text-left font-medium text-gray-700">
                   Variant
                 </th>
@@ -59,7 +59,7 @@ const VariantTable = () => {
               {variants.map((variant) => (
                 <tr
                   key={variant.id}
-                  className=" border-gray-200 hover:bg-gray-50"
+                  className=" border-gray-200 w-fit hover:bg-gray-50"
                 >
                   <td className=" py-2 flex items-center gap-4">
                     <div className="w-10 h-10 bg-gray-200 rounded-md flex justify-center items-center">
@@ -106,7 +106,7 @@ const VariantTable = () => {
                         )
                       }
                       placeholder="$0.00"
-                      className="border border-gray-300 rounded-md px-2 py-1 focus:ring focus:ring-indigo-200 focus:outline-none"
+                      className="border w-full border-gray-300 rounded-md px-2 py-1 focus:ring focus:ring-indigo-200 focus:outline-none"
                     />
                   </td>
                   <td className="px-4 py-2">
@@ -123,7 +123,7 @@ const VariantTable = () => {
                         )
                       }
                       placeholder="Available"
-                      className="border border-gray-300 rounded-md px-2 py-1 focus:ring focus:ring-indigo-200 focus:outline-none"
+                      className="border w-full border-gray-300 rounded-md px-2 py-1 focus:ring focus:ring-indigo-200 focus:outline-none"
                     />
                   </td>
                 </tr>

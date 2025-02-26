@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { UserApis } from "../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+import FlashSalesTable from "./flashSales/FlashSalesTable";
+import DraftTable from "./draft/DraftTable";
 
 const Products = () => {
   const selectedStore = useSelector(
@@ -17,6 +19,73 @@ const Products = () => {
   const [product, setProduct] = React.useState<any>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   // const [totalCost, setTotalCost] = useState(0);
+  const initialStatusState = {
+    allElement: true,
+    draftElement: false,
+    flashSalesElement: false,
+  };
+
+  const [statusValues, setStatusValues] = useState({
+    ...initialStatusState,
+  });
+
+  const handleAllState = () => {
+    // e.preventDefault();
+    setStatusValues({
+      allElement: true,
+      draftElement: false,
+      flashSalesElement: false,
+    });
+  };
+
+  const handleDraftState = () => {
+    // e.preventDefault();
+    setStatusValues({
+      allElement: false,
+      draftElement: true,
+      flashSalesElement: false,
+    });
+  };
+
+  const handleFlashSalesState = () => {
+    // e.preventDefault();
+    setStatusValues({
+      allElement: false,
+      draftElement: false,
+      flashSalesElement: true,
+    });
+  };
+  const showProfileConnector = () => {
+    return (
+      <>
+        {/* show active */}
+        {statusValues.allElement && (
+          <>
+            <div className="">
+            <ProductsTable product={product} />
+
+            </div>
+          </>
+        )}
+
+        {/* show inactive */}
+        {statusValues.draftElement && (
+          <>
+            <div className="">
+       <DraftTable />
+            </div>
+          </>
+        )}
+         {statusValues.flashSalesElement && (
+          <>
+            <div className="">
+          <FlashSalesTable product={product}/>
+           </div>
+          </>
+        )}
+      </>
+    );
+  };
 
   // const [formValues, setFormValues] = useState({
   //   category_name: "",
@@ -195,7 +264,39 @@ const Products = () => {
           </h5>
           {/* <LiaUploadSolid className="text-white" /> */}
         </Link>
-        <ProductsTable product={product} />
+        <div className="flex gap-2 mb-2">
+        <div
+         className={`${statusValues.allElement ? 
+ "bg-primary text-white rounded-full px-8 py-1"
+ :  "bg-white text-[#9D9D9D] rounded-full px-8 py-1"
+         } cursor-pointer`}
+         onClick={() => handleAllState()}
+        
+         >
+          <h6 className=" text-[12px] font-[400]">All</h6>
+        </div>
+
+        <div 
+             className={`${statusValues.draftElement ? 
+              "bg-primary text-white rounded-full px-6 py-1"
+              :  "bg-white text-[#9D9D9D] rounded-full px-6 py-1"
+                      } cursor-pointer`}
+                      onClick={() => handleDraftState()}>
+          <h6 className="text-[12px] font-[400]">Draft</h6>
+        </div>
+        <div
+            className={`${statusValues.flashSalesElement ? 
+              "bg-primary text-white rounded-full px-4 py-1"
+              :  "bg-white text-[#9D9D9D] rounded-full px-4 py-1"
+                      } cursor-pointer`}
+                      onClick={() => handleFlashSalesState()}
+                     >
+          <h6 className=" text-[12px] font-[400]">Flash Sales</h6>
+        </div>
+      </div>
+        {/* <ProductsTable product={product} /> */}
+        <div className="pt-3">{showProfileConnector()}</div>
+
       </div>
     </DashboardLayout>
   );

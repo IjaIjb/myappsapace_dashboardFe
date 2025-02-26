@@ -45,31 +45,17 @@ const ProductsTable = (props: any) => {
   }, [product?.products, categories]);
   // console.log(categories)
   const handleRowClick = (productId: any, product: any) => {
-    navigate({
-      pathname: `/dashboard/product-details/${productId}`,
-      state: {
+    navigate(`/dashboard/product-details/${productId}`,
+     {  state: {
         productId: product.id,
         storeCode: product.store_code,
-      },
+    }
     });
   };
 
   return (
     <div>
-      <div className="flex gap-2 mb-2">
-        <div className="bg-primary rounded-full px-6 py-1">
-          <h6 className="text-white text-[12px] font-[400]">All</h6>
-        </div>
-        <div className="bg-white rounded-full px-3 py-1">
-          <h6 className="text-[#9D9D9D] text-[12px] font-[400]">Draft</h6>
-        </div>
-        <div className="bg-white rounded-full px-3 py-1">
-          <h6 className="text-[#9D9D9D] text-[12px] font-[400]">Archived</h6>
-        </div>
-        <div className="bg-white rounded-full px-3 py-1">
-          <h6 className="text-[#9D9D9D] text-[12px] font-[400]">Active</h6>
-        </div>
-      </div>
+
       <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
         <div className="bg-[#EFF1F3] flex items-center mb-3 rounded-[8px] gap-3 py-1 w-fit px-5">
           <h5 className="text-[#686868]">Filter by</h5>
