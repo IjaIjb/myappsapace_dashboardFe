@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkmyappspacedashboard=self.webpackChunkmyappspacedashboard||[]).push([[8355],{3951:(a,s,e)=>{e.r(s),e.d(s,{default:()=>c});e(5043);var d=e(4630),p=e(579);const c=()=>(0,p.jsx)(d.A,{children:(0,p.jsx)("div",{children:"Marketing"})})}}]);
+//# sourceMappingURL=8355.aee37d15.chunk.js.map
