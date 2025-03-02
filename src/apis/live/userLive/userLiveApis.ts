@@ -30,13 +30,13 @@ export class UserLiveApis extends AxiosGlobal{
         return this.axios.post(`${configs.contextUser}/auth/resend-code`, data);
     }
 
-    // forgotPassword(data:any): AxiosPromise<any> {
-    //     return this.axios.post(`${configs.contextUser}/forgot`, data);
-    // }
+    forgotPassword(data:any): AxiosPromise<any> {
+        return this.axios.post(`${configs.contextUser}/auth/forgot-password`, data);
+    }
 
-    // resetPassword(data:any): AxiosPromise<any> {
-    //     return this.axios.post(`${configs.contextUser}/reset`, data);
-    // }
+    resetPassword(data:any): AxiosPromise<any> {
+        return this.axios.post(`${configs.contextUser}/auth/reset-password`, data);
+    }
 
     createStore(data:any): AxiosPromise<any> {
         return this.axios.post(`${configs.contextUser}/store/create`, data,{

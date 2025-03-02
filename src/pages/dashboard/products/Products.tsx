@@ -72,7 +72,7 @@ const Products = () => {
         {statusValues.draftElement && (
           <>
             <div className="">
-       <DraftTable />
+       <DraftTable product={product}/>
             </div>
           </>
         )}
@@ -251,7 +251,7 @@ const Products = () => {
             {/* <LiaUploadSolid className="text-white" /> */}
           </Link>
         </div>
-        <Link
+        {/* <Link
           to={"/dashboard/add-flash-sales"}
           className="rounded-full h-fit lg:mt-0 mt-4 w-fit flex mb-5 items-center gap-3 px-4 py-2"
           style={{
@@ -262,8 +262,7 @@ const Products = () => {
           <h5 className="text-[#FFFFFF] text-[16px] font-[400] whitespace-nowrap">
             Add Flash Sales
           </h5>
-          {/* <LiaUploadSolid className="text-white" /> */}
-        </Link>
+        </Link> */}
         <div className="flex gap-2 mb-2">
         <div
          className={`${statusValues.allElement ? 
@@ -282,7 +281,7 @@ const Products = () => {
               :  "bg-white text-[#9D9D9D] rounded-full px-6 py-1"
                       } cursor-pointer`}
                       onClick={() => handleDraftState()}>
-          <h6 className="text-[12px] font-[400]">Draft</h6>
+          <h6 className="text-[12px] font-[400]">Inactive</h6>
         </div>
         <div
             className={`${statusValues.flashSalesElement ? 

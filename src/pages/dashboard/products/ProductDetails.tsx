@@ -39,12 +39,15 @@ const ProductDetails = () => {
   console.log("Store Code:", storeCode);
   // const [storeId, setStoreId] = useState("");
   const [loader, setLoader] = useState(false);
+  const [flashLoader, setFlashLoader] = useState(false);
   const [category, setCategory] = useState<any>([]);
   const [currencies, setCurrencies] = useState<any>([]);
+  // const [produtId, setProductId] = useState<any>("");
   const sectionName = "payment";
 
   const [formValues, setFormValues] = useState({
     product_name: "",
+    id: "",
     product_description: "",
     store_code: "",
     product_short_description: "",
@@ -90,7 +93,8 @@ const ProductDetails = () => {
   React.useEffect(() => {
     UserApis.getSingleProduct(storeCode, productId).then((response) => {
       if (response?.data) {
-        console.log(response.data);
+        console.log(response.data.product);
+        // setProductId(response.data.product.id);
     
               // Parse selling and cost price if they exist
       const sellingPrice =
@@ -123,6 +127,7 @@ const ProductDetails = () => {
     });
   }, [storeCode, productId]);
 
+  console.log(formValues)
   useEffect(() => {
     UserApis.getCategory(storeCode)
       .then((response) => {
@@ -188,8 +193,8 @@ const ProductDetails = () => {
       tags: formValues.tags,
       category_id: formValues.category_id,
       product_type_id: formValues.product_type_id,
-      selling_price: JSON.stringify(formValues.selling_price),
-      cost_price: JSON.stringify(formValues.cost_price),
+      selling_price: formValues.selling_price,
+      cost_price: formValues.cost_price,
       stock_quantity: formValues.stock_quantity,
       stock_unit: formValues.stock_unit,
       vendor: formValues.vendor,
@@ -232,6 +237,79 @@ const ProductDetails = () => {
   };
   
   
+    const [formFlashValues, setFormFlashValues] = useState<any>({
+      product_id: productId,
+      sale_type: "flash",
+      discount_percentage: 0,
+      sale_start: "",
+      sale_end: "",
+    });
+    
+      const handleInputFlashChange = (
+        e: React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >
+      ) => {
+        const { name, value } = e.target;
+        setFormFlashValues((prev: any) => ({ ...prev, [name]: value }));
+        console.log(name);
+      };
+
+        const handleFlashSubmit = async (e: any) => {
+          e.preventDefault();
+          setFlashLoader(true);
+      
+          const formData = new FormData();
+          // if (categoryLogo) {
+          //   formData.append("category_image", categoryLogo);
+          // }
+          formData.append("product_id", formFlashValues?.product_id);
+          formData.append("sale_type", formFlashValues.sale_type);
+          formData.append("discount_percentage", formFlashValues.discount_percentage);
+          formData.append("sale_start", formFlashValues.sale_start);
+          formData.append("sale_end", formFlashValues.sale_end);
+      
+          // Ensure the correct product_type_id
+          // formData.append(
+          //   "product_type_id",
+          //   String(Number(formFlashValues.product_type_id) || 2)
+          // );
+      
+          // console.log("Submitting payload:", formFlashValues);
+          // console.log("Submitting payload:", formData);
+          console.log("Submitting payload:", formFlashValues);
+      
+          try {
+            console.log("Submitting payload:", formFlashValues);
+      
+            const response: any = await UserApis.addProductToSale(
+              selectedStore,
+              formFlashValues.product_id,
+              formData
+            );
+            console.log(response);
+      
+            if (response?.data) {
+              toast.success(
+                response?.data?.message || "product added to sale successfully!"
+              );
+              setFlashLoader(false);
+      
+              // navigate("/dashboard/products");
+            } else {
+              toast.error(
+                response?.data?.message || "Failed to add product to sale."
+              );
+              setFlashLoader(false);
+            }
+          } catch (error) {
+            console.error("Error creating product:", error);
+            toast.error("An error occurred while creating the product.");
+            setFlashLoader(false);
+          } finally {
+            setFlashLoader(false);
+          }
+        };
   return (
     <div>
       <DashboardLayout>
@@ -514,7 +592,103 @@ const ProductDetails = () => {
                   </span>
                 </label>
               </div>
+              <div className="bg-white rounded-[14px] pt-3 pb-4 px-3">
+                <h4 className="text-[#000000] text-[14px] font-[600] pb-2">
+                  Add to Flash Sales
+                </h4>
+                <div className="flex flex-col gap-4">
+                <form
+            onSubmit={handleFlashSubmit}
+            className=" pb-6"
+          >
+            
+              {/* <TitleProduct /> */}
+              <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
+                {/* <div className="mt-3">
+                  <h4 className="text-[12px] font-[400]">Product</h4>
+                  <select
+                    name="product_id"
+                    value={formFlashValues.product_id}
+                    //   placeholder="CHRISTMAS BABY"
+                    onChange={handleInputChange}
+                    required
+                    className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="" disabled>
+                      Select Product
+                    </option>
+                    {product?.products?.map((prod: any) => (
+                      <option key={prod.id} value={prod.id}>
+                        {prod.product_name}
+                      </option>
+                    ))}
+                  </select>
+                </div> */}
 
+                <div className="">
+                  <h4 className="text-[12px] font-[400]">Discount (%)</h4>
+                  <input
+                    type="number"
+                    name="discount_percentage"
+                    value={formFlashValues.discount_percentage}
+                    onChange={handleInputFlashChange}
+                    placeholder=""
+                    required
+                    className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="sale_start"
+                    className="text-[#2B2C2B] text-[12px] font-[400]"
+                  >
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    name="sale_start"
+                    value={formFlashValues.sale_start}
+                    onChange={handleInputFlashChange}
+                    className="block w-full mt-1 border px-3 py-2 rounded"
+                    placeholder=""
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="sale_end"
+                    className="text-[#2B2C2B] text-[12px] font-[400]"
+                  >
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    name="sale_end"
+                    value={formFlashValues.sale_end}
+                    onChange={handleInputFlashChange}
+                    className="block w-full mt-1 border px-3 py-2 rounded"
+                    placeholder=""
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-start mt-3">
+                  <button
+                    onClick={handleFlashSubmit}
+                    disabled={flashLoader}
+                    className={`disabled:bg-gray-500 flex gap-2 items-center py-2 w-fit px-6 bg-secondary text-white rounded-full hover:bg-secondary/[70%]`}
+                  >
+                    {flashLoader ? <LoadingSpinner /> : "Add Flash Sales"}
+                    {!flashLoader && <FaArrowRight />}
+                  </button>
+                </div>
+              </div>
+          </form>
+                </div>
+               
+              </div>
               <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
                 <h4 className="text-[#000000] text-[14px] font-[600] pb-2">
                   Product Sales Summary
@@ -572,6 +746,7 @@ const ProductDetails = () => {
                   />
                 </div> */}
               </div>
+
 
               {/* Submit Button */}
               <div className="flex justify-end ">

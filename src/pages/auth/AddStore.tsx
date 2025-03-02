@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { UserApis } from "../../apis/userApi/userApi";
+import { Link } from "react-router-dom";
 
 const images = [
   "/images/auth/authImage1.svg",
@@ -17,7 +18,7 @@ const AddStore = () => {
   const [index, setIndex] = useState(0);
   const [image, setImage] = useState<string | null>(null); 
    const [preview, setPreview] = useState("");
-  const [formData, setFormData] = useState<any>({
+   const [formData, setFormData] = useState<any>({
     store_name: "",
     domain_name: "",
     store_abbreviation: "",
@@ -25,6 +26,7 @@ const AddStore = () => {
     product_type: "",
     store_description: "",
     store_location: "",
+    already_have_domain: false, // Added field
   });
   const [loading, setLoading] = useState(false);
 
@@ -37,8 +39,12 @@ const AddStore = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev: any) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleImageChange = (e:any) => {
@@ -70,19 +76,26 @@ const AddStore = () => {
   //     setLoading(false);
   //   }
   // };
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const form = new FormData();
       if (image) form.append("store_logo", image);
-      Object.keys(formData).forEach((key:any) => {
-        form.append(key, formData[key]);
+
+      // Append form data
+      Object.keys(formData).forEach((key: any) => {
+        if (key === "already_have_domain") {
+          form.append(key, formData[key] ? "1" : "0"); // Convert boolean to 1 or 0
+        } else if (key === "domain_name" && !formData.already_have_domain) {
+          return; // Skip adding domain_name if already_have_domain is false
+        } else {
+          form.append(key, formData[key]);
+        }
       });
 
       const response = await UserApis.createStore(form);
-      console.log(response)
       if (response?.status === 200 || response.status === 201) {
         toast.success("Store created successfully!");
         navigate("/auth/choose-profession");
@@ -98,100 +111,100 @@ const AddStore = () => {
   };
 
 
+
   return (
     <div className="p-8">
-      <div className="grid md:grid-cols-2">
-        <div className="h-screen md:block hidden relative overflow-hidden">
-          <AnimatePresence>
-            <motion.img
-              key={images[index]}
-              src={images[index]}
-              alt="Auth Image"
-              className="h-screen absolute top-0 left-0"
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              transition={{ duration: 1 }}
-            />
-          </AnimatePresence>
-        </div>
-        <div className="md:block flex pt-10 px-5">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-[570px]">
-            <label className="text-sm font-medium">Add Logo</label>
-         
-             <div className="flex justify-center text-center">
-     <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer relative">
-       <div className="flex flex-col items-center justify-center h-[100px]">
-         {preview ? (
-           <img
-             className=""
-             src={preview} // This should now be the Cloudinary URL
-             alt="Uploaded logo"
-             width={100}
-             height={100}
-           />
-         ) : (
-           <div className="flex justify-center items-center">
-             <div className="flex flex-col">
-               <h4 className="text-[#9D9D9D] text-[12px] font-[400] ">
-                 Upload Logo Image here{" "}
-               </h4>
-               <h4 className="text-[#9D9D9D] text-[10px] font-[400] ">
-                 Recommended size 32px by 32px{" "}
-               </h4>
-             </div>
-           </div>
-           //   <img
-           //     className=""
-           //     src="/onboarding/Icon.svg" // Default placeholder image
-           //     alt="Default"
-           //     width={100}
-           //     height={100}
-           //   />
-         )}
-       </div>
-       <input
-         type="file"
-         accept="image/x-png,image/gif,image/jpeg"
-         className="hidden mb-2 text-sm text-[#6C757D] font-medium"
-         onChange={handleImageChange}
-       />
-     </label>
-     {loading && <p>Uploading...</p>}
-   </div>
-              
-         
-   <div className="grid grid-cols-2 gap-3">
-            {Object.keys(formData).map((key) => (
-              <div key={key}>
-                <label className=" text-[#2B2C2B] text-[12px] font-[400] ">{key.replace("_", " ")}</label>
-                <input
-                  type="text"
-                  name={key}
-                  value={formData[key as keyof typeof formData]}
-                  onChange={handleChange}
-                 className="mt-1 block w-full h-[40px] border-[0.5px]  pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF]  border-[#D8D8E2] "
-                  required
-                />
+    <div className="grid md:grid-cols-2">
+      <div className="h-screen md:block hidden relative overflow-hidden">
+        <AnimatePresence>
+          <motion.img
+            key={images[index]}
+            src={images[index]}
+            alt="Auth Image"
+            className="h-screen absolute top-0 left-0"
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            transition={{ duration: 1 }}
+          />
+        </AnimatePresence>
+      </div>
+      <div className="md:block flex pt-10 px-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-[570px]">
+          <label className="text-sm font-medium">Add Logo</label>
+          <div className="flex justify-center text-center">
+            <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer relative">
+              <div className="flex flex-col items-center justify-center h-[100px]">
+                {preview ? (
+                  <img src={preview} alt="Uploaded logo" width={100} height={100} />
+                ) : (
+                  <div className="flex flex-col">
+                    <h4 className="text-[#9D9D9D] text-[12px] font-[400] ">Upload Logo Image here</h4>
+                    <h4 className="text-[#9D9D9D] text-[10px] font-[400] ">Recommended size 32px by 32px</h4>
+                  </div>
+                )}
               </div>
-            ))}
-            </div>
-                   <div className="flex justify-end items-end h-full">
+              <input type="file" accept="image/png, image/jpeg" className="hidden" onChange={handleImageChange} />
+            </label>
+          </div>
 
+          <div className="grid grid-cols-2 gap-3">
+            {Object.keys(formData).map((key) => {
+              if (key === "already_have_domain") return null; // Skip rendering the checkbox here
+              if (key === "domain_name" && !formData.already_have_domain) return null; // Hide domain_name if not needed
+
+              return (
+                <div key={key}>
+                  <label className="text-[#2B2C2B] capitalize text-[12px] font-[400] ">
+                    {key.replace("_", " ")}
+                  </label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={formData[key as keyof typeof formData]}
+                    onChange={handleChange}
+                    className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
+                    required
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Toggle for "Already Have a Domain" */}
+          <div className="flex items-center space-x-3 mt-4">
+            <input
+              type="checkbox"
+              name="already_have_domain"
+              checked={formData.already_have_domain}
+              onChange={handleChange}
+              className="h-4 w-4"
+            />
+            <label className="text-sm font-medium">Already have a domain?</label>
+          </div>
+
+          <div className="flex justify-between items-center h-full">
+          <Link
+              to="/dashboard/home"
+         
+              className=" flex gap-2 items-center py-2 w-fit px-10 bg-gray-400 text-white rounded-full hover:bg-secondary/[70%]"
+            >
+          Skip
+            </Link>
             <button
               type="submit"
               disabled={loading}
-              className={`disabled:bg-gray-500 flex gap-2 items-center py-2 w-fit px-6 bg-secondary text-white rounded-full hover:bg-secondary/[70%]`}
+              className="disabled:bg-gray-500 flex gap-2 items-center py-2 w-fit px-6 bg-secondary text-white rounded-full hover:bg-secondary/[70%]"
             >
               {loading ? <LoadingSpinner /> : "Proceed"}
               {!loading && <FaArrowRight />}
             </button>
-            </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
+    <ToastContainer position="top-right" autoClose={2000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+  </div>
   );
 };
 

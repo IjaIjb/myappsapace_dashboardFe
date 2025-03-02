@@ -229,7 +229,11 @@ const Login = () => {
                             </p>
                           </div>
                         </div>
-
+<div className="flex justify-end">
+<Link to={"/forgot-password"} className="mt-1 text-right">
+                    <p className="text-[#000] text-sm font-semibold">Forgot Password?</p>
+                  </Link>
+</div>
                         <p className="flex items-center justify-center gap-x-1 text-[#1A1A1A] text-[16px] md:text-[18px] font-normal">
                           Don&apos;t have an account yet?
                           <Link

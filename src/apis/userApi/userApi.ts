@@ -40,21 +40,21 @@ export class UserApis {
         }
     } 
 
-    // static forgotPassword(data: any): AxiosPromise<any> {
-    //     if (configs.type === "LOCAL") {
-    //         return {} as AxiosPromise;
-    //     } else {
-    //         return this.authLiveApis.forgotPassword(data);
-    //     }
-    // }
+    static forgotPassword(data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.forgotPassword(data);
+        }
+    }
 
-    // static resetPassword(data: any): AxiosPromise<any> {
-    //     if (configs.type === "LOCAL") {
-    //         return {} as AxiosPromise;
-    //     } else {
-    //         return this.authLiveApis.resetPassword(data);
-    //     }
-    // }
+    static resetPassword(data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.resetPassword(data);
+        }
+    }
 
     static createStore(data: any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {

@@ -135,7 +135,7 @@ const Sidebar = (props: Props) => {
                           <Listbox.Option
                             key={store.id}
                             className={({ active }) =>
-                              `relative cursor-pointer select-none py-6 pl-10 pr-4 ${
+                              `relative cursor-pointer select-none py-4 pl-10 pr-4 ${
                                 active
                                   ? "bg-indigo-100 text-[18px] text-indigo-900"
                                   : "text-gray-900"
@@ -166,7 +166,7 @@ const Sidebar = (props: Props) => {
                         ))}
                       </div>
                       <div className="border-b">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-4 pr-4">
                           <Link
                             to="/dashboard/store"
                             className="relative cursor-pointer whitespace-nowrap text-[16px] select-none pl-10 pr-4"
@@ -176,7 +176,7 @@ const Sidebar = (props: Props) => {
                         </div>
                       </div>
                       <div className="border-b">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-4 pr-4">
                           <Link
                             to="/dashboard/subscription"
                             className="relative cursor-pointer whitespace-nowrap text-[16px] select-none pl-10 pr-4"
@@ -186,7 +186,7 @@ const Sidebar = (props: Props) => {
                         </div>
                       </div>
                       <div className="border-b">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-4 pr-4">
                           <Link
                             to="/dashboard/help-and-support"
                             className="relative cursor-pointer whitespace-nowrap text-[16px] select-none pl-10 pr-4"
@@ -196,7 +196,7 @@ const Sidebar = (props: Props) => {
                         </div>
                       </div>
                       <div className="">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-6 pr-4">
+                        <div className="relative cursor-pointer select-none text-gray-900 py-4 pr-4">
                           <div className="relative cursor-pointer whitespace-nowrap text-[16px] select-none py-2 pl-10 pr-4">
                             Log out
                           </div>

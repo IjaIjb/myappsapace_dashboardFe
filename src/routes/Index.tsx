@@ -3,6 +3,9 @@ import { lazy } from "react";
 const LoginPage = lazy(() => import("../pages/auth/Login"));
 const PersonalPage = lazy(() => import("../pages/auth/PersonalSignup"));
 const VerifyEmailPage = lazy(() => import("../pages/auth/VerifyEmail"));
+const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPassword"));
+const OTPVerifyPage = lazy(() => import("../pages/auth/OTPVerify"));
+const PasswordResetSuccessPage = lazy(() => import("../pages/auth/PWordResetSuccess"));
 const AddStorePage = lazy(() => import("../pages/auth/AddStore"));
 const ChooseProfessionPage = lazy(() => import("../pages/auth/Profession"));
 const UsagePage = lazy(() => import("../pages/auth/Usage"));
@@ -43,6 +46,18 @@ const routes = [
   {
     path: "/",
     component: LoginPage,
+  },
+  {
+    path: "/forgot-password",
+    component: ForgotPasswordPage,
+  },
+  {
+    path: "/reset-success",
+    component: PasswordResetSuccessPage,
+  },
+  {
+    path: "/otp-verify",
+    component: OTPVerifyPage,
   },
   {
     path: "/auth/signup",
