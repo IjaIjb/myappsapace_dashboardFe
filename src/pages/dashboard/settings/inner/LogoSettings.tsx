@@ -4,6 +4,7 @@ import { RootState } from "../../../../store/store";
 import { UserApis } from "../../../../apis/userApi/userApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
 
 interface ImageUploadProps {
   image: string | null; // URL of the uploaded image
@@ -116,7 +117,7 @@ const LogoSettings = () => {
             onChange={handleImageChange}
           />
         </label>
-        {loading && <p>Uploading...</p>}
+        {loading && <p><LoadingSpinner /></p>}
       </div>
     );
   };

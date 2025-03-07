@@ -9,8 +9,7 @@ const QuickAction = () => {
           Quick Action
         </h4>
         <h5 className="text-[#686868] text-[12px] font-[300] ">
-          Hipster ipsum tattooed brunch I'm baby. Vinyl meditation adaptogen out
-          tile park cronut 90's. Deep xoxo waistcoat actually shaman.
+Access our fast services below with what we offer
         </h5>
 
         <div className="flex justify-between pt-6">

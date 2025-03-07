@@ -429,7 +429,7 @@ const ProductDetails = () => {
                     <option value="" disabled>
                       Select category
                     </option>
-                    {category?.categories?.map((cat: any) => (
+                    {category?.categories?.data?.map((cat: any) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.category_name}
                       </option>

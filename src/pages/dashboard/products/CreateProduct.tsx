@@ -11,6 +11,10 @@ import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 import { FaArrowRight } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+// import LoadingSpinnerPage from "../../../components/UI/LoadingSpinnerPage";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+import { Link } from "react-router-dom";
 
 interface MediaProps {
   id: number;
@@ -24,6 +28,7 @@ const CreateProduct = () => {
   );
   console.log("Selected Store Code:", selectedStore);
   const sectionName = "payment";
+  const [open, setOpen] = useState(false);
 
   // const [categoryLogo, setCategoryLogo] = useState<File | null>(null);
   const [isActive, setIsActive] = useState<any>(true);
@@ -34,6 +39,19 @@ const CreateProduct = () => {
   // const [defaultCurrency, setDefaultCurrency] = useState("");
   //   const [storeSettings, setStoreSettings] = useState<any>([]);
 
+  const onOpenModal = () => {
+    // e.preventDefault();
+    setOpen(true);
+  };
+  const onCloseModal = () => setOpen(false);
+
+  useEffect(() => {
+    if (!selectedStore || !currencies || currencies.length === 0) {
+      onOpenModal();
+    } else {
+      onCloseModal();
+    }
+  }, [selectedStore, currencies]);
   // const [stores, setStores] = useState<any>([]);
   const [category, setCategory] = useState<any>([]);
   const [formValues, setFormValues] = useState<any>({
@@ -59,7 +77,8 @@ const CreateProduct = () => {
       toast.error("Please select a store");
       return;
     }
-  
+    // Reset currencies immediately
+    setCurrencies([]);
     setLoader(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
@@ -221,9 +240,33 @@ const CreateProduct = () => {
       setLoader(false);
     }
   };
-
+console.log(currencies)
   return (
     <div>
+              <Modal
+        classNames={{
+          modal: "rounded-[10px] overflow-visible relative",
+        }}
+        open={open}
+        onClose={onCloseModal}
+        showCloseIcon={false} // Hides the close button
+        center
+      >
+        <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
+       {!selectedStore ? (
+  <div>
+  <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+<Link to="/dashboard/create-store" className="underline text-blue-800">Create a Store</Link>
+</div>
+       ) : (
+        <div>
+        <h4 className="text-[20px] font-[600] mb-4">Don't have a Currency?</h4>
+      <Link to="/dashboard/settings/general-information" className="underline text-blue-800">Set Currency</Link>
+      </div>
+       )}
+       
+        </div>
+      </Modal>
       <DashboardLayout>
         <div>
           <form
@@ -336,7 +379,7 @@ const CreateProduct = () => {
                     <option value="" disabled>
                       Select category
                     </option>
-                    {category?.categories?.map((cat: any) => (
+                    {category?.categories?.data?.map((cat: any) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.category_name}
                       </option>

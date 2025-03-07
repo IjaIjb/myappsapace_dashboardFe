@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { UserApis } from '../../../../apis/userApi/userApi';
+import LoadingSpinner from '../../../../components/UI/LoadingSpinner';
 
 const DraftTable = (props: any) => {
      const { product } = props;
@@ -118,7 +119,7 @@ const DraftTable = (props: any) => {
                   </td>
                   <td className="text-[12px] font-[300] py-4">
                     {categories[product.category_id]?.category?.category_name ||
-                      "Loading..."}
+                      <LoadingSpinner />}
                   </td>
                   <td className="text-[12px] font-[300] py-4">
                     {product.variations}

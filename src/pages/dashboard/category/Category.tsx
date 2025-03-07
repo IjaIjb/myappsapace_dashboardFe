@@ -33,7 +33,7 @@ const Category = () => {
     UserApis.getCategory(selectedStore)
       .then((response) => {
         if (response?.data) {
-          // console?.log(response?.data);
+          console?.log(response?.data);
           setCategories(response?.data);
         } else {
           // dispatch(login([]))
@@ -103,7 +103,7 @@ const Category = () => {
             </thead>
 
             <tbody className="">
-              {categories?.categories?.map((datas: any, index: any) => (
+              {categories?.categories?.data?.map((datas: any, index: any) => (
                 <tr className="bg-white  ">
                   <td className="text-center py-4">{index + 1}</td>
 

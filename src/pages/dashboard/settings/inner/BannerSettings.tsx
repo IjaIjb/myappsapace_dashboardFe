@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { UserApis } from "../../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
+import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
 interface ImageUploadProps {
   image: string | null; // URL of the uploaded image
   setImage: (image: string | null) => void; // Updates the image URL
@@ -132,7 +133,7 @@ const BannerSettings = () => {
             onChange={handleImageChange}
           />
         </label>
-        {loading && <p>Uploading...</p>}
+        {loading && <p><LoadingSpinner /></p>}
       </div>
     );
   };

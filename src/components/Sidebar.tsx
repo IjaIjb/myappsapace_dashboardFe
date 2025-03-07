@@ -42,9 +42,9 @@ const Sidebar = (props: Props) => {
       .then((response) => {
         if (response?.data) {
           setStores(response?.data || []);
-          // console.log(response.data?.data)
-          if (!selectedStore && response?.data?.data?.length > 0) {
-            const firstStore = response?.data?.data[0].store_code;
+          console.log(response?.data?.data)
+          if (!selectedStore && response?.data?.data?.data?.length > 0) {
+            const firstStore = response?.data?.data?.data[0].store_code;
             dispatch(setSelectedStore(firstStore));
             localStorage.setItem("selectedStore", firstStore); // Store it persistently
           }
@@ -90,10 +90,10 @@ const Sidebar = (props: Props) => {
           </div>
           {/* Store Selector */}
           <div className="mt-5">
-            <div className="bg-secondary  p-3 rounded-[10px] shadow-lg">
+            <div className="bg-secondary px-4 py-1 rounded-xl w-full shadow-lg">
 
          
-            <h5 className="text-[#FFFFFF] whitespace-nowrap text-[20px] font-[500]">
+            <h5 className="text-[#FFFFFF] whitespace-nowrap text-[12px] font-[500]">
               {userLoginData?.data?.first_name?.charAt(0)}.{" "}
               {userLoginData?.data?.last_name}
             </h5>
@@ -102,8 +102,8 @@ const Sidebar = (props: Props) => {
                 { open } // Capture open state
               ) => (
                 <div className="relative">
-                  <Listbox.Button className="relative w-full cursor-pointer py-2 pl-3 pr-10 text-left sm:text-sm">
-                    <span className="block truncate text-white">
+                  <Listbox.Button className="relative w-full cursor-pointer pl-3 pr-10 text-left sm:text-sm">
+                    <span className="block truncate text-[12px] text-white">
                       {stores.data?.data?.find(
                         (store: any) => store.store_code === selectedStore
                       )?.store_name || "Select a Store"}

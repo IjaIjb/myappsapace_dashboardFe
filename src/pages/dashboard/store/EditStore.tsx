@@ -132,7 +132,7 @@ const EditStore = () => {
                   onChange={handleImageChange}
                 />
               </label>
-              {loading && <p>Uploading...</p>}
+              {loading && <p><LoadingSpinner /></p>}
             </div>
  );
     };

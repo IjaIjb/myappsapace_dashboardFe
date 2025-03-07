@@ -1,11 +1,14 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 
 const ReferAndEarn = () => {
+    const userLoginData = useSelector((state: any) => state.data.login.value);
+  
   return (
     <div>
         <div className='bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5'>
 <h4 className='text-[#382B67] text-[16px] font-[700] pb-2'>Refer and Earn</h4>
-<h5 className='text-[#686868] text-[12px] font-[300] '>Hipster ipsum tattooed brunch I'm baby. Vinyl meditation adaptogen out tile park cronut 90's. Deep xoxo waistcoat actually shaman.</h5>
+<h5 className='text-[#686868] text-[12px] font-[300] '>Earn extra by referrals</h5>
 
 <div className='py-3'>
 <hr />
@@ -159,7 +162,8 @@ const ReferAndEarn = () => {
 <div className=' '>
 <h5 className='text-[#8F75EF] text-[12px] font-[400]'>Referral Code</h5>
 <div className='flex gap-1'>
-<h3>SAMUEL12345</h3>
+<h3 className='uppercase'>{userLoginData?.data?.last_name}
+</h3>
 <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M4.375 13.125H3.5C3.03587 13.125 2.59075 12.9406 2.26256 12.6124C1.93437 12.2842 1.75 11.8391 1.75 11.375V3.5C1.75 3.03587 1.93437 2.59075 2.26256 2.26256C2.59075 1.93437 3.03587 1.75 3.5 1.75H11.375C11.8391 1.75 12.2842 1.93437 12.6124 2.26256C12.9406 2.59075 13.125 3.03587 13.125 3.5V4.375M9.625 7.875H17.5C18.4665 7.875 19.25 8.6585 19.25 9.625V17.5C19.25 18.4665 18.4665 19.25 17.5 19.25H9.625C8.6585 19.25 7.875 18.4665 7.875 17.5V9.625C7.875 8.6585 8.6585 7.875 9.625 7.875Z" stroke="#1E1E1E" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

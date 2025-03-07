@@ -7,16 +7,15 @@ const CustomersTable = (props:any) => {
     const navigate = useNavigate();
   
     const handleRowClick = (customerName:any, customer: any) => {
-      navigate({
-        pathname: `/dashboard/customer-details/${customerName}`,
-        state: { 
+      navigate(`/dashboard/customer-details/${customerName}`,
+      {  state: { 
           productId: customer.id, 
           storeCode: customer.store_code 
-        }
-      });
+        }}
+      );
     };
 
-console.log(customer)
+console.log(customer?.data?.customers)
   return (
     <div>
    
