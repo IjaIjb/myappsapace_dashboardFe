@@ -2,15 +2,15 @@ import React from 'react'
 
 const OrderHome = (props:any) => {
   const {orders} = props
-  console.log(orders)
+  // console.log(orders)
   return (
     <div>
                 <div className='bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5'>
 <h4 className='text-[#382B67] text-[16px] font-[700] pb-2'>Recent Orders</h4>
 <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-                            <thead className="text-xs text-gray-700 bg-gray-50 ">
+                            <thead className="text-xs text-gray-700  bg-gray-50 ">
                                 <tr>
-                                    <th scope="col" className="text-[10px] font-[500] py-3">
+                                    <th scope="col" className="text-[10px] pl-3 font-[500] py-3">
                                        Order
                                     </th>
                                     <th scope="col" className="text-[10px] font-[500] py-3">
@@ -42,7 +42,7 @@ const OrderHome = (props:any) => {
         className="bg-white cursor-pointer hover:bg-gray-100"
         // onClick={() => handleRowClick(order.id)}
       >
-  <td className="text-[12px] font-[300] py-4">
+  <td className="text-[12px] pl-3 font-[300] py-4">
                     {order.order_code}
                   </td>
                   <td className="text-[12px] font-[300] py-4">

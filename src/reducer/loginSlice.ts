@@ -19,9 +19,20 @@ const loginSlice = createSlice({
         login : (state,action) =>{
             state.value = action.payload;
         },
+        logout: (state) => {
+            state.value = {
+                email: "",
+                name:"",
+                id: "",
+                token:"",
+                role:"",
+                data:[]
+            };
+            localStorage.removeItem("token"); // Clear token from storage
+          },
     },
 });
 
-export const {login} = loginSlice.actions
+export const {login, logout} = loginSlice.actions
 
 export default loginSlice.reducer

@@ -10,7 +10,7 @@ import { RootState } from "../../../store/store";
 
 const Customers = () => {
   const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
       
   // const [stores, setStores] = useState<any>([]);
   const [customer, setCustomer] = React.useState<any>([]);
@@ -48,7 +48,7 @@ const Customers = () => {
       })
       .catch(function (error) {});
   }, [selectedStore]);
-  console.log(customer)
+  // console.log(customer)
   const activeCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status === "active").length || 0;
   const notActiveCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status !== "active").length || 0;
 

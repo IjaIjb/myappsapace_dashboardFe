@@ -14,7 +14,7 @@ const Products = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
   // const [stores, setStores] = useState<any>([]);
   const [product, setProduct] = React.useState<any>([]);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -123,7 +123,7 @@ const Products = () => {
       .catch(function (error) {});
   }, [selectedStore]);
 
-  console.log(product.products);
+  // console.log(product.products);
 
   //  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
   //       const { name, value } = e.target;

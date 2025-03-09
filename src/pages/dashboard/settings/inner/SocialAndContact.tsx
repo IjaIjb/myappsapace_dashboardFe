@@ -31,7 +31,7 @@ const SocialAndContact = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response)
+        // console.log(response)
         if (response?.data?.settings) {
           setFormData((prev) => ({
             ...prev,

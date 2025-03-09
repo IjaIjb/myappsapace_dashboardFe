@@ -12,8 +12,8 @@ const TransactionTable = (props: any) => {
   // console.log(transaction);
   
   const handleRowClick = (trx_ref: string, store_code: string) => {
-    console.log("Transaction Ref:", trx_ref);
-    console.log("Store Code:", store_code);
+    // console.log("Transaction Ref:", trx_ref);
+    // console.log("Store Code:", store_code);
   
     navigate(`/dashboard/transaction-details/${trx_ref}`, {
       state: { transactionReference: trx_ref, storeCode: store_code }
@@ -60,7 +60,7 @@ const TransactionTable = (props: any) => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 bg-gray-50">
             <tr>
-              <th scope="col" className="text-[10px] font-[500] py-3">
+              <th scope="col" className="text-[10px] pl-3 font-[500] py-3">
              Transaction ref
               </th>
               <th scope="col" className="text-[10px] font-[500] py-3">
@@ -99,7 +99,7 @@ const TransactionTable = (props: any) => {
                   className="bg-white cursor-pointer hover:bg-gray-100"
                   onClick={() => handleRowClick(order?.transaction_reference, order?.store_code)}
                 >
-                  <td className="text-[12px] font-[300] py-4">
+                  <td className="text-[12px]  pl-3 font-[300] py-4">
                     {order.transaction_reference}
                   </td>
                   <td className="text-[12px] font-[300] py-4">

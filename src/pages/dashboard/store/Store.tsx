@@ -20,7 +20,7 @@ const Store = () => {
       .catch(function (error) {});
   }, []);
 
-  console.log(stores)
+  // console.log(stores)
   return (
    <DashboardLayout>
       <div>

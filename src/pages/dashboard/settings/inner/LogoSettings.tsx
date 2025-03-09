@@ -28,7 +28,7 @@ const LogoSettings = () => {
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
         if (response?.data?.settings) {
-          console.log(response?.data?.settings);
+          // console.log(response?.data?.settings);
           setImage(response?.data?.settings?.settings?.logo);
         }
       })

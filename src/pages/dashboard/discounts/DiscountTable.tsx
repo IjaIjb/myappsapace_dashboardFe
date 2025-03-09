@@ -69,7 +69,7 @@ const DiscountTable = () => {
           <thead className=" text-gray-700 rounded-[6px] px-3  ">
             <tr>
            
-              <th scope="col" className="  text-[10px] font-[500] py-3">
+              <th scope="col" className="pl-3  text-[10px] font-[500] py-3">
                Title
               </th>
               <th scope="col" className="text-[10px] font-[500] py-3">
@@ -95,7 +95,7 @@ const DiscountTable = () => {
             <tr className="  py-4 bg-[#FBFBFF] rounded-[7px] ">
              
               <td className="text-[12px] font-[300] pl-2 ">
-                <h4 className='text-[#000000] text-[12px] font-[600]'>Discount Name</h4>
+                <h4 className='text-[#000000] pl-3 text-[12px] font-[600]'>Discount Name</h4>
                 <h4 className='text-[#000000] text-[12px] font-[300]'>45% of all Products</h4>
               </td>
               <td className="text-[12px] font-[300] ">12-03-2025</td>

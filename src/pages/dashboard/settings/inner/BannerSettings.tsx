@@ -40,7 +40,7 @@ const BannerSettings = () => {
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
         if (response?.data?.settings) {
-          console.log(response?.data?.settings);
+          // console.log(response?.data?.settings);
           setThemeColor(
             response.data?.settings.settings.theme_color || "#ff0000"
           );

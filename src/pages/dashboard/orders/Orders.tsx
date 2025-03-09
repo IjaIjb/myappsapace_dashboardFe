@@ -16,7 +16,7 @@ const Orders = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
   const [orders, setOrders] = React.useState<any>([]);
   const [open, setOpen] = useState(false);
 
@@ -57,11 +57,11 @@ const Orders = () => {
         setLoader(false);
       });
   }, [selectedStore]); // Depend on selectedCurrency so it updates when changed
-  console.log(orders)
+  // console.log(orders)
 
   const totalOrders = orders?.orders?.data?.length || 0;
 
-console.log("Total Orders:", totalOrders);
+// console.log("Total Orders:", totalOrders);
 
   return (
     <DashboardLayout>

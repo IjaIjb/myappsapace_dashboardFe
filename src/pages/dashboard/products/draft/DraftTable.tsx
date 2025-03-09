@@ -7,7 +7,7 @@ const DraftTable = (props: any) => {
      const { product } = props;
       const [categories, setCategories] = useState<{ [key: string]: any }>({});
       const navigate = useNavigate();
-      console.log(product)
+      // console.log(product)
       const flashSaleProducts = product?.products.filter((product: any) => product.product_status === "Inactive");
 
             useEffect(() => {
@@ -21,7 +21,7 @@ const DraftTable = (props: any) => {
                     UserApis.getSingleCategory(prod.store_code, prod.category_id)
                       .then((response) => {
                         if (response?.data) {
-                          console.log(response.data)
+                          // console.log(response.data)
                           setCategories((prevCategories: any) => ({
                             ...prevCategories,
                             [prod.category_id]: response.data, // Store category data by ID

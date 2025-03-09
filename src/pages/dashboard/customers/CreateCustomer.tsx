@@ -17,10 +17,8 @@ const CreateCustomer = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log("Selected Store Code:", selectedStore);
-  const [open, setOpen] = useState(false);
-
-  
+  // console.log("Selected Store Code:", selectedStore);
+  const [open, setOpen] = useState(false);  
     const onOpenModal = () => {
       // e.preventDefault();
       setOpen(true);
@@ -59,7 +57,7 @@ const CreateCustomer = () => {
       })
       .catch((error) => console.error("Error fetching stores:", error));
   }, []);
-  console.log(stores);
+  // console.log(stores);
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -82,16 +80,16 @@ const CreateCustomer = () => {
     formData.append("username", formValues.username);
     formData.append("password", formValues.password);
     formData.append("status", formValues.status);
-    console.log("Submitting payload:", formValues);
+    // console.log("Submitting payload:", formValues);
 
     try {
-      console.log("Submitting payload:", formValues);
+      // console.log("Submitting payload:", formValues);
 
       const response: any = await UserApis.createCustomer(
         selectedStore,
         formData
       );
-      console.log(response);
+      // console.log(response);
 
       if (response?.data) {
         toast.success(
@@ -119,8 +117,10 @@ const CreateCustomer = () => {
                 modal: "rounded-[10px] overflow-visible relative",
               }}
               open={open}
-              onClose={onCloseModal}
-              showCloseIcon={false} // Hides the close button
+              onClose={() => {}} // Prevents closing the modal
+        closeOnEsc={false} // Prevent closing with the Escape key
+        closeOnOverlayClick={false} // Prevent closing by clicking outside
+        showCloseIcon={false} // Hides the close button
               center
             >
               <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">

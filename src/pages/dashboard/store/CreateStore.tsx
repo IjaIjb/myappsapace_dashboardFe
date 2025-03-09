@@ -86,13 +86,13 @@ const CreateStore = () => {
     }
 
     try {
-      console.log(
-        "Submitting payload:",
-        Object.fromEntries(formData.entries())
-      );
+      // console.log(
+      //   "Submitting payload:",
+      //   Object.fromEntries(formData.entries())
+      // );
 
       const response: any = await UserApis.createStore(formData);
-      console.log(response);
+      // console.log(response);
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "Store created successfully!");
         navigate("/dashboard/store");

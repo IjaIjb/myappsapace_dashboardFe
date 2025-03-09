@@ -14,7 +14,10 @@ import LoadingSpinnerPage from "./UI/LoadingSpinnerPage";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { logout } from "../reducer/loginSlice";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 type Props = {
   toggle: () => void;
   DrawerOpen: boolean;
@@ -24,47 +27,101 @@ type Props = {
 const Sidebar = (props: Props) => {
   const dispatch = useDispatch();
   const userLoginData = useSelector((state: any) => state.data.login.value);
-
+  // const navigate = useNavigate();
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log(selectedStore);
+  // console.log(selectedStore);
   const [stores, setStores] = useState<any>([]);
   const [openLoadModal, setOpenLoadModal] = useState(false); // Modal loader state
 
+  // useEffect(() => {
+  //   const storedStore = localStorage.getItem("selectedStore"); // Retrieve from localStorage
+  //   if (storedStore) {
+  //     dispatch(setSelectedStore(storedStore));
+  //   }
+
+  //   UserApis.getStore()
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         setStores(response?.data || []);
+  //         console.log(response?.data?.data)
+  //         if (!selectedStore && response?.data?.data?.data?.length > 0) {
+  //           const firstStore = response?.data?.data?.data[0].store_code;
+  //           dispatch(setSelectedStore(firstStore));
+  //           localStorage.setItem("selectedStore", firstStore); // Store it persistently
+  //         }
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching stores:", error));
+  // }, [dispatch, selectedStore]);
+
   useEffect(() => {
-    const storedStore = localStorage.getItem("selectedStore"); // Retrieve from localStorage
-    if (storedStore) {
-      dispatch(setSelectedStore(storedStore));
-    }
+  const storedStore = localStorage.getItem("selectedStore");
 
-    UserApis.getStore()
-      .then((response) => {
-        if (response?.data) {
-          setStores(response?.data || []);
-          console.log(response?.data?.data)
-          if (!selectedStore && response?.data?.data?.data?.length > 0) {
-            const firstStore = response?.data?.data?.data[0].store_code;
-            dispatch(setSelectedStore(firstStore));
-            localStorage.setItem("selectedStore", firstStore); // Store it persistently
-          }
+  UserApis.getStore()
+    .then((response) => {
+      if (response?.data?.data?.data?.length > 0) {
+        const storeList = response.data;
+        setStores(storeList);
+
+        if (!selectedStore && response?.data?.data?.data?.length > 0) {
+                    const firstStore = response?.data?.data?.data[0].store_code;
+                    dispatch(setSelectedStore(firstStore));
+                    localStorage.setItem("selectedStore", firstStore); // Store it persistently
+                  }
+
+        // Check if storedStore exists in the fetched list
+        const isStoredStoreValid = storeList.some(
+          (store: any) => store.store_code === storedStore
+        );
+
+        if (storedStore && isStoredStoreValid) {
+          dispatch(setSelectedStore(storedStore));
+        } else {
+          // Reset store if not valid
+          dispatch(setSelectedStore(""));
+          localStorage.removeItem("selectedStore");
         }
-      })
-      .catch((error) => console.error("Error fetching stores:", error));
-  }, [dispatch, selectedStore]);
-
+      } else {
+        setStores([]);
+        dispatch(setSelectedStore(""));
+        localStorage.removeItem("selectedStore");
+      }
+    })
+    .catch((error) => console.error("Error fetching stores:", error));
+}, [dispatch, selectedStore]);
   const handleStoreSelect = (storeCode: string) => {
     setOpenLoadModal(true); // Show loader modal
-    dispatch(setSelectedStore(storeCode));
-    localStorage.setItem("selectedStore", storeCode);
-    setTimeout(() => {
-      setOpenLoadModal(false); // Hide modal after simulated delay
-    }, 2000);
+    if (!storeCode) {
+      dispatch(setSelectedStore(""));
+      localStorage.removeItem("selectedStore");
+      setTimeout(() => {
+        setOpenLoadModal(false); // Hide modal after simulated delay
+      }, 2000);
+    } else {
+      dispatch(setSelectedStore(storeCode));
+      localStorage.setItem("selectedStore", storeCode);
+      setTimeout(() => {
+        setOpenLoadModal(false); // Hide modal after simulated delay
+      }, 2000);
+    }
+ 
   };
 
   const url = useLocation();
   const { pathname } = url;
   const pathnames = pathname.split("/").filter((x: any) => x);
+
+  const handleLogout = () => {
+    dispatch(logout()); // Clear authentication state in Redux
+    localStorage.removeItem("token"); // Remove selected store if needed
+    toast.success("Logged out successfully");
+    localStorage.removeItem("selectedStore"); // Remove selected store if needed
+
+    // navigate("/"); // Redirect to login page
+  };
+  
   return (
     <aside
       className={`${
@@ -196,7 +253,7 @@ const Sidebar = (props: Props) => {
                         </div>
                       </div>
                       <div className="">
-                        <div className="relative cursor-pointer select-none text-gray-900 py-4 pr-4">
+                        <div onClick={handleLogout} className="relative cursor-pointer select-none text-gray-900 py-4 pr-4">
                           <div className="relative cursor-pointer whitespace-nowrap text-[16px] select-none py-2 pl-10 pr-4">
                             Log out
                           </div>
@@ -745,11 +802,23 @@ const Sidebar = (props: Props) => {
               </Link>
             </div>
           </div>
+          
 {/* 
           <h5 className="text-[#FFFFFF]/[40%] py-8 text-[12px] font-[700]">
             Powered by MyAppSpace
           </h5> */}
         </div>
+           <ToastContainer
+                        position="top-right"
+                        autoClose={2000}
+                        hideProgressBar={true}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                      />
       </div>
     </aside>
   );

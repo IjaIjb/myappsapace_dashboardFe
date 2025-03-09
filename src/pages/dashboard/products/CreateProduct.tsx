@@ -26,7 +26,7 @@ const CreateProduct = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
   const sectionName = "payment";
   const [open, setOpen] = useState(false);
 
@@ -82,7 +82,7 @@ const CreateProduct = () => {
     setLoader(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response?.data) {
           const settings = response.data?.settings.settings;
   
@@ -134,7 +134,7 @@ const CreateProduct = () => {
       })
       .catch((error) => console.error("Error fetching stores:", error));
   }, [selectedStore]);
-  console.log(category);
+  // console.log(category);
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -213,13 +213,13 @@ const CreateProduct = () => {
     // console.log("Submitting payload:", formData);
 
     try {
-      console.log("Submitting payload:", formValues);
+      // console.log("Submitting payload:", formValues);
 
       const response: any = await UserApis.createProduct(
         selectedStore,
         formData
       );
-      console.log(response);
+      // console.log(response);
 
       if (response?.data) {
         toast.success(
@@ -240,7 +240,7 @@ const CreateProduct = () => {
       setLoader(false);
     }
   };
-console.log(currencies)
+// console.log(currencies)
   return (
     <div>
               <Modal
@@ -248,9 +248,11 @@ console.log(currencies)
           modal: "rounded-[10px] overflow-visible relative",
         }}
         open={open}
-        onClose={onCloseModal}
+        onClose={() => {}} // Prevents closing the modal
+        closeOnEsc={false} // Prevent closing with the Escape key
+        closeOnOverlayClick={false} // Prevent closing by clicking outside
         showCloseIcon={false} // Hides the close button
-        center
+         center
       >
         <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
        {!selectedStore ? (

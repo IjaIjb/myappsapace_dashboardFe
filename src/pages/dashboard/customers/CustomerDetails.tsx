@@ -36,13 +36,13 @@ const CustomerDetails = () => {
   React.useEffect(() => {
     UserApis.getSingleCustomer(storeCode, productId).then((response) => {
       if (response?.data) {
-        console.log(response.data?.data?.customer);
+        // console.log(response.data?.data?.customer);
         setFormValues(response?.data?.data?.customer);
         // setStoreId(response?.data?.store?.id);
       }
     });
   }, [storeCode, productId]);
-  console.log(formValues);
+  // console.log(formValues);
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -72,11 +72,11 @@ const CustomerDetails = () => {
       lga: formValues.lga || "",
     };
   
-    console.log("Submitting payload:", payload);
+    // console.log("Submitting payload:", payload);
   
     try {
       const response: any = await UserApis.updateCustomer(storeCode, productId, payload);
-      console.log(response);
+      // console.log(response);
   
       if (response?.data) {
         toast.success(response?.data?.message || "Customer updated successfully!");

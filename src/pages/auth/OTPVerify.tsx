@@ -114,7 +114,7 @@ const OTPVerify = () => {
       ).catch(function (error) {
         setLoader(false)
 
-        console.log(error.response.data);
+        // console.log(error.response.data);
       });
     };
   
@@ -129,7 +129,7 @@ const OTPVerify = () => {
               localStorage.setItem('resendOTPTimer', String(Math.floor(Date.now() / 1000) + newTimerValue));
               
               toast.success('OTP resent successfully');
-              console.log('OTP resent successfully');
+              // console.log('OTP resent successfully');
             }
           }
         ).catch(function (error) {

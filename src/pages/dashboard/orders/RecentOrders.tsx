@@ -42,7 +42,7 @@ const RecentOrders = (props: any) => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 bg-gray-50">
             <tr>
-              <th scope="col" className="text-[10px] font-[500] py-3">
+              <th scope="col" className="text-[10px] pl-3 font-[500] py-3">
                 Order
               </th>
               <th scope="col" className="text-[10px] font-[500] py-3">
@@ -84,7 +84,7 @@ const RecentOrders = (props: any) => {
               orders?.orders?.data?.map((order: any) => (
                 <tr
                   key={order.id}
-                  className="bg-white cursor-pointer hover:bg-gray-100"
+                  className="bg-white cursor-pointer pl-3 hover:bg-gray-100"
                   onClick={() => handleRowClick(order)}
                 >
                   <td className="text-[12px] font-[300] py-4">

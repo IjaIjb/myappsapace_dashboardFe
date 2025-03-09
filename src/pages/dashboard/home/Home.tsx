@@ -12,7 +12,7 @@ import LoadingSpinnerPage from "../../../components/UI/LoadingSpinnerPage";
 
 const Home = () => {
   const userLoginData = useSelector((state: any) => state.data.login.value);
-  console.log(userLoginData);
+  // console.log(userLoginData);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -35,11 +35,11 @@ const Home = () => {
         })
         .catch(function (error) {});
     }, [selectedStore]);
-    console.log(customer)
+    // console.log(customer)
 
     const activeCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status === "active").length || 0;
 
-console.log("Total Active Customers:", activeCustomersCount);
+// console.log("Total Active Customers:", activeCustomersCount);
 
   useEffect(() => {
     setLoading(true);

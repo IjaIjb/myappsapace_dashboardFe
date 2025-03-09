@@ -23,9 +23,9 @@ const OrderDetails = () => {
       // if (storeCode && orderCode) {
         UserApis.getSingleOrder(storeCode, orderCode)
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             if (response?.data) {
-              console.log(response.data);
+              // console.log(response.data);
               setOrder(response?.data);
             }
           })

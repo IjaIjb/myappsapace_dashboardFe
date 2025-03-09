@@ -64,10 +64,11 @@ const Login = () => {
       // console.log(response)
   
       if (response?.data) {
-        console.log(response)
+        // console.log(response)
         if (response?.data?.status === true) {
-          console.log(response.data.data.token)
-          console.log(response.data.data.token.access_token)
+          // console.log(response.data.data.token)
+          // console.log(response.data.data.token.access_token)
+          const accessToken = response.data.data.token.access_token;
           dispatch(
             login({
               login: values.login,
@@ -76,12 +77,15 @@ const Login = () => {
               data: response?.data.data.user,
             })
           );
-  
+        // ✅ Store token in localStorage to persist login
+        localStorage.setItem("token", accessToken);
+      localStorage.removeItem("selectedStore");
+
           toast.success(response?.data?.message);
           navigate("/dashboard/home");
           // window.scrollTo(0, 0); // Scroll to top
         } else {
-        console.log(response)
+        // console.log(response)
 
           toast.error("Invalid Login Credentials");
         }

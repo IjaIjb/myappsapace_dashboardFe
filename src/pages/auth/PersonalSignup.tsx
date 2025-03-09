@@ -129,7 +129,7 @@ const PersonalSignup = () => {
   
     try {
       const response:any = await UserApis.register(formData);
-      console.log(response)
+      // console.log(response)
       if (response?.status === 200) {
         dispatch(
           login({
@@ -138,7 +138,7 @@ const PersonalSignup = () => {
             // name: response.data.name,
           })
         );
-        console.log("Signup created:", response.data);
+        // console.log("Signup created:", response.data);
 
         toast.success("Login Successful");
         navigate("/auth/verify-email");

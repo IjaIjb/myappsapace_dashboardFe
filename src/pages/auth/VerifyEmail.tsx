@@ -64,7 +64,7 @@ const VerifyEmail = () => {
   
     try {
       const response: any = await UserApis.verifyMail({ email, code: verificationCode });
-  console.log(response)
+  // console.log(response)
       if (response?.data) {
             dispatch(
                     login({
@@ -94,7 +94,7 @@ const VerifyEmail = () => {
       const response:any = await UserApis.resendVerificationCode({ email });
 
       if (response) {
-        console.log(":Verified", response.data);
+        // console.log(":Verified", response.data);
 
         toast.success(response?.data?.message || "Verification code resent successfully!");
         // navigate("/auth/add-store");

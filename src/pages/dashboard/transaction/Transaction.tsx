@@ -13,7 +13,7 @@ const Transaction = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
   const [transaction, setTransaction] = React.useState<any>([]);
 
   React.useEffect(() => {
@@ -33,7 +33,7 @@ const Transaction = () => {
     UserApis.getTransaction(selectedStore, query)
       .then((response) => {
         if (response?.data) {
-          console.log(response?.data);
+          // console.log(response?.data);
 
           setTransaction(response?.data);
           setLoader(false);
@@ -49,7 +49,7 @@ const Transaction = () => {
 
   const totalTransactions = transaction?.transactions?.data?.length || 0;
 
-  console.log("Total Orders:", totalTransactions);
+  // console.log("Total Orders:", totalTransactions);
   return (
     <DashboardLayout>
       {loader ? null : (

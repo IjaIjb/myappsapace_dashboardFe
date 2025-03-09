@@ -15,7 +15,7 @@ const CustomersTable = (props:any) => {
       );
     };
 
-console.log(customer?.data?.customers)
+// console.log(customer?.data?.customers)
   return (
     <div>
    
@@ -34,7 +34,7 @@ console.log(customer?.data?.customers)
  <table className="w-full text-sm text-left rtl:text-right text-gray-500">
       <thead className="text-xs text-gray-700 rounded-[6px] px-3 bg-[#EFF1F3]">
         <tr>
-          <th scope="col" className="text-[10px] font-[500] py-3">
+          <th scope="col" className="text-[10px] pl-3 font-[500] py-3">
             <input
               type="checkbox"
               id="customCheckbox"
@@ -66,7 +66,7 @@ console.log(customer?.data?.customers)
             className="cursor-pointer hover:bg-gray-100"
             onClick={() => handleRowClick(cust.first_name, cust)}
           >
-            <td className="text-[12px] font-[300] py-4">
+            <td className="text-[12px] pl-3 font-[300] py-4">
               <div className="flex items-center gap-3">
                 <input
                   type="checkbox"

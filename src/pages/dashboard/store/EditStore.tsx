@@ -31,14 +31,14 @@ const EditStore = () => {
   React.useEffect(() => {
     UserApis.getSingleStore(params?.id).then((response) => {
       if (response?.data) {
-        console.log(response.data.store);
+        // console.log(response.data.store);
         setStoreData(response?.data?.store);
         setStoreId(response?.data?.store?.id);
       }
     });
   }, [params?.id]);
 
-  console.log(storeData);
+  // console.log(storeData);
   // const [storeLogo, setStoreLogo] = useState<File | null>(null); // Store file here
   const [loader, setLoader] = useState(false);
   const [logoLoader, setLogoLoader] = useState(false); // Separate loader for logo
@@ -143,7 +143,7 @@ const EditStore = () => {
   //   }
   // };
 
-  console.log(storeId)
+  // console.log(storeId)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -168,10 +168,10 @@ const EditStore = () => {
     // }
 
     try {
-      console.log("Submitting payload:", payload);
+      // console.log("Submitting payload:", payload);
 
       const response: any = await UserApis.updateStore(storeId, payload); // Send JSON payload
-      console.log(response);
+      // console.log(response);
 
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "Store updated successfully!");
@@ -201,7 +201,7 @@ const EditStore = () => {
       formData.append("store_logo", image);
       // formData.append("store_id", storeId);
 
-      console.log("Uploading logo...");
+      // console.log("Uploading logo...");
       const response = await UserApis.updateStoreLogo(storeId, formData);
 
       if (response?.status === 200 || response?.status === 201) {

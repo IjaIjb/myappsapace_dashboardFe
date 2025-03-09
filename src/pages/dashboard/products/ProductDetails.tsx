@@ -28,15 +28,15 @@ type MediaProps = {
 const ProductDetails = () => {
   const navigate = useNavigate();
   const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
       
   
   const location = useLocation();
   const { productId, storeCode } = location.state || {}; // Extract values
   const [isActive, setIsActive] = useState<any>(true);
 
-  console.log("Product ID:", productId);
-  console.log("Store Code:", storeCode);
+  // console.log("Product ID:", productId);
+  // console.log("Store Code:", storeCode);
   // const [storeId, setStoreId] = useState("");
   const [loader, setLoader] = useState(false);
   const [flashLoader, setFlashLoader] = useState(false);
@@ -73,7 +73,7 @@ const ProductDetails = () => {
     setLoader(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response?.data) {
           const settings = response.data?.settings.settings;
   
@@ -93,7 +93,7 @@ const ProductDetails = () => {
   React.useEffect(() => {
     UserApis.getSingleProduct(storeCode, productId).then((response) => {
       if (response?.data) {
-        console.log(response.data.product);
+        // console.log(response.data.product);
         // setProductId(response.data.product.id);
     
               // Parse selling and cost price if they exist
@@ -127,7 +127,7 @@ const ProductDetails = () => {
     });
   }, [storeCode, productId]);
 
-  console.log(formValues)
+  // console.log(formValues)
   useEffect(() => {
     UserApis.getCategory(storeCode)
       .then((response) => {
@@ -216,7 +216,7 @@ const ProductDetails = () => {
     // });
   
     try {
-      console.log("Submitting payload:", payload);
+      // console.log("Submitting payload:", payload);
   
       const response: any = await UserApis.updateProduct(storeCode, productId, payload);
       
@@ -252,7 +252,7 @@ const ProductDetails = () => {
       ) => {
         const { name, value } = e.target;
         setFormFlashValues((prev: any) => ({ ...prev, [name]: value }));
-        console.log(name);
+        // console.log(name);
       };
 
         const handleFlashSubmit = async (e: any) => {
@@ -277,17 +277,17 @@ const ProductDetails = () => {
       
           // console.log("Submitting payload:", formFlashValues);
           // console.log("Submitting payload:", formData);
-          console.log("Submitting payload:", formFlashValues);
+          // console.log("Submitting payload:", formFlashValues);
       
           try {
-            console.log("Submitting payload:", formFlashValues);
+            // console.log("Submitting payload:", formFlashValues);
       
             const response: any = await UserApis.addProductToSale(
               selectedStore,
               formFlashValues.product_id,
               formData
             );
-            console.log(response);
+            // console.log(response);
       
             if (response?.data) {
               toast.success(

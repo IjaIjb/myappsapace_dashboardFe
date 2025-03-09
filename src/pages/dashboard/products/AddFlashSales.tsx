@@ -51,7 +51,7 @@ const AddFlashSales = () => {
   ) => {
     const { name, value } = e.target;
     setFormValues((prev: any) => ({ ...prev, [name]: value }));
-    console.log(name);
+    // console.log(name);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -78,14 +78,14 @@ const AddFlashSales = () => {
     // console.log("Submitting payload:", formData);
 
     try {
-      console.log("Submitting payload:", formValues);
+      // console.log("Submitting payload:", formValues);
 
       const response: any = await UserApis.addProductToSale(
         selectedStore,
         formValues.product_id,
         formData
       );
-      console.log(response);
+      // console.log(response);
 
       if (response?.data) {
         toast.success(

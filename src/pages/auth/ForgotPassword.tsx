@@ -48,10 +48,10 @@ const ForgotPassword = () => {
     formData.append('email', userData?.email)
     UserApis.forgotPassword(formData).then(
       (response:any) => {
-        console.log(response)
+        // console.log(response)
         if (response?.data) {
          
-            console.log(response)
+            // console.log(response)
             const newTimerValue = 60;
             // setTimer(newTimerValue);
             localStorage.setItem('resendOTPTimer', String(Math.floor(Date.now() / 1000) + newTimerValue));

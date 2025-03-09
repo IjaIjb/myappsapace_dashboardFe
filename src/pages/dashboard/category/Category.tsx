@@ -8,7 +8,7 @@ import { RootState } from "../../../store/store";
 
 const Category = () => {
   const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
       
   const [categories, setCategories] = React.useState<any>([]);
   const [stores, setStores] = useState<any>([]);
@@ -51,8 +51,8 @@ const Category = () => {
   //   setFormValues((prev) => ({ ...prev, [name]: value }));
   // };
 
-  console.log(stores);
-  console.log(categories);
+  // console.log(stores);
+  // console.log(categories);
   return (
     <DashboardLayout>
       <div>

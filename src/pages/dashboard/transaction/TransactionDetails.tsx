@@ -14,7 +14,7 @@ const TransactionDetails = () => {
         UserApis.getSingleTransaction(storeCode, transactionReference)
           .then((response) => {
             if (response?.data) {
-              console.log(response.data);
+              // console.log(response.data);
               setTransaction(response?.data);
             }
           })
@@ -24,7 +24,7 @@ const TransactionDetails = () => {
       }
     }, [storeCode, transactionReference]);
     
-    console.log(transaction);
+    // console.log(transaction);
     
   return (
     <DashboardLayout>

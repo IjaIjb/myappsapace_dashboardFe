@@ -6,7 +6,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AnimatePresence, motion } from "framer-motion";
 import { UserApis } from "../../apis/userApi/userApi";
-import { Link } from "react-router-dom";
 
 const images = [
   "/images/auth/authImage1.svg",
@@ -111,7 +110,12 @@ const AddStore = () => {
   };
 
 
+  const handleSkip = () => {
+  toast.success("Logged in Succesfully");
+    localStorage.removeItem("selectedStore"); // Remove selected store if needed
 
+    navigate("/dashboard/home"); // Redirect to login page
+  };
   return (
     <div className="p-8">
     <div className="grid md:grid-cols-2">
@@ -184,13 +188,14 @@ const AddStore = () => {
           </div>
 
           <div className="flex justify-between items-center h-full">
-          <Link
-              to="/dashboard/home"
+          <div
+          onClick={handleSkip}
+              // to="/dashboard/home"
          
               className=" flex gap-2 items-center py-2 w-fit px-10 bg-gray-400 text-white rounded-full hover:bg-secondary/[70%]"
             >
           Skip
-            </Link>
+            </div>
             <button
               type="submit"
               disabled={loading}

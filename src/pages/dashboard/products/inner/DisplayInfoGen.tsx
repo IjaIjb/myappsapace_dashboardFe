@@ -10,7 +10,7 @@ const DisplayInfoGen = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log("Selected Store Code:", selectedStore);
+  // console.log("Selected Store Code:", selectedStore);
   const sectionName = "payment";
 
   const [currencies, setCurrencies] = useState<any>([]);
@@ -84,7 +84,7 @@ const DisplayInfoGen = () => {
         sectionName,
         payload
       );
-      console.log(response);
+      // console.log(response);
       if (response?.status === 200 || response?.status === 201) {
         // setMessage("Settings updated successfully!");
         toast.success(

@@ -7,10 +7,10 @@ const FlashSalesTable = (props: any) => {
      const { product } = props;
       const [categories, setCategories] = useState<{ [key: string]: any }>({});
       const navigate = useNavigate();
-      console.log(product)
+      // console.log(product)
       const flashSaleProducts = product?.products.filter((product: any) => product.sale_type === "flash");
 
-console.log(flashSaleProducts); // Check if only flash sale products are filtered
+// console.log(flashSaleProducts); // Check if only flash sale products are filtered
 
       // React.useEffect(() => {
       //   UserApis.getSingleCategory(product?.products?.store_code, product?.products.categori)
@@ -36,7 +36,7 @@ console.log(flashSaleProducts); // Check if only flash sale products are filtere
               UserApis.getSingleCategory(prod.store_code, prod.category_id)
                 .then((response) => {
                   if (response?.data) {
-                    console.log(response.data)
+                    // console.log(response.data)
                     setCategories((prevCategories: any) => ({
                       ...prevCategories,
                       [prod.category_id]: response.data, // Store category data by ID
