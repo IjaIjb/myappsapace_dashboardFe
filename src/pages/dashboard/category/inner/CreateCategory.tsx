@@ -18,7 +18,7 @@ const CreateCategory = () => {
   );
   // console.log("Selected Store Code:", selectedStore);
 
-  const [stores, setStores] = useState<any>([]);
+  // const [stores, setStores] = useState<any>([]);
   const [formValues, setFormValues] = useState({
     category_name: "",
     store_code: "", // Use store_code instead of store_name
@@ -44,15 +44,15 @@ const CreateCategory = () => {
     }
   }, [selectedStore]);
 
-  useEffect(() => {
-    UserApis.getStore()
-      .then((response) => {
-        if (response?.data) {
-          setStores(response?.data || []); // Adjusting to your API response structure
-        }
-      })
-      .catch((error) => console.error("Error fetching stores:", error));
-  }, []);
+  // useEffect(() => {
+  //   UserApis.getStore()
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         setStores(response?.data || []); // Adjusting to your API response structure
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching stores:", error));
+  // }, []);
   // console.log(stores);
   const handleInputChange = (
     e: React.ChangeEvent<

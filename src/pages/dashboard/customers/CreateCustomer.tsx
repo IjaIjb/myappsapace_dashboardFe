@@ -34,7 +34,7 @@ const CreateCustomer = () => {
     }, [selectedStore]);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [stores, setStores] = useState<any>([]);
+  // const [stores, setStores] = useState<any>([]);
   const [formValues, setFormValues] = useState({
     first_name: "",
     last_name: "",
@@ -48,15 +48,15 @@ const CreateCustomer = () => {
   const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    UserApis.getStore()
-      .then((response) => {
-        if (response?.data) {
-          setStores(response?.data || []); // Adjusting to your API response structure
-        }
-      })
-      .catch((error) => console.error("Error fetching stores:", error));
-  }, []);
+  // useEffect(() => {
+  //   UserApis.getStore()
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         setStores(response?.data || []); // Adjusting to your API response structure
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching stores:", error));
+  // }, []);
   // console.log(stores);
   const handleInputChange = (
     e: React.ChangeEvent<

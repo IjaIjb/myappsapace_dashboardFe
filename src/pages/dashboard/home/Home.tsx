@@ -11,7 +11,7 @@ import { RootState } from "../../../store/store";
 import LoadingSpinnerPage from "../../../components/UI/LoadingSpinnerPage";
 
 const Home = () => {
-  const userLoginData = useSelector((state: any) => state.data.login.value);
+  // const userLoginData = useSelector((state: any) => state.data.login.value);
   // console.log(userLoginData);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

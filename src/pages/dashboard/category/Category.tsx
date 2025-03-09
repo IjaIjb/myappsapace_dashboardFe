@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { UserApis } from "../../../apis/userApi/userApi";
@@ -11,7 +11,7 @@ const Category = () => {
   // console.log("Selected Store Code:", selectedStore);
       
   const [categories, setCategories] = React.useState<any>([]);
-  const [stores, setStores] = useState<any>([]);
+  // const [stores, setStores] = useState<any>([]);
 
   // const [formValues, setFormValues] = useState({
   //   category_name: "",
@@ -19,15 +19,15 @@ const Category = () => {
   //   category_description: "",
   //   status: "active",
   // });
-  useEffect(() => {
-    UserApis.getStore()
-      .then((response) => {
-        if (response?.data) {
-          setStores(response?.data || []); // Adjusting to your API response structure
-        }
-      })
-      .catch((error) => console.error("Error fetching stores:", error));
-  }, []);
+  // useEffect(() => {
+  //   UserApis.getStore()
+  //     .then((response) => {
+  //       if (response?.data) {
+  //         setStores(response?.data || []); // Adjusting to your API response structure
+  //       }
+  //     })
+  //     .catch((error) => console.error("Error fetching stores:", error));
+  // }, []);
 
   React.useEffect(() => {
     UserApis.getCategory(selectedStore)

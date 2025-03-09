@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { UserApis } from '../../../apis/userApi/userApi';
 import { useLocation } from 'react-router-dom';
 import DashboardLayout from '../../../components/DashboardLayout';
 
 const TransactionDetails = () => {
-    const [transaction, setTransaction] = useState<any>(null);
+    // const [transaction, setTransaction] = useState<any>(null);
     const location = useLocation();
 
     const { transactionReference,storeCode } = location.state || {}; // Extract values correctly
@@ -15,7 +15,7 @@ const TransactionDetails = () => {
           .then((response) => {
             if (response?.data) {
               // console.log(response.data);
-              setTransaction(response?.data);
+              // setTransaction(response?.data);
             }
           })
           .catch((error) => {
