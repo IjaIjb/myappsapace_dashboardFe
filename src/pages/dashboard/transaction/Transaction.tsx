@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 // import { Link } from 'react-router-dom'
 // import { IoAddCircleOutline } from 'react-icons/io5'
@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { UserApis } from "../../../apis/userApi/userApi";
 import TransactionTable from "./TransactionTable";
+import Paid from "./paid/Paid";
+import Pending from "./pending/Pending";
 
 const Transaction = () => {
   const [loader, setLoader] = React.useState<boolean>(false);
@@ -50,6 +52,75 @@ const Transaction = () => {
   const totalTransactions = transaction?.transactions?.data?.length || 0;
 
   // console.log("Total Orders:", totalTransactions);
+  const initialStatusState = {
+    allElement: true,
+    paidElement: false,
+    pendingElement: false,
+  };
+  
+  const [statusValues, setStatusValues] = useState({
+    ...initialStatusState,
+  });
+  
+  const handleAllState = () => {
+    // e.preventDefault();
+    setStatusValues({
+      allElement: true,
+      paidElement: false,
+      pendingElement: false,
+    });
+  };
+  
+  const handleDraftState = () => {
+    // e.preventDefault();
+    setStatusValues({
+      allElement: false,
+      paidElement: true,
+      pendingElement: false,
+    });
+  };
+  
+  const handleFlashSalesState = () => {
+    // e.preventDefault();
+    setStatusValues({
+      allElement: false,
+      paidElement: false,
+      pendingElement: true,
+    });
+  };
+  const showProfileConnector = () => {
+    return (
+      <>
+        {/* show active */}
+        {statusValues.allElement && (
+          <>
+            <div className="">
+                    <TransactionTable transaction={transaction} />
+
+  
+  
+            </div>
+          </>
+        )}
+  
+        {/* show inactive */}
+        {statusValues.paidElement && (
+          <>
+            <div className="">
+            <Paid transaction={transaction} />
+            </div>
+          </>
+        )}
+         {statusValues.pendingElement && (
+          <>
+            <div className="">
+            <Pending transaction={transaction} />
+           </div>
+          </>
+        )}
+      </>
+    );
+  };
   return (
     <DashboardLayout>
       {loader ? null : (
@@ -174,7 +245,38 @@ const Transaction = () => {
             </h5>
         </Link> */}
           </div>
-          <TransactionTable transaction={transaction} />
+            <div className="flex gap-2 mb-2">
+        <div
+         className={`${statusValues.allElement ? 
+ "bg-primary text-white rounded-full px-8 py-1"
+ :  "bg-white text-[#9D9D9D] rounded-full px-8 py-1"
+         } cursor-pointer`}
+         onClick={() => handleAllState()}
+        
+         >
+          <h6 className=" text-[12px] font-[400]">All</h6>
+        </div>
+
+        <div 
+             className={`${statusValues.paidElement ? 
+              "bg-primary text-white rounded-full px-6 py-1"
+              :  "bg-white text-[#9D9D9D] rounded-full px-6 py-1"
+                      } cursor-pointer`}
+                      onClick={() => handleDraftState()}>
+          <h6 className="text-[12px] font-[400]">Completed</h6>
+        </div>
+        <div
+            className={`${statusValues.pendingElement ? 
+              "bg-primary text-white rounded-full px-4 py-1"
+              :  "bg-white text-[#9D9D9D] rounded-full px-4 py-1"
+                      } cursor-pointer`}
+                      onClick={() => handleFlashSalesState()}
+                     >
+          <h6 className=" text-[12px] font-[400]">Pending</h6>
+        </div>
+      </div>
+      <div className="pt-3">{showProfileConnector()}</div>
+
         </div>
       )}
     </DashboardLayout>

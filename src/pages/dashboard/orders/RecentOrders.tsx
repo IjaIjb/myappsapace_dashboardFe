@@ -17,7 +17,7 @@ const RecentOrders = (props: any) => {
   };
   return (
     <div>
-      <div className="flex gap-2 mb-2">
+      {/* <div className="flex gap-2 mb-2">
         <div className="bg-primary rounded-full px-6 py-1">
           <h6 className="text-white text-[12px] font-[400]">All</h6>
         </div>
@@ -34,7 +34,7 @@ const RecentOrders = (props: any) => {
         <div className="border border-[#9D9D9D] rounded-full px-3 py-1">
           <h6 className="text-[#9D9D9D] text-[12px] font-[400]">Open</h6>
         </div>
-      </div>
+      </div> */}
       <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
         <h4 className="text-[#382B67] text-[16px] font-[700] pb-2">
           Recent Orders
@@ -103,34 +103,6 @@ const RecentOrders = (props: any) => {
                   </td>
                   <td className="text-[12px] font-[300] py-4">
                     {order.products} Products
-                  </td>
-                  <td className="py-4">
-                    <b
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "10px",
-                        borderRadius: "10px",
-                        padding: "2px 10px",
-                        backgroundColor:
-                          order.transaction?.payment_status === "completed"
-                            ? "#C9F0D0"
-                            : order.transaction?.payment_status === "pending"
-                            ? "#FFF3CD"
-                            : order.transaction?.payment_status === "failed"
-                            ? "#F8D7DA"
-                            : "#E9ECEF", // Default color
-                        color:
-                          order.transaction?.payment_status === "completed"
-                            ? "#51CF66"
-                            : order.transaction?.payment_status === "pending"
-                            ? "#FFC107"
-                            : order.transaction?.payment_status === "failed"
-                            ? "#DC3545"
-                            : "#6C757D", // Default color
-                      }}
-                    >
-                      {order.transaction?.payment_status}
-                    </b>
                   </td>
 
                   <td className="py-4">

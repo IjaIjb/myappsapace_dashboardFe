@@ -16,9 +16,9 @@ const Header = () => {
       <div className="lg:flex hidden justify-between my-5 items-center w-full gap-[150px] ">
         <div>
           <BreadscrumbDisplay />
-          <h4 className="text-[13px] mt-2 font-[500] text-[#9D9D9D]">
+          {/* <h4 className="text-[13px] mt-2 font-[500] text-[#9D9D9D]">
             Access resources for troubleshooting and guidance.
-          </h4>
+          </h4> */}
         </div>
         <div className="flex md:mt-0 mt-2  gap-4 items-center">
           <div className="flex items-center gap-5">

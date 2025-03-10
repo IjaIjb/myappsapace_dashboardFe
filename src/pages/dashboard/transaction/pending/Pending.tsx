@@ -1,16 +1,13 @@
-import React from "react";
-// import { UserApis } from '../../../apis/userApi/userApi';
-import { useNavigate } from "react-router-dom";
-// import { useSelector } from 'react-redux';
-// import { RootState } from '../../../store/store';
+import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
-const TransactionTable = (props: any) => {
+const Pending = (props: any) => {
   const { transaction } = props;
+  console.log(transaction)
 
   const navigate = useNavigate();
+  const pendingOrders = transaction?.transactions?.data?.filter((order:any) => order.payment_status === "pending") || [];
 
-  // console.log(transaction);
-  
   const handleRowClick = (trx_ref: string, store_code: string) => {
     // console.log("Transaction Ref:", trx_ref);
     // console.log("Store Code:", store_code);
@@ -19,20 +16,7 @@ const TransactionTable = (props: any) => {
       state: { transactionReference: trx_ref, storeCode: store_code }
     });
   };
-  // const handleRowClick = (trx_ref: any, store_code:any) => {
-  //   // localStorage.setItem("transaction_ref", transaction.transaction_reference);
 
-  //   console.log(trx_ref)
-  //   console.log(store_code)
-  //   navigate({
-  //     pathname: `/dashboard/transaction-details/${trx_ref}`,
-  //     state: { 
-  //       transactionRef: trx_ref, 
-  //       storeCode: store_code 
-  //     }
-  //   });
-    // navigate(`/dashboard/transaction-details/${orderId}`); // Navigate to the order details page with the order ID
-  // };
   return (
     <div>
       {/* <div className="flex gap-2 mb-2">
@@ -93,7 +77,7 @@ const TransactionTable = (props: any) => {
               //   { id: 3458, date: "12-14-2024", customer: "Rachael Ezeh", total: "$45.90", products: 4, payment: "Paid", fulfillment: "Fulfilled", delivery: "Standard", channel: "Online store" },
               //   // Add more orders here
               // ]
-              transaction?.transactions?.data?.map((order: any) => (
+              pendingOrders?.map((order: any) => (
                 <tr
                   key={order.id}
                   className="bg-white cursor-pointer hover:bg-gray-100"
@@ -184,7 +168,7 @@ const TransactionTable = (props: any) => {
         </table>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TransactionTable;
+export default Pending

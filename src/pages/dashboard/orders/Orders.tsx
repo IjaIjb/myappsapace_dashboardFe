@@ -9,6 +9,8 @@ import { UserApis } from "../../../apis/userApi/userApi";
 import LoadingSpinnerPage from "../../../components/UI/LoadingSpinnerPage";
 import Modal from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
+import Paid from "./paid/Paid";
+import Pending from "./pending/Pending";
 
 const Orders = () => {
   const [loader, setLoader] = React.useState<boolean>(false);
@@ -62,6 +64,74 @@ const Orders = () => {
   const totalOrders = orders?.orders?.data?.length || 0;
 
 // console.log("Total Orders:", totalOrders);
+const initialStatusState = {
+  allElement: true,
+  paidElement: false,
+  pendingElement: false,
+};
+
+const [statusValues, setStatusValues] = useState({
+  ...initialStatusState,
+});
+
+const handleAllState = () => {
+  // e.preventDefault();
+  setStatusValues({
+    allElement: true,
+    paidElement: false,
+    pendingElement: false,
+  });
+};
+
+const handleDraftState = () => {
+  // e.preventDefault();
+  setStatusValues({
+    allElement: false,
+    paidElement: true,
+    pendingElement: false,
+  });
+};
+
+const handleFlashSalesState = () => {
+  // e.preventDefault();
+  setStatusValues({
+    allElement: false,
+    paidElement: false,
+    pendingElement: true,
+  });
+};
+const showProfileConnector = () => {
+  return (
+    <>
+      {/* show active */}
+      {statusValues.allElement && (
+        <>
+          <div className="">
+          <RecentOrders orders={orders} />
+
+
+          </div>
+        </>
+      )}
+
+      {/* show inactive */}
+      {statusValues.paidElement && (
+        <>
+          <div className="">
+          <Paid orders={orders} />
+          </div>
+        </>
+      )}
+       {statusValues.pendingElement && (
+        <>
+          <div className="">
+          <Pending orders={orders} />
+         </div>
+        </>
+      )}
+    </>
+  );
+};
 
   return (
     <DashboardLayout>
@@ -189,7 +259,38 @@ const Orders = () => {
               {/* <LiaUploadSolid className="text-white" /> */}
             </Link>
           </div>
-          <RecentOrders orders={orders} />
+          <div className="flex gap-2 mb-2">
+        <div
+         className={`${statusValues.allElement ? 
+ "bg-primary text-white rounded-full px-8 py-1"
+ :  "bg-white text-[#9D9D9D] rounded-full px-8 py-1"
+         } cursor-pointer`}
+         onClick={() => handleAllState()}
+        
+         >
+          <h6 className=" text-[12px] font-[400]">All</h6>
+        </div>
+
+        <div 
+             className={`${statusValues.paidElement ? 
+              "bg-primary text-white rounded-full px-6 py-1"
+              :  "bg-white text-[#9D9D9D] rounded-full px-6 py-1"
+                      } cursor-pointer`}
+                      onClick={() => handleDraftState()}>
+          <h6 className="text-[12px] font-[400]">Paid</h6>
+        </div>
+        <div
+            className={`${statusValues.pendingElement ? 
+              "bg-primary text-white rounded-full px-4 py-1"
+              :  "bg-white text-[#9D9D9D] rounded-full px-4 py-1"
+                      } cursor-pointer`}
+                      onClick={() => handleFlashSalesState()}
+                     >
+          <h6 className=" text-[12px] font-[400]">Pending</h6>
+        </div>
+      </div>
+      <div className="pt-3">{showProfileConnector()}</div>
+
         </div>
       )}
 
