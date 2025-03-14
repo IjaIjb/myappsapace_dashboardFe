@@ -271,7 +271,16 @@ const CreateStore = () => {
             </button>
           </div>
         </form>
-        <ToastContainer autoClose={3000} />
+        <ToastContainer 
+         position="bottom-left"
+          autoClose={2000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover />
       </div>
     </DashboardLayout>
   );

@@ -10,17 +10,19 @@ const DisplayInfoGen = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  // console.log("Selected Store Code:", selectedStore);
   const sectionName = "payment";
 
-  const [currencies, setCurrencies] = useState<any>([]);
-  const [newCurrency, setNewCurrency] = useState<any>("");
-  const [defaultCurrency, setDefaultCurrency] = useState("");
+  const [currencies, setCurrencies] = useState<string[]>(["USD", "EUR", "GBP", "NGN"]);
+  const [newCurrency, setNewCurrency] = useState<string>("");
+  const [defaultCurrency, setDefaultCurrency] = useState<string>("NGN");
+  const [paymentGateways, setPaymentGateways] = useState<string[]>([
+    "stripe", "paypal", "flutterwave", "paystack"
+  ]);
+  const [selectedGateway, setSelectedGateway] = useState<string>("");
+  const [paymentGatewayAccess, setPaymentGatewayAccess] = useState<number>();
+  const [flutterwavePublicKey, setFlutterwavePublicKey] = useState<string>("");
+  const [flutterwaveSecretKey, setFlutterwaveSecretKey] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  // const [message, setMessage] = useState("");
-  // const [storeSettings, setStoreSettings] = useState<any>([]);
-
-  // const [currencyDisplay, setCurrencyDisplay] = useState<string>("");
 
   useEffect(() => {
     if (!selectedStore) return;
@@ -28,28 +30,28 @@ const DisplayInfoGen = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        // console.log(response)
         if (response?.data) {
           const settings = response.data?.settings;
-          // setStoreSettings(settings);
-
-          // Populate the form fields with existing settings
+console.log(settings)
           setCurrencies(settings?.settings?.currencies || []);
-          setDefaultCurrency(settings?.settings.default_currency || "");
-          // setCurrencyDisplay(settings?.settings.currency_display || "symbol");
+          setDefaultCurrency(settings?.settings?.default_currency || "");
+          setPaymentGateways(settings?.settings?.payment_gateways || []);
+          setSelectedGateway(settings?.settings?.selected_gateway || "");
+          setPaymentGatewayAccess(settings?.settings?.payment_gateway_access || 0);
+          setFlutterwavePublicKey(settings?.settings?.payment_credentials?.flutterwave_public_key || "");
+          setFlutterwaveSecretKey(settings?.settings?.payment_credentials?.flutterwave_secret_key || "");
+          setFlutterwavePublicKey(settings?.settings?.payment_credentials?.flutterwave_public_key || "");
         }
       })
       .catch((error) => {
         console.error("Error fetching store settings:", error);
-        toast.error("Failed to load store settings.");
+        // toast.error("Failed to load store settings.");
       })
       .finally(() => {
         setLoading(false);
       });
   }, [selectedStore, sectionName]);
 
-    // console.log(storeSettings)
-    
   const handleAddCurrency = () => {
     if (newCurrency && !currencies.includes(newCurrency)) {
       setCurrencies([...currencies, newCurrency]);
@@ -57,13 +59,13 @@ const DisplayInfoGen = () => {
     }
   };
 
-  const handleRemoveCurrency = (currency: any) => {
-    setCurrencies(currencies.filter((c: any) => c !== currency));
+  const handleRemoveCurrency = (currency: string) => {
+    setCurrencies(currencies.filter((c) => c !== currency));
   };
 
   const handleSubmit = async () => {
     if (!defaultCurrency || !currencies.includes(defaultCurrency)) {
- toast.error("Default currency must be in the currency list.");
+      toast.error("Default currency must be in the currency list.");
       return;
     }
 
@@ -72,11 +74,17 @@ const DisplayInfoGen = () => {
         currencies,
         default_currency: defaultCurrency,
         currency_display: "symbol",
+        payment_gateways: paymentGateways,
+        selected_gateway: selectedGateway,
+        payment_gateway_access: paymentGatewayAccess,
+        payment_credentials: {
+          flutterwave_public_key: flutterwavePublicKey,
+          flutterwave_secret_key: flutterwaveSecretKey,
+        },
       },
     };
 
     setLoading(true);
-    // setMessage("");
 
     try {
       const response = await UserApis.updateSettings(
@@ -84,20 +92,15 @@ const DisplayInfoGen = () => {
         sectionName,
         payload
       );
-      // console.log(response);
+
       if (response?.status === 200 || response?.status === 201) {
-        // setMessage("Settings updated successfully!");
-        toast.success(
-          response?.data?.message || "Settings updated successfully!"
-        );
-        // navigate("/dashboard/store");
-        setLoading(false);
+        toast.success(response?.data?.message || "Settings updated successfully!");
       } else {
-        toast.error(response?.data?.message || "Failed to create settings.");
-        setLoading(false);
+        toast.error(response?.data?.message || "Failed to update settings.");
       }
     } catch (error) {
-      // setMessage("Error updating settings. Please try again.");
+      toast.error("Error updating settings. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -109,22 +112,18 @@ const DisplayInfoGen = () => {
           Update Payment Information
         </h4>
 
-        <div className="max-w-lg mx-auto  space-y-4">
-          {/* <h2 className="text-xl font-bold">Update Payment Settings</h2> */}
-
+        <div className="max-w-lg mx-auto space-y-4">
+          {/* Currencies */}
           <div className="flex items-center gap-2">
             <select
-              // type="text"
-              className="w-full p-2  border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              // className="border p-2 flex-grow rounded-md"
-              // placeholder="Enter currency (e.g., USD)"
+              className="w-full p-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               value={newCurrency}
               onChange={(e) => setNewCurrency(e.target.value.toUpperCase())}
             >
-<option >NGN</option>
-<option value="NGN">NGN</option>
-<option value="USD">USD</option>
-              </select>
+              <option value="">Select Currency</option>
+              <option value="NGN">NGN</option>
+              <option value="USD">USD</option>
+            </select>
             <button
               className="bg-secondary text-white px-4 py-1 rounded-md"
               onClick={handleAddCurrency}
@@ -134,165 +133,91 @@ const DisplayInfoGen = () => {
           </div>
 
           <div className="space-y-2">
-            {currencies.map((currency: any) => (
-              <div
-                key={currency}
-                className="w-full flex justify-between  p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-
-                // className="flex justify-between p-2 border rounded-md"
-              >
+            {currencies.map((currency) => (
+              <div key={currency} className="w-full flex justify-between p-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md">
                 <span>{currency}</span>
-                <button
-                  className="text-red-500"
-                  onClick={() => handleRemoveCurrency(currency)}
-                >
-                  ✕
-                </button>
+                <button className="text-red-500" onClick={() => handleRemoveCurrency(currency)}>✕</button>
               </div>
             ))}
           </div>
 
-<div className="mt-2">
-          <label className="text-[13px]">Select default Currency</label>
-
-          <select
-            className="w-full p-2 mt-1  border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-            // className="border p-2 w-full rounded-md"
-            value={defaultCurrency}
-            onChange={(e) => setDefaultCurrency(e.target.value)}
-          >
-            
-            <option value="">Select Default Currency</option>
-            {currencies.map((currency: any) => (
-              <option key={currency} value={currency}>
-                {currency}
-              </option>
-            ))}
-          </select>
+          {/* Default Currency */}
+          <div>
+            <label className="text-[13px]">Select Default Currency</label>
+            <select
+              className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              value={defaultCurrency}
+              onChange={(e) => setDefaultCurrency(e.target.value)}
+            >
+              <option value="">Select Default Currency</option>
+              {currencies.map((currency) => (
+                <option key={currency} value={currency}>{currency}</option>
+              ))}
+            </select>
           </div>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md w-full disabled:opacity-50 disabled:bg-gray-400"
-            onClick={handleSubmit}
-            disabled={loading}
-          >
+
+          {/* Payment Gateways */}
+          <div>
+            <label className="text-[13px]">Select Payment Gateway</label>
+            <select
+              className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              value={selectedGateway}
+              onChange={(e) => setSelectedGateway(e.target.value)}
+            >
+              {paymentGateways.map((gateway) => (
+                <option key={gateway} value={gateway}>{gateway}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Payment Gateway Access */}
+          <div>
+            <label className="text-[13px]">Payment Gateway Access</label>
+            <input
+              type="number"
+              className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md"
+              value={paymentGatewayAccess}
+              onChange={(e) => setPaymentGatewayAccess(Number(e.target.value))}
+            />
+          </div>
+
+          {/* Payment Credentials */}
+          <div>
+            <label className="text-[13px]">Flutterwave Public Key</label>
+            <input
+              type="text"
+              className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md"
+              value={flutterwavePublicKey}
+              onChange={(e) => setFlutterwavePublicKey(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="text-[13px]">Flutterwave Secret Key</label>
+            <input
+              type="text"
+              className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md"
+              value={flutterwaveSecretKey}
+              onChange={(e) => setFlutterwaveSecretKey(e.target.value)}
+            />
+          </div>
+
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-md w-full disabled:opacity-50 disabled:bg-gray-400" onClick={handleSubmit} disabled={loading}>
             {loading ? <LoadingSpinner /> : "Update Settings"}
           </button>
-
-          {/* {message && <p className="text-center mt-2">{message}</p>} */}
         </div>
-
-        {/* <div className="flex flex-col gap-2">
-                          <div className="bg-[#FBFBFF] py-3 px-2">
-                            <h4 className="text-[12px] font-[400]">
-                              Ezeh Rachael, John Mustapha, Chukwu Yemi
-                            </h4>
-                          </div>
-                        </div> */}
-
-        {/* <div className="flex items-center bg-[#796BEB1A]/[10%] px-3 w-fit py-1 mt-3 rounded-[5px] gap-2">
-                          <IoAddCircleOutline className="" />
-        
-                          <h5 className="text-[10px] font-[400]">New Customer</h5>
-                        </div> */}
-
-{/* <div>
-        <div className="">
-          <h4 className="text-[12px] font-[400]">Currency Display</h4>
-          <input
-            type="text"
-            placeholder=""
-            className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-        <div className="flex items-center bg-[#796BEB1A]/[10%] px-3 w-fit py-1 mt-1 rounded-[5px] gap-2">
-          <input
-            type="checkbox"
-            id="customCheckbox"
-            name="customCheckbox"
-            className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-          />
-          <h5 className="text-[10px] font-[400]">
-            Allow Customers Choose Currency Display
-          </h5>
-        </div>
-
-        <h4 className="text-[#000000] mt-4 text-[14px] font-[600] pb-2">
-          Unit System
-        </h4>
-        <div className="grid md:grid-cols-2 gap-3">
-          <div className="mt-3">
-            <h4 className="text-[12px] font-[400]">Unit System</h4>
-            <input
-              type="text"
-              placeholder="Metric System"
-              className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-          <div className="mt-3">
-            <h4 className="text-[12px] font-[400]">Default Weight</h4>
-            <input
-              type="text"
-              placeholder="Title"
-              className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-        </div>
-
-        <div className="mt-3">
-          <h4 className="text-[12px] font-[400]">Time zone</h4>
-          <input
-            type="text"
-            placeholder=""
-            className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-        <div className="flex items-center bg-[#796BEB1A]/[10%] px-3 w-fit py-1 mt-3 rounded-[5px] gap-2">
-          <h5 className="text-[10px] font-[400]">
-            Sets time for recording of orders and analytics
-          </h5>
-        </div>
-
-        <div className="mt-3">
-          <h4 className="text-[12px] font-[400]">Language</h4>
-          <input
-            type="text"
-            placeholder="English UK"
-            className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-        <div className="flex items-center bg-[#796BEB1A]/[10%] px-3 w-fit py-1 mt-1 rounded-[5px] gap-2">
-          <input
-            type="checkbox"
-            id="customCheckbox"
-            name="customCheckbox"
-            className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-          />
-          <h5 className="text-[10px] font-[400]">
-            Allow Customers Choose Currency Display
-          </h5>
-        </div>
-
-        <div className="mt-3">
-          <h4 className="text-[12px] font-[400]">Add Notes (Optional)</h4>
-          <textarea
-            placeholder="Add Note"
-            rows={5}
-            className="w-full p-2 mt-2 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-        </div> */}
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer 
+      position="top-right" 
+      autoClose={2000}
+      hideProgressBar={true}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+       />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import CustomersTable from "./CustomersTable";
 import { IoAddCircleOutline } from "react-icons/io5";
@@ -7,11 +7,28 @@ import { Link } from "react-router-dom";
 import { UserApis } from "../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 
 const Customers = () => {
-  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
+  const selectedStore = useSelector(
+    (state: RootState) => state.globalState?.selectedStore || null
+  );
   // console.log("Selected Store Code:", selectedStore);
-      
+  const [open, setOpen] = useState(false);
+  const onOpenModal = () => {
+    // e.preventDefault();
+    setOpen(true);
+  };
+  const onCloseModal = () => setOpen(false);
+
+    useEffect(() => {
+      if (!selectedStore) {
+        onOpenModal();
+      } else {
+        onCloseModal();
+      }
+    }, [selectedStore]);
   // const [stores, setStores] = useState<any>([]);
   const [customer, setCustomer] = React.useState<any>([]);
 
@@ -49,8 +66,12 @@ const Customers = () => {
       .catch(function (error) {});
   }, [selectedStore]);
   // console.log(customer)
-  const activeCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status === "active").length || 0;
-  const notActiveCustomersCount = customer?.data?.customers?.filter((cust: any) => cust.status !== "active").length || 0;
+  const activeCustomersCount =
+    customer?.data?.customers?.filter((cust: any) => cust.status === "active")
+      .length || 0;
+  const notActiveCustomersCount =
+    customer?.data?.customers?.filter((cust: any) => cust.status !== "active")
+      .length || 0;
 
   // const handleInputChange = (
   //   e: React.ChangeEvent<
@@ -64,6 +85,29 @@ const Customers = () => {
   // console.log(stores);
   return (
     <DashboardLayout>
+      <Modal
+        classNames={{
+          modal: "rounded-[10px] overflow-visible relative",
+        }}
+        open={open}
+        onClose={() => {}} // Prevents closing the modal
+        closeOnEsc={false} // Prevent closing with the Escape key
+        closeOnOverlayClick={false} // Prevent closing by clicking outside
+        showCloseIcon={false} // Hides the close button
+        center
+      >
+        <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
+          <div>
+            <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+            <Link
+              to="/dashboard/create-store"
+              className="underline text-blue-800"
+            >
+              Create a Store
+            </Link>
+          </div>
+        </div>
+      </Modal>
       <div className="lg:flex gap-3 items-end mb-7">
         <div className="grid lg:grid-cols-5 w-full items gap-2">
           <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
@@ -105,7 +149,9 @@ const Customers = () => {
             <div className="flex flex-col gap-1">
               <h5 className="text-[#9D9D9D] text-[12px] font-[600]">Active</h5>
               <div className="flex justify-between">
-                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">{activeCustomersCount}</h5>
+                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">
+                  {activeCustomersCount}
+                </h5>
                 <svg
                   width="32"
                   height="32"
@@ -137,7 +183,9 @@ const Customers = () => {
                 Inactive
               </h5>
               <div className="flex justify-between">
-                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">{notActiveCustomersCount}</h5>
+                <h5 className="text-[#9D9D9D] text-[16px] font-[300]">
+                  {notActiveCustomersCount}
+                </h5>
                 <img
                   aria-hidden
                   src="/images/home/customer.svg"
@@ -165,7 +213,6 @@ const Customers = () => {
           {/* <LiaUploadSolid className="text-white" /> */}
         </Link>
       </div>
-
 
       <CustomersTable customer={customer} />
     </DashboardLayout>

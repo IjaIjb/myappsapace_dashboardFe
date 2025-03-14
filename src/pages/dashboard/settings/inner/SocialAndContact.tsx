@@ -177,8 +177,12 @@ const SocialAndContact = () => {
       <ToastContainer
         position="top-right"
         autoClose={2000}
-        hideProgressBar
+        hideProgressBar={true}
+        newestOnTop={false}
         closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
         pauseOnHover
       />
     </div>

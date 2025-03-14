@@ -12,8 +12,8 @@ import { Link } from "react-router-dom";
 
 const themes = [
   { name: "ThemeOne", price: "NGN 5,000", image: "/images/theme/theme1.svg" },
-  { name: "ThemeTwo", price: "NGN 5,000", image: "/images/theme/theme2.svg" },
-  { name: "ThemeThree", price: "NGN 5,000", image: "/images/theme/theme3.svg" },
+  { name: "classic", price: "NGN 5,000", image: "/images/theme/theme2.svg" },
+  { name: "modern", price: "NGN 5,000", image: "/images/theme/theme3.svg" },
   { name: "ThemeFour", price: "NGN 5,000", image: "/images/theme/theme4.svg" },
   { name: "ThemeFive", price: "NGN 5,000", image: "/images/theme/theme5.svg" },
   { name: "ThemeSix", price: "NGN 5,000", image: "/images/theme/theme6.svg" },
@@ -64,7 +64,7 @@ const Theme = () => {
         selectedStore,
         sectionName,
         {
-          settings: [theme.name],
+          settings: { theme_name: theme.name }, // Send as an object under settings
         }
       );
 

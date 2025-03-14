@@ -18,20 +18,20 @@ const CreateCustomer = () => {
     (state: RootState) => state.globalState?.selectedStore || null
   );
   // console.log("Selected Store Code:", selectedStore);
-  const [open, setOpen] = useState(false);  
-    const onOpenModal = () => {
-      // e.preventDefault();
-      setOpen(true);
-    };
-    const onCloseModal = () => setOpen(false);
-  
-    useEffect(() => {
-      if (!selectedStore) {
-        onOpenModal();
-      } else {
-        onCloseModal();
-      }
-    }, [selectedStore]);
+  const [open, setOpen] = useState(false);
+  const onOpenModal = () => {
+    // e.preventDefault();
+    setOpen(true);
+  };
+  const onCloseModal = () => setOpen(false);
+
+  useEffect(() => {
+    if (!selectedStore) {
+      onOpenModal();
+    } else {
+      onCloseModal();
+    }
+  }, [selectedStore]);
 
   const [showPassword, setShowPassword] = useState(false);
   // const [stores, setStores] = useState<any>([]);
@@ -112,27 +112,29 @@ const CreateCustomer = () => {
 
   return (
     <DashboardLayout>
-                    <Modal
-              classNames={{
-                modal: "rounded-[10px] overflow-visible relative",
-              }}
-              open={open}
-              onClose={() => {}} // Prevents closing the modal
+      <Modal
+        classNames={{
+          modal: "rounded-[10px] overflow-visible relative",
+        }}
+        open={open}
+        onClose={() => {}} // Prevents closing the modal
         closeOnEsc={false} // Prevent closing with the Escape key
         closeOnOverlayClick={false} // Prevent closing by clicking outside
         showCloseIcon={false} // Hides the close button
-              center
+        center
+      >
+        <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
+          <div>
+            <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+            <Link
+              to="/dashboard/create-store"
+              className="underline text-blue-800"
             >
-              <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
-          
-        <div>
-        <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
-      <Link to="/dashboard/create-store" className="underline text-blue-800">Create a Store</Link>
-      </div>
-           
-             
-              </div>
-            </Modal>
+              Create a Store
+            </Link>
+          </div>
+        </div>
+      </Modal>
       <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
         <h5 className="text-[#000000] text-[16px] font-[600] mb-7">
           Create Customer

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 // import { IoAddCircleOutline } from 'react-icons/io5'
 import { FiDownload } from "react-icons/fi";
@@ -8,6 +8,9 @@ import { RootState } from "../../../store/store";
 import { UserApis } from "../../../apis/userApi/userApi";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
+import { Link } from "react-router-dom";
 const Finance = () => {
   const [loader, setLoader] = React.useState<boolean>(false);
 
@@ -16,6 +19,20 @@ const Finance = () => {
   );
   // console.log("Selected Store Code:", selectedStore);
   const [transaction, setTransaction] = React.useState<any>([]);
+  const [open, setOpen] = useState(false);
+  const onOpenModal = () => {
+    // e.preventDefault();
+    setOpen(true);
+  };
+  const onCloseModal = () => setOpen(false);
+
+  useEffect(() => {
+    if (!selectedStore) {
+      onOpenModal();
+    } else {
+      onCloseModal();
+    }
+  }, [selectedStore]);
 
   React.useEffect(() => {
     setLoader(true);
@@ -52,6 +69,29 @@ const Finance = () => {
 
   return (
     <DashboardLayout>
+      <Modal
+        classNames={{
+          modal: "rounded-[10px] overflow-visible relative",
+        }}
+        open={open}
+        onClose={() => {}} // Prevents closing the modal
+        closeOnEsc={false} // Prevent closing with the Escape key
+        closeOnOverlayClick={false} // Prevent closing by clicking outside
+        showCloseIcon={false} // Hides the close button
+        center
+      >
+        <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
+          <div>
+            <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+            <Link
+              to="/dashboard/create-store"
+              className="underline text-blue-800"
+            >
+              Create a Store
+            </Link>
+          </div>
+        </div>
+      </Modal>
       <div className="flex flex-col gap-5">
         <div className="flex gap-3 items-end">
           <div className="grid lg:grid-cols-5 w-full items gap-2">

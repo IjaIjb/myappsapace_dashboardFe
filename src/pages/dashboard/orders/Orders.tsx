@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import RecentOrders from "./RecentOrders";
 import { IoAddCircleOutline } from "react-icons/io5";
@@ -60,7 +60,20 @@ const Orders = () => {
       });
   }, [selectedStore]); // Depend on selectedCurrency so it updates when changed
   // console.log(orders)
+  const [openM, setOpenM] = useState(false);
+  const onOpenModalM = () => {
+    // e.preventDefault();
+    setOpenM(true);
+  };
+  const onCloseModalM = () => setOpenM(false);
 
+    useEffect(() => {
+      if (!selectedStore) {
+        onOpenModalM();
+      } else {
+        onCloseModalM();
+      }
+    }, [selectedStore]);
   const totalOrders = orders?.orders?.data?.length || 0;
 
 // console.log("Total Orders:", totalOrders);
@@ -135,6 +148,29 @@ const showProfileConnector = () => {
 
   return (
     <DashboardLayout>
+            <Modal
+              classNames={{
+                modal: "rounded-[10px] overflow-visible relative",
+              }}
+              open={openM}
+              onClose={() => {}} // Prevents closing the modal
+              closeOnEsc={false} // Prevent closing with the Escape key
+              closeOnOverlayClick={false} // Prevent closing by clicking outside
+              showCloseIcon={false} // Hides the close button
+              center
+            >
+              <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
+                <div>
+                  <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+                  <Link
+                    to="/dashboard/create-store"
+                    className="underline text-blue-800"
+                  >
+                    Create a Store
+                  </Link>
+                </div>
+              </div>
+            </Modal>
       {loader ? null : (
         <div>
           <div className="flex gap-3 items-center mb-7">

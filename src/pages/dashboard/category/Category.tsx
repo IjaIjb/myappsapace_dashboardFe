@@ -1,18 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { UserApis } from "../../../apis/userApi/userApi";
 import { NavLink, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 
 const Category = () => {
-  const selectedStore = useSelector((state: RootState) => state.globalState?.selectedStore || null);
+  const selectedStore = useSelector(
+    (state: RootState) => state.globalState?.selectedStore || null
+  );
   // console.log("Selected Store Code:", selectedStore);
-      
+
   const [categories, setCategories] = React.useState<any>([]);
   // const [stores, setStores] = useState<any>([]);
 
+  const [open, setOpen] = useState(false);
+  const onOpenModal = () => {
+    // e.preventDefault();
+    setOpen(true);
+  };
+  const onCloseModal = () => setOpen(false);
+
+  useEffect(() => {
+    if (!selectedStore) {
+      onOpenModal();
+    } else {
+      onCloseModal();
+    }
+  }, [selectedStore]);
   // const [formValues, setFormValues] = useState({
   //   category_name: "",
   //   store_code: "", // Use store_code instead of store_name
@@ -55,6 +73,29 @@ const Category = () => {
   // console.log(categories);
   return (
     <DashboardLayout>
+      <Modal
+        classNames={{
+          modal: "rounded-[10px] overflow-visible relative",
+        }}
+        open={open}
+        onClose={() => {}} // Prevents closing the modal
+        closeOnEsc={false} // Prevent closing with the Escape key
+        closeOnOverlayClick={false} // Prevent closing by clicking outside
+        showCloseIcon={false} // Hides the close button
+        center
+      >
+        <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
+          <div>
+            <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+            <Link
+              to="/dashboard/create-store"
+              className="underline text-blue-800"
+            >
+              Create a Store
+            </Link>
+          </div>
+        </div>
+      </Modal>
       <div>
         <div className="flex gap-3 items-center mb-7">
           <Link
@@ -70,8 +111,6 @@ const Category = () => {
             </h5>
             {/* <LiaUploadSolid className="text-white" /> */}
           </Link>
-
-      
         </div>
         {/* <RecentOrders /> */}
 

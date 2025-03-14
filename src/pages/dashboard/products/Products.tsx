@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 // import RecentOrders from '../orders/RecentOrders'
 import { IoAddCircleOutline } from "react-icons/io5";
@@ -9,11 +9,29 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import FlashSalesTable from "./flashSales/FlashSalesTable";
 import DraftTable from "./draft/DraftTable";
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 
 const Products = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
+
+    const [open, setOpen] = useState(false);
+    const onOpenModal = () => {
+      // e.preventDefault();
+      setOpen(true);
+    };
+    const onCloseModal = () => setOpen(false);
+  
+      useEffect(() => {
+        if (!selectedStore) {
+          onOpenModal();
+        } else {
+          onCloseModal();
+        }
+      }, [selectedStore]);
+      
   // console.log("Selected Store Code:", selectedStore);
   // const [stores, setStores] = useState<any>([]);
   const [product, setProduct] = React.useState<any>([]);
@@ -133,6 +151,29 @@ const Products = () => {
   // console.log(stores);
   return (
     <DashboardLayout>
+           <Modal
+              classNames={{
+                modal: "rounded-[10px] overflow-visible relative",
+              }}
+              open={open}
+              onClose={() => {}} // Prevents closing the modal
+              closeOnEsc={false} // Prevent closing with the Escape key
+              closeOnOverlayClick={false} // Prevent closing by clicking outside
+              showCloseIcon={false} // Hides the close button
+              center
+            >
+              <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
+                <div>
+                  <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+                  <Link
+                    to="/dashboard/create-store"
+                    className="underline text-blue-800"
+                  >
+                    Create a Store
+                  </Link>
+                </div>
+              </div>
+            </Modal>
       <div>
         <div className="lg:flex gap-3 items-end mb-7">
           <div className="grid lg:grid-cols-4 w-full items gap-2">

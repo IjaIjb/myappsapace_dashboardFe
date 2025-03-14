@@ -208,7 +208,17 @@ const AddStore = () => {
         </form>
       </div>
     </div>
-    <ToastContainer position="top-right" autoClose={2000} hideProgressBar newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+    <ToastContainer 
+    position="top-right" 
+    autoClose={2000} 
+    hideProgressBar 
+    newestOnTop 
+    closeOnClick 
+    rtl={false} 
+    pauseOnFocusLoss 
+    draggable 
+    pauseOnHover 
+    />
   </div>
   );
 };
