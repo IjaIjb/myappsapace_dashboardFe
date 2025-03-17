@@ -127,6 +127,30 @@ export class UserApis {
         }
     } 
 
+    static updateCoupon(storeCode:any, coupon_id:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateCoupon(storeCode, coupon_id, data);
+        }
+    } 
+
+    static getSingleCoupon(store_code:any, coupon_id:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleCoupon(store_code, coupon_id);
+        }
+    } 
+
+    static deleteCoupon(storeCode:any, coupon_id: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.deleteCoupon(storeCode, coupon_id);
+        }
+    } 
+
     static createProduct(storeCode:any, data: any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;
@@ -134,6 +158,23 @@ export class UserApis {
             return this.authLiveApis.createProduct(storeCode,data);
         }
     }
+
+    static createCoupon(storeCode:any, data: any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.createCoupon(storeCode,data);
+        }
+    }
+
+    static getCoupon(storeCode:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getCoupon(storeCode);
+        }
+    } 
+
 
     static addProductToSale(storeCode:any, product_id:any, data: any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {

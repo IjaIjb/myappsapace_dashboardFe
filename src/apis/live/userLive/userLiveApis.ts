@@ -92,6 +92,37 @@ export class UserLiveApis extends AxiosGlobal{
         });
     }
 
+    createCoupon(storeCode:any, data:any): AxiosPromise<any> {
+        return this.axios.post(`${configs.contextUser}/${storeCode}/coupons/addNew`, data,{
+            headers: { "Content-Type": "aplication/json","Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },
+          });
+    }
+
+    getCoupon(storeCode:any): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${storeCode}/coupons/getAll`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
+    updateCoupon(storeCode:any, coupon_id:any, data:any): AxiosPromise<Array<any>> {
+        return this.axios.put(`${configs.contextUser}/${storeCode}/coupons/${coupon_id}/update`,  data,{
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
+    getSingleCoupon(store_code:any, coupon_id:any): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/coupons/${coupon_id}/getOne`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
+    deleteCoupon(storeCode:any, coupon_id: any): AxiosPromise<Array<any>> {
+        return this.axios.delete(`${configs.contextUser}/${storeCode}/coupons/${coupon_id}/remove`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+  
+
     createProduct(storeCode:any, data:any): AxiosPromise<any> {
         return this.axios.post(`${configs.contextUser}/${storeCode}/products`, data,{
             headers: { "Content-Type": "aplication/json", "Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },

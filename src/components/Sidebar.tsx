@@ -472,6 +472,36 @@ const Sidebar = (props: Props) => {
                 </div>
               </Link>
             </div>
+
+            
+            <div className="">
+              <Link to={"/dashboard/coupon"} className="relative gap-1  ">
+                <div
+                  className={`${
+                    ["dashboard", "coupon"].every((ai) =>
+                      pathnames.includes(ai)
+                    )
+                      ? "bg-white text-primary "
+                      : " text-white"
+                  } gap-x-3 flex items-center px-6 text-[14px] hover:text-[16px] hover:font-[600] rounded-[10px] py-[10px] `}
+                >
+                  <img
+                    aria-hidden
+                    src={
+                      ["dashboard", "coupon"].every((ai) =>
+                        pathnames.includes(ai)
+                      )
+                        ? "/images/orders.svg"
+                        : "/images/orders.svg"
+                    }
+                    alt="Window icon"
+                    // width={16}
+                    // height={16}
+                  />
+                  <h5 className=" ">Coupon</h5>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
 

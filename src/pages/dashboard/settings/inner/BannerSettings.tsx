@@ -49,7 +49,7 @@ const BannerSettings = () => {
         }
       })
       .catch(() => {
-        toast.error("Failed to load store settings.");
+        // toast.error("Failed to load store settings.");
       })
       .finally(() => setLoading(false));
   }, [selectedStore]);
@@ -155,7 +155,7 @@ const BannerSettings = () => {
       if (response?.status === 200 || response?.status === 201) {
         toast.success("Settings updated successfully!");
       } else {
-        toast.error("Failed to update settings.");
+        // toast.error("Failed to update settings.");
       }
     } catch (error) {
       toast.error("Error updating settings. Please try again.");

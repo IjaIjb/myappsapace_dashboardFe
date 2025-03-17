@@ -23,6 +23,9 @@ const TransactionDetailsPage = lazy(() => import("../pages/dashboard/transaction
 const OrderDetailPage = lazy(() => import("../pages/dashboard/orders/OrderDetails"));
 const CreateOrderPage = lazy(() => import("../pages/dashboard/orders/CreateOrder"));
 const CategoryPage = lazy(() => import("../pages/dashboard/category/Category"));
+const CouponPage = lazy(() => import("../pages/dashboard/coupon/Coupon"));
+const CreateCouponPage = lazy(() => import("../pages/dashboard/coupon/CreateCoupon"));
+const EditCouponPage = lazy(() => import("../pages/dashboard/coupon/EditCoupon"));
 const CreateCategoryPage = lazy(() => import("../pages/dashboard/category/inner/CreateCategory"));
 const StorePage = lazy(() => import("../pages/dashboard/store/Store"));
 const EditStorePage = lazy(() => import("../pages/dashboard/store/EditStore"));
@@ -136,6 +139,18 @@ const routes = [
   {
     path: "/dashboard/create-category",
     component: CreateCategoryPage,
+  },
+  {
+    path: "/dashboard/coupon",
+    component: CouponPage,
+  },
+  {
+    path: "/dashboard/create-coupon",
+    component: CreateCouponPage,
+  },
+  {
+    path: "/dashboard/edit-coupon/:id",
+    component: EditCouponPage,
   },
   {
     path: "/dashboard/store",
