@@ -159,7 +159,7 @@ const EditCoupon = () => {
         );
         // Redirect after a short delay
         setTimeout(() => {
-          navigate("/dashboard/coupons");
+          navigate("/dashboard/coupon");
         }, 1500);
       }
     } catch (err: any) {

@@ -17,6 +17,7 @@ const Settings = () => {
               <h4 className="text-[#000000] text-[14px] font-[600] ">
                 Store Settings
               </h4>
+
               <div className="flex flex-col gap-3 mt-3">
                 <Link to="/dashboard/settings/general-information" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
                   <div className="flex justify-between items-center">
@@ -190,7 +191,7 @@ const Settings = () => {
               Payment Preferences
               </h4>
               <div className="flex flex-col gap-3 mt-3">
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
+              <Link to="/dashboard/settings/payment-preference" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col gap-1">
                       <h5 className="text-[#000000] text-[12px] font-[500]">
@@ -203,7 +204,7 @@ const Settings = () => {
 
                     <MdChevronRight />
                   </div>
-                </div>
+                </Link>
 
                 <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
                   <div className="flex justify-between items-center">

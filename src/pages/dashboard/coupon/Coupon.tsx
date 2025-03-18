@@ -8,6 +8,7 @@ import { FaEdit, FaToggleOn, FaToggleOff } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { UserApis } from "../../../apis/userApi/userApi";
+import { IoWarning } from "react-icons/io5";
 
 const Coupon = () => {
   const selectedStore = useSelector(
@@ -21,6 +22,36 @@ const Coupon = () => {
     setOpen(true);
   };
   const onCloseModal = () => setOpen(false);
+   const [formData, setFormData] = useState({
+     guest_checkout: false,
+     min_order_amount: "",
+     max_cart_items: "",
+     allow_coupons: false,
+     tax: {
+       tax_type: "none", // product or order or none
+       tax_rate: "" // 0 or greater than 0
+     }
+   });
+  const sectionName = "checkout";
+
+  // Fetch settings from the API
+  useEffect(() => {
+    if (!selectedStore) return;
+
+    setLoading(true);
+    UserApis.getStoreSettings(selectedStore, sectionName)
+      .then((response) => {
+        console.log(response.data?.settings)
+        if (response?.data?.settings) {
+          setFormData((prev) => ({
+            ...prev,
+            ...response.data.settings.settings, // Populate state with API response
+          }));
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [selectedStore]);
+
 
   useEffect(() => {
     if (!selectedStore) {
@@ -100,6 +131,33 @@ const Coupon = () => {
         </div>
       </Modal>
       <div>
+        {/* Coupon Disabled Warning */}
+        {!formData.allow_coupons && !loading && (
+          <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <IoWarning className="h-5 w-5 text-yellow-600" />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-yellow-800">
+                  Coupons are currently disabled for your store
+                </h3>
+                <div className="mt-2 text-sm text-yellow-700">
+                  <p>
+                    Your coupons won't work until you enable them in your store settings. 
+                    <Link
+                      to="/dashboard/settings/payment-preference"
+                      className="ml-1 font-medium text-yellow-800 underline hover:text-yellow-900"
+                    >
+                      Click here to enable coupons
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-3 items-center mb-7">
           <Link
             to={"/dashboard/create-coupon"}
@@ -122,7 +180,10 @@ const Coupon = () => {
             </div>
           ) : coupons.length === 0 ? (
             <div className="text-center py-10 text-gray-500">
-              No coupons found. Create your first coupon to get started.
+              {formData.allow_coupons ? 
+                "No coupons found. Create your first coupon to get started." :
+                "No coupons found. Enable coupons in your store settings, then create your first coupon."
+              }
             </div>
           ) : (
             <table className="min-w-full text-sm text-gray-500 divide-y divide-gray-200">
@@ -176,7 +237,7 @@ const Coupon = () => {
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {coupon.is_active ? "Active" : "Inactive"}
+                        {coupon.is_active ? (formData.allow_coupons ? "Active" : "Inactive (Store)") : "Inactive"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
@@ -185,8 +246,9 @@ const Coupon = () => {
                           onClick={() =>
                             toggleCouponStatus(coupon.id, coupon.is_active)
                           }
-                          className="text-purple-600 hover:text-purple-900"
-                          title={coupon.is_active ? "Deactivate" : "Activate"}
+                          className={`text-purple-600 hover:text-purple-900 ${!formData.allow_coupons ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          title={!formData.allow_coupons ? "Enable coupons in settings first" : (coupon.is_active ? "Deactivate" : "Activate")}
+                          disabled={!formData.allow_coupons}
                         >
                           {coupon.is_active ? (
                             <FaToggleOn className="text-xl" />

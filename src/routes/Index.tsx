@@ -38,6 +38,7 @@ const AnalyticsPage = lazy(() => import("../pages/dashboard/analytics/Analytics"
 const MarketingPage = lazy(() => import("../pages/dashboard/marketing/Marketing"));
 const SettingsPage = lazy(() => import("../pages/dashboard/settings/Settings"));
 const GeneralInfoPage = lazy(() => import("../pages/dashboard/settings/inner/GeneralInfo"));
+const PaymentPreferencePage = lazy(() => import("../pages/dashboard/settings//payment/Payment"));
 const StaffAndPermissionPage = lazy(() => import("../pages/dashboard/settings/inner/StaffAndPermission"));
 const ThemeSetupPage = lazy(() => import("../pages/dashboard/themeSetup/ThemeSetup"));
 const SubscriptionPage = lazy(() => import("../pages/dashboard/subscription/Subscription"));
@@ -207,6 +208,10 @@ const routes = [
   {
     path: "/dashboard/settings/general-information",
     component: GeneralInfoPage,
+  }, 
+  {
+    path: "/dashboard/settings/payment-preference",
+    component: PaymentPreferencePage,
   }, 
   {
     path: "/dashboard/settings/staff-and-permission",
