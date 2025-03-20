@@ -216,6 +216,12 @@ export class UserLiveApis extends AxiosGlobal{
         });
     }
 
+    getCountry(page = 1): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/location/countries?page=${page}`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
     logout(data:any): AxiosPromise<any> {
         return this.axios.post(`${configs.contextUser}/logout`, data,{
             headers: { "Content-Type": "aplication/json","Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },

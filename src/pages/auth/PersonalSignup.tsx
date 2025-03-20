@@ -1,7 +1,6 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as Yup from "yup";
 import { FaArrowRight } from "react-icons/fa";
 import LoadingSpinner from "../../components/UI/LoadingSpinner";
@@ -11,9 +10,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { login } from "../../reducer/loginSlice";
 import { useDispatch } from "react-redux";
-import { Dispatch } from "redux";
-import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import CountryPhoneInput from "./CountryPhoneInput"; // Import the new component
 
 const images = [
   "/images/auth/authImage1.svg",
@@ -22,23 +20,23 @@ const images = [
 ]; // Add more images as needed
 
 const PersonalSignup = () => {
-   const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
   
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setIndex((prevIndex) => (prevIndex + 1) % images.length);
-      }, 3000); // Change image every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000); // Change image every 3 seconds
   
-      return () => clearInterval(interval);
-    }, []);
+    return () => clearInterval(interval);
+  }, []);
     
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setShowConfirmPassword] = useState(false);
-  const dispatch: Dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
-  const initialData:any = {
+  const initialData = {
     first_name: "",
     last_name: "",
     email: "",
@@ -54,64 +52,27 @@ const PersonalSignup = () => {
       .email("Invalid email address")
       .required("Email is required"),
     phone_number: Yup.string()
-    .matches(/^[0-9]{10}$/, "Phone number must be exactly 11 digits")
       .required("Phone number is required"),
     password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[0-9]/, "Password must contain at least one number")
-    .matches(
-      /[@$!%*?&]/,
-      "Password must contain at least one special character (@, $, !, %, *, ?, &)"
-    )
-    .required("Password is required"),
+      .min(8, "Password must be at least 8 characters")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+      .matches(/[0-9]/, "Password must contain at least one number")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must contain at least one special character (@, $, !, %, *, ?, &)"
+      )
+      .required("Password is required"),
     password_confirmation: Yup.string()
       .oneOf([Yup.ref("password"), undefined], "Passwords must match")
       .required("Confirm Password is required"),
   });
-  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  // const onSubmit = async (values:any) => {
-  //   if (values?.password !== values?.password_confirmation) {
-  //     return toast.error("Password does not match");
-  // }
-  //   try {
-  //     // Convert form values to FormData
-  //     const formData = new FormData();
-  //     formData.append("first_name", values.first_name);
-  //     formData.append("last_name", values.last_name);
-  //     formData.append("email", values.email);
-  //     formData.append("phone_number", values.phone_number);
-  //     formData.append("password", values.password);
-
-  //     // Submit formData to the API
-  //     const response = await UserApis.register(formData);
-  //     dispatch(login({ email: values?.email, token: response.data.token, name: response.data.name }))
-
-  //     console.log("Registration successful:", response);
-  //     toast.success("Login Successful");
-  //     navigate("/auth/verify-email");
-  //     window.scrollTo(0, 0); // Scroll to top
-  //   } catch (error) {
-  //     console.error("Error registering user:", error);
-  //   }
-  //   // UserApis.register("console.log()")
-  //   //   navigate("/auth/verify-email");
-
-  //   //   window.scrollTo(0, 0); // Scroll to top
-
-  // };
-
+  
+  const isValidEmail = (email:any) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  
   const onSubmit = async (
-    values: {
-      first_name: string;
-      last_name: string;
-      email: string;
-      phone_number: string;
-      password: string;
-      password_confirmation: string;
-    },
-    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+    values:any,
+    { setSubmitting }:any
   ) => {
     if (values.password !== values.password_confirmation) {
       toast.error("Passwords do not match");
@@ -128,68 +89,59 @@ const PersonalSignup = () => {
     formData.append("password_confirmation", values.password_confirmation);
   
     try {
-      const response:any = await UserApis.register(formData);
-      // console.log(response)
+      const response = await UserApis.register(formData);
       if (response?.status === 200) {
         dispatch(
           login({
             email: values.email,
-            // token: response.data.token,
-            // name: response.data.name,
           })
         );
-        // console.log("Signup created:", response.data);
 
-        toast.success("Login Successful");
+        toast.success("Signup Successful");
         navigate("/auth/verify-email");
       } else {
         toast.error(response?.data?.errors?.message);
       }
     } catch (error:any) {
       console.error(error);
-      toast.error(error.response.data?.message || "An error occurred. Please try again.");
+      toast.error(error.response?.data?.message || "An error occurred. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
   
-
   return (
     <div>
       <div className="p-8">
         <div className="grid md:grid-cols-2 ">
-          {/* <div className="h-screen md:block hidden ">
-            <img
-              src="/images/auth/authImage1.svg"
-              className="h-screen"
-              alt="Logo"
-            />
-          </div> */}
-                     <div className="h-screen md:block hidden relative overflow-hidden">
-                <AnimatePresence>
-                  <motion.img
-                    key={images[index]} // Ensure smooth transition
-                    src={images[index]}
-                    alt="Auth Image"
-                    className="h-screen absolute top-0 left-0"
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.1 }}
-                    transition={{ duration: 1 }}
-                  />
-                </AnimatePresence>
-              </div>
+          <div className="h-screen md:block hidden relative overflow-hidden">
+            <AnimatePresence>
+              <motion.img
+                key={images[index]} // Ensure smooth transition
+                src={images[index]}
+                alt="Auth Image"
+                className="h-screen absolute top-0 left-0"
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.1 }}
+                transition={{ duration: 1 }}
+              />
+            </AnimatePresence>
+          </div>
 
           <div className="md:block flex ">
             <div className=" pt-10  px-5">
               <div className="">
-              <a href="https://myappspace.net/" rel="noreferrer" target="_blank">
-            <img
-              src="/images/auth/MyAppspace (3).png"
-              className="w-[170px] h-full"
-              alt="Logo"
-            />
-            </a>
+<div className="flex justify-center">
+
+                <a href="https://myappspace.net/" rel="noreferrer" target="_blank">
+                  <img
+                    src="/images/auth/MyAppspace (3).png"
+                    className="w-[170px] h-full"
+                    alt="Logo"
+                  />
+                </a>
+                </div>
                 <div className=" mt-7 ">
                   <h5 className="text-[#000000] text-[16px] font-[600] ">
                     Personal Information
@@ -203,7 +155,7 @@ const PersonalSignup = () => {
                   validationSchema={validation}
                   onSubmit={onSubmit}
                 >
-                  {({ values, isSubmitting, handleChange }) => (
+                  {({ values, isSubmitting, handleChange, errors, touched, setFieldValue }) => (
                     <Form className="w-full  mb-6 flex flex-col justify-between">
                       <div className="">
                         <div className="flex gap-3">
@@ -265,7 +217,7 @@ const PersonalSignup = () => {
                               id="email"
                               onChange={handleChange}
                               value={values.email}
-                              placeholder=""
+                              placeholder="Email Address"
                             />
                             <p className="text-red-700 text-xs mt-1 ">
                               <ErrorMessage name="email" />
@@ -279,18 +231,13 @@ const PersonalSignup = () => {
                             >
                               Phone Number
                             </label>
-                            <Field
-                              className="mt-1 block w-full h-[40px] border-[0.5px]  pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF]  border-[#D8D8E2] "
+                            {/* Replace the original phone input with the new component */}
+                            <CountryPhoneInput
                               name="phone_number"
-                              type="number"
-                              id="phone_number"
-                              onChange={handleChange}
                               value={values.phone_number}
-                              placeholder="08166965025"
+                              onChange={(e:any) => setFieldValue('phone_number', e.target.value)}
+                              error={touched.phone_number && errors.phone_number}
                             />
-                            <p className="text-red-700 text-xs mt-1 ">
-                              <ErrorMessage name="phone_number" />
-                            </p>
                           </div>
                         </div>
 
@@ -310,16 +257,13 @@ const PersonalSignup = () => {
                                 value={values.password}
                                 id="password"
                                 type={!showPassword ? "password" : "text"}
-                                placeholder=""
+                                placeholder="Password"
                               />
                               <button
                                 type="button"
-                                // role="button"
                                 aria-label="show password"
-                                title=" show password"
-                                onClick={() =>
-                                  setShowPassword(() => !showPassword)
-                                }
+                                title="show password"
+                                onClick={() => setShowPassword(!showPassword)}
                                 className={`absolute right-4 top-[40px]`}
                               >
                                 {!showPassword ? (
@@ -348,16 +292,13 @@ const PersonalSignup = () => {
                                 onChange={handleChange}
                                 value={values.password_confirmation}
                                 type={!confirmPassword ? "password" : "text"}
-                                placeholder=""
+                                placeholder="Confirm Password"
                               />
                               <button
                                 type="button"
-                                // role="button"
                                 aria-label="show password"
-                                title=" show password"
-                                onClick={() =>
-                                  setShowConfirmPassword(() => !confirmPassword)
-                                }
+                                title="show password"
+                                onClick={() => setShowConfirmPassword(!confirmPassword)}
                                 className={`absolute right-4 top-[40px]`}
                               >
                                 {!confirmPassword ? (
@@ -373,47 +314,47 @@ const PersonalSignup = () => {
                           </div>
                         </div>
                       </div>
-  <p className="flex items-center justify-center gap-x-1 text-[#1A1A1A] text-[16px] md:text-[18px] font-normal">
-                          Already have an account?
-                          <Link
-                            to="/"
-                            className="text-secondary underline font-bold hover:underline"
-                          >
-                            Login Here
-                          </Link>
-                        </p>
-                      <div className="flex justify-end items-end h-full">
-                      <button
-  type="submit"
-  disabled={isSubmitting || 
-    values.first_name === "" ||
-    !isValidEmail(values.email) ||
-    values.last_name === ""  || values.email === ""  || values.phone_number === "" || (values.password !== values.password_confirmation)} // Formik automatically sets this during submission
-  className={`disabled:bg-gray-500 flex gap-2 items-center py-2 w-fit px-6 bg-secondary text-white rounded-full hover:bg-secondary/[70%]`}
->
-  {isSubmitting ? <LoadingSpinner /> : "Proceed"}
-  {!isSubmitting && <FaArrowRight />}
-</button>
-
+                      <p className="flex items-center justify-center gap-x-1 text-[#1A1A1A] text-[16px] md:text-[18px] font-normal">
+                        Already have an account?
+                        <Link
+                          to="/"
+                          className="text-secondary underline font-bold hover:underline"
+                        >
+                          Login Here
+                        </Link>
+                      </p>
+                      <div className="flex justify-center items-end h-full">
+                        <button
+                          type="submit"
+                          disabled={isSubmitting || 
+                            values.first_name === "" ||
+                            !isValidEmail(values.email) ||
+                            values.last_name === "" || 
+                            values.email === "" || 
+                            values.phone_number === "" || 
+                            (values.password !== values.password_confirmation)}
+                          className={`disabled:bg-gray-500 flex gap-2 items-center py-2 w-fit px-6 bg-secondary text-white rounded-full hover:bg-secondary/[70%]`}
+                        >
+                          {isSubmitting ? <LoadingSpinner /> : "Proceed"}
+                          {!isSubmitting && <FaArrowRight />}
+                        </button>
                       </div>
                     </Form>
                   )}
                 </Formik>
               </div>
               <p className="text-center text-sm text-[#1A1A1A] mt-4">
-  By signing up, you agree to our
-  <a href="https://myappspace.net/terms-and-condition"  rel="noopener noreferrer" target="_blank" className="text-secondary underline font-bold hover:underline mx-1">
-    Terms & Conditions
-  </a>
-  and
-  <a href="https://myappspace.net/privacy-policy"  rel="noopener noreferrer" target="_blank"  className="text-secondary underline font-bold hover:underline mx-1">
-    Privacy Policy
-  </a>.
-</p>
-
+                By signing up, you agree to our
+                <a href="https://myappspace.net/terms-and-condition" rel="noopener noreferrer" target="_blank" className="text-secondary underline font-bold hover:underline mx-1">
+                  Terms & Conditions
+                </a>
+                and
+                <a href="https://myappspace.net/privacy-policy" rel="noopener noreferrer" target="_blank" className="text-secondary underline font-bold hover:underline mx-1">
+                  Privacy Policy
+                </a>.
+              </p>
             </div>
           </div>
-          
         </div>
       </div>
       <ToastContainer

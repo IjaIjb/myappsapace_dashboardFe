@@ -120,12 +120,12 @@ const Coupon = () => {
       >
         <div className="px-2 md:px-5 h-[100px] flex justify-center items-center text-center">
           <div>
-            <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+            <h4 className="text-[20px] font-[600] mb-4">Don't have a Site?</h4>
             <Link
-              to="/dashboard/create-store"
+              to="/dashboard/create-site"S
               className="underline text-blue-800"
             >
-              Create a Store
+              Create a Site
             </Link>
           </div>
         </div>
@@ -140,11 +140,11 @@ const Coupon = () => {
               </div>
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-yellow-800">
-                  Coupons are currently disabled for your store
+                  Coupons are currently disabled for your site
                 </h3>
                 <div className="mt-2 text-sm text-yellow-700">
                   <p>
-                    Your coupons won't work until you enable them in your store settings. 
+                    Your coupons won't work until you enable them in your site settings. 
                     <Link
                       to="/dashboard/settings/payment-preference"
                       className="ml-1 font-medium text-yellow-800 underline hover:text-yellow-900"
@@ -182,7 +182,7 @@ const Coupon = () => {
             <div className="text-center py-10 text-gray-500">
               {formData.allow_coupons ? 
                 "No coupons found. Create your first coupon to get started." :
-                "No coupons found. Enable coupons in your store settings, then create your first coupon."
+                "No coupons found. Enable coupons in your site settings, then create your first coupon."
               }
             </div>
           ) : (
@@ -237,7 +237,7 @@ const Coupon = () => {
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {coupon.is_active ? (formData.allow_coupons ? "Active" : "Inactive (Store)") : "Inactive"}
+                        {coupon.is_active ? (formData.allow_coupons ? "Active" : "Inactive (Site)") : "Inactive"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">

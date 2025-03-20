@@ -40,7 +40,7 @@ const SocialAndContact = () => {
         }
       })
       .catch(() => {
-        toast.error("Failed to load store settings.");
+        toast.error("Failed to load Site settings.");
       })
       .finally(() => setLoading(false));
   }, [selectedStore]);

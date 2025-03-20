@@ -162,7 +162,7 @@ const routes = [
     component: EditStorePage,
   },
   {
-    path: "/dashboard/create-store",
+    path: "/dashboard/create-site",
     component: CreateStorePage,
   },
   {

@@ -5,7 +5,7 @@ const StoreOwnerStaff = () => {
     <div>
             <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
         <h4 className="text-[#000000] text-[14px] font-[600] pb-2">
-          Store Owner
+          Site Owner
         </h4>
 
         {/* <div className="flex flex-col gap-2">

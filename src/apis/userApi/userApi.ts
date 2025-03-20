@@ -281,6 +281,14 @@ export class UserApis {
         }
     }
 
+    static getCountry(page:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getCountry(page);
+        }
+    } 
+
     static getStoreSettings(store_code:any, sectionName:any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;

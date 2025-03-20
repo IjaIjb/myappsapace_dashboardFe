@@ -193,7 +193,7 @@ const BannerSettings = () => {
   return (
     <div className="bg-white rounded-[14px] p-6 shadow-lg">
       <h4 className="text-[#000000] text-[18px] font-bold pb-4">
-        Update Store Settings
+        Update Site Settings
       </h4>
 
       <div>

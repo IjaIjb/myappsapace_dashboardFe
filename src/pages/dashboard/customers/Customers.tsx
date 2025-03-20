@@ -98,12 +98,12 @@ const Customers = () => {
       >
         <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
           <div>
-            <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
+            <h4 className="text-[20px] font-[600] mb-4">Don't have a Site?</h4>
             <Link
-              to="/dashboard/create-store"
+              to="/dashboard/create-site"
               className="underline text-blue-800"
             >
-              Create a Store
+              Create a Site
             </Link>
           </div>
         </div>

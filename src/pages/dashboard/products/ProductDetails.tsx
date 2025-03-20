@@ -66,7 +66,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (!selectedStore) {
-      toast.error("Please select a store");
+      toast.error("Please select a Site");
       return;
     }
   
@@ -82,8 +82,8 @@ const ProductDetails = () => {
         }
       })
       .catch((error) => {
-        console.error("Error fetching store settings:", error);
-        toast.error("Failed to load store settings.");
+        console.error("Error fetching Site settings:", error);
+        toast.error("Failed to load Site settings.");
       })
       .finally(() => {
         setLoader(false);
@@ -135,7 +135,7 @@ const ProductDetails = () => {
           setCategory(response?.data || []); // Adjusting to your API response structure
         }
       })
-      .catch((error) => console.error("Error fetching stores:", error));
+      .catch((error) => console.error("Error fetching Sites:", error));
   }, [storeCode]);
 
   const handleInputChange = (

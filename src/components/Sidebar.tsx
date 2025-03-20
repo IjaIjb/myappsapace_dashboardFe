@@ -164,7 +164,7 @@ const Sidebar = (props: Props) => {
                     <span className="block truncate text-[12px] text-white">
                       {stores.data?.data?.find(
                         (store: any) => store.store_code === selectedStore
-                      )?.store_name || "Select a Store"}
+                      )?.store_name || "Select a Site"}
                     </span>
                     <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                       {open ? (
@@ -229,7 +229,7 @@ const Sidebar = (props: Props) => {
                             to="/dashboard/store"
                             className="relative cursor-pointer whitespace-nowrap text-[16px] select-none pl-10 pr-4"
                           >
-                            Add store
+                            Add a site
                           </Link>
                         </div>
                       </div>
@@ -506,7 +506,7 @@ const Sidebar = (props: Props) => {
         </div>
 
         <div className="mt-7 flex flex-col gap-3">
-          <h5 className="text-white text-[12px] font-[700]">MY STORE</h5>
+          <h5 className="text-white text-[12px] font-[700]">MY SITE</h5>
 
           <div className="">
             <div className="">
@@ -531,7 +531,7 @@ const Sidebar = (props: Props) => {
                     // width={16}
                     // height={16}
                   />
-                  <h5 className="">Store</h5>
+                  <h5 className="">Site</h5>
                 </div>
               </Link>
             </div>

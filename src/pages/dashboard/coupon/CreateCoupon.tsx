@@ -83,7 +83,7 @@ const CreateCoupon = () => {
     }
 
     if (!selectedStore) {
-      setError("No store selected. Please select a store first.");
+      setError("No site selected. Please select a site first.");
       return;
     }
 

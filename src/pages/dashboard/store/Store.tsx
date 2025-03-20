@@ -27,7 +27,7 @@ const Store = () => {
         <div className="flex gap-3 items-center mb-7">
        
           <Link
-          to={"/dashboard/create-store"}
+          to={"/dashboard/create-site"}
             className="rounded-full h-fit flex items-center gap-3 px-4 py-2"
             style={{
               background: "linear-gradient(to bottom, #382B67, #7056CD)",
@@ -35,7 +35,7 @@ const Store = () => {
           >
             <IoAddCircleOutline className="text-white" />
             <h5 className="text-[#FFFFFF] text-[16px] font-[400] whitespace-nowrap">
-              Create Store
+              Create Site
             </h5>
             {/* <LiaUploadSolid className="text-white" /> */}
           </Link>
@@ -51,7 +51,7 @@ const Store = () => {
                     S/N
                   </th>
                   <th scope="" className=" py-3">
-                    Store Name
+                    Site Name
                   </th>
                   <th scope="" className=" py-3">
                 Industry Type
@@ -60,7 +60,7 @@ const Store = () => {
                 Product Type
                   </th>  
                   <th scope="" className=" py-3">
-              Store Abbrevation
+              Site Abbrevation
                   </th>
                   <th scope="" className=" py-3">
                     Date Created

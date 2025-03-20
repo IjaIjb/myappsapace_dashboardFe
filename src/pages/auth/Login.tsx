@@ -149,6 +149,7 @@ const Login = () => {
             <div className=" pt-10  px-5">
               <div className="">
 
+<div className="flex justify-center">
               <a href="https://myappspace.net/" rel="noreferrer" target="_blank">
             <img
               src="/images/auth/MyAppspace (3).png"
@@ -156,7 +157,7 @@ const Login = () => {
               alt="Logo"
             />
             </a>
-                
+            </div>  
                 <div className=" mt-7 ">
                   <h5 className="text-[#000000] text-[16px] font-[600] ">
                     Personal Information
@@ -249,7 +250,7 @@ const Login = () => {
                         </p>
                       </div>
 
-                      <div className="flex justify-end items-end mt-3 h-full">
+                      <div className="flex justify-center items-end mt-3 h-full">
                         <button
                           type="submit"
                           // onClick={onSubmit}

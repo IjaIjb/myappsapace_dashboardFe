@@ -11,12 +11,12 @@ import { Modal } from "react-responsive-modal";
 import { Link } from "react-router-dom";
 
 const themes = [
-  { name: "ThemeOne", price: "NGN 5,000", image: "/images/theme/theme1.svg" },
-  { name: "classic", price: "NGN 5,000", image: "/images/theme/theme2.svg" },
-  { name: "modern", price: "NGN 5,000", image: "/images/theme/theme3.svg" },
-  { name: "ThemeFour", price: "NGN 5,000", image: "/images/theme/theme4.svg" },
-  { name: "ThemeFive", price: "NGN 5,000", image: "/images/theme/theme5.svg" },
-  { name: "ThemeSix", price: "NGN 5,000", image: "/images/theme/theme6.svg" },
+  { theme_name: "default", price: "NGN 5,000", image: "/images/theme/theme1.svg" },
+  { theme_name: "classic", price: "NGN 5,000", image: "/images/theme/theme2.svg" },
+  { theme_name: "modern", price: "NGN 5,000", image: "/images/theme/theme3.svg" },
+  { theme_name: "super", price: "NGN 5,000", image: "/images/theme/theme4.svg" },
+  { theme_name: "ThemeFive", price: "NGN 5,000", image: "/images/theme/theme5.svg" },
+  { theme_name: "ThemeSix", price: "NGN 5,000", image: "/images/theme/theme6.svg" },
 ];
 
 const Theme = () => {
@@ -26,7 +26,7 @@ const Theme = () => {
   const sectionName = "theme";
   const [loading, setLoading] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<{
-    name: string;
+    theme_name: string;
     price: string;
     image: string;
   } | null>(null);
@@ -38,10 +38,10 @@ const Theme = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        // console.log(response);
+        console.log(response.data.settings.settings);
         if (response?.data?.settings?.settings) {
           const foundTheme = themes.find(
-            (theme) => theme.name === response.data.settings.settings[0]
+            (theme) => theme.theme_name === response.data.settings.settings.theme_name
           );
           if (foundTheme) setSelectedTheme(foundTheme);
         }
@@ -54,7 +54,7 @@ const Theme = () => {
 
   // Handle theme selection
   const handleThemeSelect = async (theme: {
-    name: string;
+    theme_name: string;
     price: string;
     image: string;
   }) => {
@@ -64,7 +64,7 @@ const Theme = () => {
         selectedStore,
         sectionName,
         {
-          settings: { theme_name: theme.name }, // Send as an object under settings
+          settings: { theme_name: theme.theme_name }, // Send as an object under settings
         }
       );
 
@@ -93,6 +93,8 @@ const Theme = () => {
       onCloseModal();
     }
   }, [selectedStore]);
+
+  console.log(selectedTheme)
   return (
     <DashboardLayout>
       <Modal
@@ -110,10 +112,10 @@ const Theme = () => {
           <div>
             <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
             <Link
-              to="/dashboard/create-store"
+              to="/dashboard/create-site"
               className="underline text-blue-800"
             >
-              Create a Store
+              Create a Site
             </Link>
           </div>
         </div>
@@ -126,7 +128,7 @@ const Theme = () => {
               <div className="max-w-[800px] relative text-center">
                 <img
                   src={selectedTheme.image}
-                  alt={selectedTheme.name}
+                  alt={selectedTheme.theme_name}
                   className="mx-auto"
                 />
                 <div className="-mt-[80px] absolute w-full z-20">
@@ -136,7 +138,7 @@ const Theme = () => {
                     </div>
                     <div className="text-start flex flex-col gap-1 mt-2">
                       <h4 className="text-[#000000] text-[13px] font-[500]">
-                        {selectedTheme.name}
+                        {selectedTheme.theme_name}
                       </h4>
                       <h4 className="text-[#000000] text-[13px] font-[300]">
                         Last saved: 2 Dec at 1:59 pm
@@ -163,23 +165,23 @@ const Theme = () => {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {themes.map((theme) => (
                   <div
-                    key={theme.name}
+                    key={theme.theme_name}
                     className={`border shadow-sm rounded-[10px] p-2 cursor-pointer ${
-                      selectedTheme?.name === theme.name
+                      selectedTheme?.theme_name === theme.theme_name
                         ? "border-green-500"
                         : ""
                     }`}
                     onClick={() => handleThemeSelect(theme)}
                   >
-                    <img src={theme.image} alt={theme.name} />
+                    <img src={theme.image} alt={theme.theme_name} />
                     <div className="text-start flex flex-col gap-1 mt-2">
                       <h4 className="text-[#000000] text-[14px] font-[700]">
-                        {theme.name}
+                        {theme.theme_name}
                       </h4>
                       <div className="flex justify-between items-center">
-                        <h4 className="text-[#000000] text-[12px] font-[400]">
+                        {/* <h4 className="text-[#000000] text-[12px] font-[400]">
                           {theme.price}
-                        </h4>
+                        </h4> */}
                         <div
                           className="rounded-full h-fit flex items-center gap-3 px-2 py-1"
                           style={{

@@ -174,14 +174,14 @@ const EditStore = () => {
       // console.log(response);
 
       if (response?.status === 200 || response?.status === 201) {
-        toast.success(response?.data?.message || "Store updated successfully!");
+        toast.success(response?.data?.message || "Site updated successfully!");
         navigate("/dashboard/store");
       } else {
-        toast.error(response?.data?.message || "Failed to update store.");
+        toast.error(response?.data?.message || "Failed to update Site.");
       }
     } catch (error) {
-      console.error("Error updating store:", error);
-      toast.error("An error occurred while updating the store.");
+      console.error("Error updating Site:", error);
+      toast.error("An error occurred while updating the Site.");
     } finally {
       setLoader(false);
     }
@@ -280,7 +280,7 @@ const EditStore = () => {
               htmlFor="store_name"
               className="text-[#2B2C2B] text-[12px] font-[400]"
             >
-              Store Name
+              Site Name
             </label>
             <input
               type="text"
@@ -316,7 +316,7 @@ const EditStore = () => {
               htmlFor="store_abbreviation"
               className="text-[#2B2C2B] text-[12px] font-[400]"
             >
-              Store Abbreviation
+              Site Abbreviation
             </label>
             <input
               type="text"

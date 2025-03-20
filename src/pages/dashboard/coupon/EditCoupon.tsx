@@ -189,7 +189,7 @@ const EditCoupon = () => {
 
   const handleDelete = async () => {
     if (!selectedStore) {
-      setError("No store selected. Please select a store first.");
+      setError("No site selected. Please select a site first.");
       closeDeleteModal();
       return;
     }

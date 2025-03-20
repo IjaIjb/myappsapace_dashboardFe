@@ -96,14 +96,14 @@ const AddStore = () => {
 
       const response = await UserApis.createStore(form);
       if (response?.status === 200 || response.status === 201) {
-        toast.success("Store created successfully!");
+        toast.success("Site created successfully!");
         navigate("/auth/choose-profession");
       } else {
-        toast.error("Failed to create store. Please try again.");
+        toast.error("Failed to create site. Please try again.");
       }
     } catch (error) {
-      console.error("Error creating store:", error);
-      toast.error("An error occurred while creating the store.");
+      console.error("Error creating site:", error);
+      toast.error("An error occurred while creating the site.");
     } finally {
       setLoading(false);
     }
@@ -138,7 +138,7 @@ const AddStore = () => {
           <label className="text-sm font-medium">Add Logo</label>
           <div className="flex justify-center text-center">
             <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer relative">
-              <div className="flex flex-col items-center justify-center h-[100px]">
+              <div className="flex flex-col items-center justify-center h-[85px]">
                 {preview ? (
                   <img src={preview} alt="Uploaded logo" width={100} height={100} />
                 ) : (

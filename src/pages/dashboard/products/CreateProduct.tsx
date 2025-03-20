@@ -74,7 +74,7 @@ const CreateProduct = () => {
 
   useEffect(() => {
     if (!selectedStore) {
-      toast.error("Please select a store");
+      toast.error("Please select a site");
       return;
     }
     // Reset currencies immediately
@@ -132,7 +132,7 @@ const CreateProduct = () => {
           setCategory(response?.data || []); // Adjusting to your API response structure
         }
       })
-      .catch((error) => console.error("Error fetching stores:", error));
+      .catch((error) => console.error("Error fetching sites:", error));
   }, [selectedStore]);
   // console.log(category);
   const handleInputChange = (
@@ -257,8 +257,8 @@ const CreateProduct = () => {
         <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
        {!selectedStore ? (
   <div>
-  <h4 className="text-[20px] font-[600] mb-4">Don't have a Store?</h4>
-<Link to="/dashboard/create-store" className="underline text-blue-800">Create a Store</Link>
+  <h4 className="text-[20px] font-[600] mb-4">Don't have a Site?</h4>
+<Link to="/dashboard/create-site" className="underline text-blue-800">Create a Site</Link>
 </div>
        ) : (
         <div>

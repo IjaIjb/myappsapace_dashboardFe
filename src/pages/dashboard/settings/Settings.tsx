@@ -15,7 +15,7 @@ const Settings = () => {
              <div className="flex flex-col gap-3">
              <div>
               <h4 className="text-[#000000] text-[14px] font-[600] ">
-                Store Settings
+                Site Settings
               </h4>
 
               <div className="flex flex-col gap-3 mt-3">

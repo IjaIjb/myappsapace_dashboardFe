@@ -141,7 +141,7 @@ const ForgotPassword = () => {
                         />
                       </div>
                     </div>
-                    <div className="flex justify-end items-end mt-3 w-full">
+                    <div className="flex justify-center items-end mt-3 w-full">
                     <button
                       type="submit"
                       disabled={loader}

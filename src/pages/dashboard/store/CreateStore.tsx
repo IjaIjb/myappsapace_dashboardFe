@@ -97,11 +97,11 @@ const CreateStore = () => {
         toast.success(response?.data?.message || "Store created successfully!");
         navigate("/dashboard/store");
       } else {
-        toast.error(response?.data?.message || "Failed to create store.");
+        toast.error(response?.data?.message || "Failed to create Site.");
       }
     } catch (error) {
-      console.error("Error creating store:", error);
-      toast.error("An error occurred while creating the store.");
+      console.error("Error creating Site:", error);
+      toast.error("An error occurred while creating the Site.");
     } finally {
       setLoader(false);
     }
@@ -156,7 +156,7 @@ const CreateStore = () => {
           {/* Store Name */}
           <div>
             <label className="text-[#2B2C2B] text-[12px] font-[400]">
-              Store Name
+              Site Name
             </label>
             <input
               type="text"
@@ -171,7 +171,7 @@ const CreateStore = () => {
           {/* Store Abbreviation */}
           <div>
             <label className="text-[#2B2C2B] text-[12px] font-[400]">
-              Store Abbreviation
+              Site Abbreviation
             </label>
             <input
               type="text"
