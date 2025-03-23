@@ -34,7 +34,7 @@ const Settings = () => {
                   </div>
                 </Link>
 
-                <Link to="/dashboard/settings/staff-and-permission" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
+                {/* <Link to="/dashboard/settings/staff-and-permission" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col gap-1">
                       <h5 className="text-[#000000] text-[12px] font-[500]">
@@ -92,12 +92,12 @@ const Settings = () => {
 
                     <MdChevronRight />
                   </div>
-                </div>
+                </div> */}
 
               </div>
               </div>
 
-              <div>
+              {/* <div>
               <h4 className="text-[#000000] text-[14px] font-[600] ">
                 Security Settings
               </h4>
@@ -132,9 +132,9 @@ const Settings = () => {
                   </div>
                 </div>
               </div>
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
               <h4 className="text-[#000000] text-[14px] font-[600] ">
                 Security Settings
               </h4>
@@ -184,7 +184,7 @@ const Settings = () => {
                   </div>
                 </div>
               </div>
-              </div>
+              </div> */}
 
               <div>
               <h4 className="text-[#000000] text-[14px] font-[600] ">
@@ -206,7 +206,7 @@ const Settings = () => {
                   </div>
                 </Link>
 
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
+                {/* <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col gap-1">
                       <h5 className="text-[#000000] text-[12px] font-[500]">
@@ -219,7 +219,7 @@ const Settings = () => {
 
                     <MdChevronRight />
                   </div>
-                </div>
+                </div> */}
               </div>
               </div>
               </div>

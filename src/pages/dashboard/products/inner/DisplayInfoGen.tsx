@@ -403,7 +403,7 @@ const DisplayInfoGen = () => {
           </div>
 
           <button 
-            className="bg-blue-500 text-white px-4 py-2 rounded-md w-full disabled:opacity-50 disabled:bg-gray-400" 
+            className="bg-blue-500 mt-3 text-white px-4 py-2 rounded-md w-full disabled:opacity-50 disabled:bg-gray-800" 
             onClick={handleSubmit} 
             disabled={loading || paymentGatewayAccess === 0 || (paymentGatewayAccess === 1 && selectedGateways.length === 0)}
           >

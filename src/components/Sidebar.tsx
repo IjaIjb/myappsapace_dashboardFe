@@ -592,7 +592,7 @@ const Sidebar = (props: Props) => {
               </Link>
             </div>
 
-            <div className="">
+            {/* <div className="">
               <Link to={"/dashboard/gift-cards"} className="relative gap-1  ">
                 <div
                   className={`${
@@ -619,9 +619,9 @@ const Sidebar = (props: Props) => {
                   <h5 className="">Gift Cards</h5>
                 </div>
               </Link>
-            </div>
+            </div> */}
 
-            <div className="">
+            {/* <div className="">
               <Link to={"/dashboard/discounts"} className="relative gap-1  ">
                 <div
                   className={`${
@@ -648,9 +648,9 @@ const Sidebar = (props: Props) => {
                   <h5 className="">Discounts/Promo</h5>
                 </div>
               </Link>
-            </div>
+            </div> */}
 
-            <div className="">
+            {/* <div className="">
               <Link to={"/dashboard/analytics"} className="relative gap-1  ">
                 <div
                   className={`${
@@ -677,9 +677,9 @@ const Sidebar = (props: Props) => {
                   <h5 className="">Analytics</h5>
                 </div>
               </Link>
-            </div>
+            </div> */}
 
-            <div className="">
+            {/* <div className="">
               <Link to={"/dashboard/marketing"} className="relative gap-1  ">
                 <div
                   className={`${
@@ -706,7 +706,7 @@ const Sidebar = (props: Props) => {
                   <h5 className="">Marketing</h5>
                 </div>
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -801,7 +801,7 @@ const Sidebar = (props: Props) => {
               </Link>
             </div>
 
-            <div className="">
+            {/* <div className="">
               <Link
                 to={"/dashboard/help-and-support"}
                 className="relative gap-1  "
@@ -831,7 +831,7 @@ const Sidebar = (props: Props) => {
                   <h5 className="">Help and Support</h5>
                 </div>
               </Link>
-            </div>
+            </div> */}
           </div>
           
 {/* 
