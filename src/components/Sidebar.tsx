@@ -297,7 +297,7 @@ const Sidebar = (props: Props) => {
         </button>
       </div>
 
-{userLoginData?.data?.business_questionnaire.store_type === "basic_website" ? (
+{userLoginData?.data?.business_questionnaire?.store_type === "basic_website" ? (
   <div className="">
   <div className="flex gap-2"></div>
   <div className="mt-7 flex flex-col gap-3">
