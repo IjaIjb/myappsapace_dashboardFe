@@ -1,0 +1,67 @@
+/* Slider Container */
+.slider-container {
+    position: relative;
+    height: 24px;
+    margin-bottom: 16px;
+}
+
+/* Background Track */
+.slider-track {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background-color: #ccc;
+    border-radius: 2px;
+    top: 10px;
+}
+
+/* Progress Bar */
+.progress-bar {
+    position: absolute;
+    height: 4px;
+    background-color: #007bff;
+    border-radius: 2px;
+    top: 10px;
+    transition: left 0.2s ease-in-out, width 0.2s ease-in-out;
+}
+
+/* Range Sliders */
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: transparent;
+    position: absolute;
+    top: 10px;
+    pointer-events: none;
+}
+
+/* Min Slider on top */
+.slider-left {
+    z-index: 3;
+}
+
+/* Max Slider below */
+.slider-right {
+    z-index: 2;
+}
+
+/* Custom Thumb */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: auto;
+}

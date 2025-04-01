@@ -222,6 +222,28 @@ const Settings = () => {
                 </div> */}
               </div>
               </div>
+
+              <div>
+              <h4 className="text-[#000000] text-[14px] font-[600] ">
+            About Settings
+              </h4>
+              <div className="flex flex-col gap-3 mt-3">
+              <Link to="/dashboard/settings/about-preference" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
+                  <div className="flex justify-between items-center">
+                    <div className="flex flex-col gap-1">
+                      <h5 className="text-[#000000] text-[12px] font-[500]">
+                       Choose 3rd Party Courier
+                      </h5>
+                      <h6 className="text-[#000000] text-[12px] font-[300]">
+                        Type of Notification Appears description appears here{" "}
+                      </h6>
+                    </div>
+
+                    <MdChevronRight />
+                  </div>
+                </Link>
+              </div>
+              </div>
               </div>
             </div>
           </div>

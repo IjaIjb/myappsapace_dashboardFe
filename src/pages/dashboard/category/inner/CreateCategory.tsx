@@ -151,7 +151,7 @@ const CreateCategory = () => {
             </label>
             <div className="flex justify-center text-center">
               <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer">
-                <div className="flex flex-col items-center justify-center h-[80px]">
+                <div className="flex flex-col items-center justify-center h-full ">
                   {categoryLogo ? (
                     <img
                       src={URL.createObjectURL(categoryLogo)}
@@ -160,13 +160,15 @@ const CreateCategory = () => {
                       height={100}
                     />
                   ) : (
+                    <div className="h-[100px] flex justify-center items-center">
                     <div>
-                      <p className="text-[#9D9D9D] text-[12px] font-[400]">
+                      <p className="text-[#9D9D9D] text-[12px]  font-[400]">
                         Upload Logo Image here
                       </p>
                       <p className="text-[#9D9D9D] text-[10px] font-[400]">
                         Recommended size 32px by 32px
                       </p>
+                      </div>
                     </div>
                   )}
                 </div>

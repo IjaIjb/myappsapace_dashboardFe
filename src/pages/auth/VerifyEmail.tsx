@@ -75,7 +75,7 @@ const VerifyEmail = () => {
                     })
                   );
         toast.success(response?.message || "Email verified successfully!");
-        navigate("/auth/add-store"); // Navigate to the next page
+        navigate("/auth/kyc"); // Navigate to the next page
         // navigate("/auth/choose-profession"); // Navigate to the next page
       } else {
         toast.error(response?.message || "Invalid verification code. Please try again.");

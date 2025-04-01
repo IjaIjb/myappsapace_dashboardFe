@@ -32,6 +32,14 @@ export class UserApis {
         }
     } 
 
+    static submitKycQuestionaire(data:any): AxiosPromise<Array<any>> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.submitKycQuestionaire(data);
+        }
+    } 
+    
     static resendVerificationCode(pageNo:any): AxiosPromise<Array<any>> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;

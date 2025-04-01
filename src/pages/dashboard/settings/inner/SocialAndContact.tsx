@@ -31,11 +31,11 @@ const SocialAndContact = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        // console.log(response)
-        if (response?.data?.settings) {
+        console.log(response)
+        if (response?.data) {
           setFormData((prev) => ({
             ...prev,
-            ...response.data.settings.settings, // Populate state with API response
+            ...response.data.contacts.settings, // Populate state with API response
           }));
         }
       })

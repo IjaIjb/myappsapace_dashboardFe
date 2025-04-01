@@ -1,6 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MdNavigateNext } from 'react-icons/md';
 import { IoIosArrowBack } from "react-icons/io";
+import { UserApis } from '../../apis/userApi/userApi';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from 'react-router-dom';
+
 const KYCOnboardingForm = () => {
   const [currentStep, setCurrentStep] = useState<any>(0);
   const [formData, setFormData] = useState<any>({
@@ -11,22 +16,12 @@ const KYCOnboardingForm = () => {
     productType: ''
   });
   const [slidesHistory, setSlidesHistory] = useState<any>([0]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const navigate = useNavigate();
 
   // Define all steps/slides for the onboarding process
   const steps:any = [
-    {
-      title: "Where would you like to sell?",
-      subtitle: "We'll make sure you're set up to sell in these places",
-      options: [
-        { id: 'online_store', label: 'An online store', description: 'Create a fully customizable website' },
-        { id: 'retail_store', label: 'In person at a retail store', description: 'Brick-and-mortar stores' },
-        { id: 'events', label: 'In person at events', description: 'Markets, fairs, and pop-ups' },
-        { id: 'existing_website', label: 'An existing website or blog', description: 'Add a Buy Button to your website' },
-        { id: 'social_media', label: 'Social media', description: 'Reach customers on Facebook, Instagram, TikTok, and more' },
-        { id: 'marketplaces', label: 'Online marketplaces', description: 'List products on Etsy, Amazon, and more' }
-      ],
-      isMultiSelect: true
-    },
     {
       title: "What do you want to create?",
       subtitle: "Choose the type of website or application you need",
@@ -78,35 +73,19 @@ const KYCOnboardingForm = () => {
   // Handle checkbox/radio selections
   const handleOptionSelect = (optionId:any, isMulti:any) => {
     if (currentStep === 0) {
-      // First step - multi-select checkboxes for selling channels
-      if (isMulti) {
-        const sellingChannels = formData.sellingChannels || [];
-        if (sellingChannels.includes(optionId)) {
-          setFormData({
-            ...formData,
-            sellingChannels: sellingChannels.filter((id:any) => id !== optionId)
-          });
-        } else {
-          setFormData({
-            ...formData,
-            sellingChannels: [...sellingChannels, optionId]
-          });
-        }
-      }
-    } else if (currentStep === 1) {
-      // Second step - business type
+      // First step now - business type (was previously the second step)
       setFormData({
         ...formData,
         businessType: optionId
       });
-    } else if (currentStep === 2) {
-      // Third step - business registration
+    } else if (currentStep === 1) {
+      // Second step now - business registration (was previously the third step)
       setFormData({
         ...formData,
         isRegistered: optionId
       });
-    } else if (currentStep === 3) {
-      // Fourth step - product type
+    } else if (currentStep === 2) {
+      // Third step now - product type (was previously the fourth step)
       setFormData({
         ...formData,
         productType: optionId
@@ -129,16 +108,103 @@ const KYCOnboardingForm = () => {
     }
   };
 
-  // Go to next step
+  // Check if the form is valid for submission
+  const isFormValid = () => {
+    // Basic validation
+    if (!formData.businessType) return false;
+    if (!formData.isRegistered) return false;
+    if (formData.isRegistered === 'yes') {
+      if (!formData.businessYear || !formData.annualRevenue) return false;
+      // Check if year is a valid 4-digit number
+      if (!/^\d{4}$/.test(formData.businessYear)) return false;
+    }
+    if (!formData.productType) return false;
+    
+    return true;
+  };
+
+  // Prepare the API payload
+  const preparePayload = () => {
+    const formDataPayload = new FormData();
+    
+    // Format: store_type - from step 0 selection
+    formDataPayload.append('store_type', formData.businessType);
+    
+    // Format: business_type - "existing" if registered, "new" if not
+    formDataPayload.append('business_type', formData.isRegistered === 'yes' ? 'existing' : 'new');
+    
+    // Format: year_started - only required if business_type = existing
+    if (formData.isRegistered === 'yes') {
+      formDataPayload.append('year_started', formData.businessYear);
+      formDataPayload.append('annual_revenue', formData.annualRevenue);
+    }
+    
+    // Format: product_type - from step 2 selection
+    // Map 'services' to 'service' to match the API expected format
+    const productTypeMap :any = {
+      'services': 'service',
+      'physical': 'physical',
+      'digital': 'digital',
+      'other': 'other'
+    };
+    formDataPayload.append('product_type', productTypeMap[formData.productType] || formData.productType);
+    
+    return formDataPayload;
+  };
+
+  // Go to next step or submit if at the last step
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
       setSlidesHistory([...slidesHistory, nextStep]);
     } else {
-      // Handle form submission if at the last step
-      console.log("Form submitted:", formData);
-      // You would typically submit this data to your backend
+      // Submit the form if at the last step
+      handleSubmit();
+    }
+  };
+
+  // Submit the form to the API
+  const handleSubmit = async () => {
+    if (!isFormValid()) {
+      setSubmitError('Please complete all required fields correctly.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const payload = preparePayload();
+      console.log("Form submitted successfully:", payload);
+      
+      // Call the API endpoint
+      const response:any = await UserApis.submitKycQuestionaire(payload); 
+      // Handle successful submission
+      if (response.data) {
+          toast.success(
+                response?.data?.message || "kyc questionaire created successfully!"
+              );
+      console.log("Form submitted successfully:", response);
+      navigate("/auth/add-store"); // Navigate to the next page
+
+      // Here you could redirect the user or show a success message
+      // For example: navigate('/dashboard');
+      } else {
+        toast.error(
+          response?.data?.message ||
+            "Failed to create. Please try again."
+        );
+      }
+    } catch (error:any) {
+      console.error("Error submitting KYC form:", error);
+      // setSubmitError('There was an error submitting your information. Please try again.');
+           toast.error(
+              error.response?.data?.message ||
+                "Failed to create. Please try again."
+            );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -157,6 +223,7 @@ const KYCOnboardingForm = () => {
   const handleSkip = () => {
     console.log("Onboarding skipped");
     // Implement your skip logic here
+    // For example: navigate('/dashboard');
   };
 
   return (
@@ -173,8 +240,8 @@ const KYCOnboardingForm = () => {
             return (
               <div 
                 key={`${stepIndex}-${idx}`}
-                className={`absolute w-full  transition-all duration-500 ease-in-out bg-white rounded-xl shadow-2xl text-gray-800 mx-auto
-                  ${isActive ? 'opacity-100' : 'opacity-90  pointer-events-none'}
+                className={`absolute w-full transition-all duration-500 ease-in-out bg-white rounded-xl shadow-2xl text-gray-800 mx-auto
+                  ${isActive ? 'opacity-100' : 'opacity-90 pointer-events-none'}
                 `}
                 style={{ 
                   zIndex,
@@ -184,14 +251,6 @@ const KYCOnboardingForm = () => {
                 }}
               >
                 <div className="p-8">
-                  {/* Progress indicator */}
-                  {/* <div className="w-full bg-gray-100 h-1 mb-6">
-                    <div 
-                      className="bg-blue-500 h-1 transition-all duration-300 ease-in-out" 
-                      style={{ width: `${((stepIndex + 1) / steps.length) * 100}%` }}
-                    ></div>
-                  </div> */}
-
                   {/* Step content */}
                   <div className="mb-8">
                     <h1 className="text-2xl font-bold mb-2">{step.title}</h1>
@@ -201,8 +260,8 @@ const KYCOnboardingForm = () => {
                   {/* Options */}
                   {isActive && 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    {stepIndex === 2 ? (
-                      // Special layout for the registration question
+                    {stepIndex === 1 ? (
+                      // Special layout for the registration question (now at index 1 instead of 2)
                       <>
                         <div className="relative">
                           <label className="flex items-start p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
@@ -278,10 +337,8 @@ const KYCOnboardingForm = () => {
                               name={`step-${stepIndex}`}
                               checked={
                                 stepIndex === 0
-                                  ? (formData.sellingChannels || []).includes(option.id)
-                                  : stepIndex === 1
                                   ? formData.businessType === option.id
-                                  : stepIndex === 3
+                                  : stepIndex === 2
                                   ? formData.productType === option.id
                                   : false
                               }
@@ -297,7 +354,14 @@ const KYCOnboardingForm = () => {
                       ))
                     )}
                   </div>
-          }
+                  }
+
+                  {/* Error message */}
+                  {isActive && submitError && stepIndex === steps.length - 1 && (
+                    <div className="text-red-500 text-sm mb-4">
+                      {submitError}
+                    </div>
+                  )}
 
                   {/* Navigation buttons */}
                   {isActive && (
@@ -310,16 +374,31 @@ const KYCOnboardingForm = () => {
                         disabled={stepIndex === 0}
                       >
                         <IoIosArrowBack className='w-6 h-6'/>
-
                         Back
                       </button>
                       
                       <button
                         onClick={handleNext}
-                        className="px-4 py-1 rounded-md hover:bg-gray-200 flex items-center"
+                        disabled={isSubmitting}
+                        className={`px-4 py-1 rounded-md flex items-center ${
+                          isSubmitting 
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                            : 'hover:bg-gray-200'
+                        }`}
                       >
-                        {stepIndex === steps.length - 1 ? 'Submit' : 'Next'}
-                        <MdNavigateNext className='w-6 h-6'/>
+                        {stepIndex === steps.length - 1 ? (
+                          isSubmitting ? (
+                            <>
+                              <span className="mr-2">Submitting</span>
+                              <div className="animate-spin h-4 w-4 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+                            </>
+                          ) : (
+                            'Submit'
+                          )
+                        ) : (
+                          'Next'
+                        )}
+                        {!isSubmitting && stepIndex !== steps.length - 1 && <MdNavigateNext className='w-6 h-6'/>}
                       </button>
                     </div>
                   )}
@@ -350,6 +429,17 @@ const KYCOnboardingForm = () => {
             </svg>
           </button>
         </div>
+        <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
       </div>
     </div>
   );

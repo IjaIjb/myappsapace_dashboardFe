@@ -26,6 +26,12 @@ export class UserLiveApis extends AxiosGlobal{
         return this.axios.post(`${configs.contextUser}/auth/verify-account`, data);
     }
 
+    submitKycQuestionaire(data: any): AxiosPromise<any> {
+        return this.axios.post(`${configs.contextUser}/business-questionnaire/submit`, data,{
+            headers: { "Content-Type": "aplication/json","Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },
+          });
+    }
+
     resendVerificationCode(data: any): AxiosPromise<any> {
         return this.axios.post(`${configs.contextUser}/auth/resend-code`, data);
     }
@@ -64,7 +70,7 @@ export class UserLiveApis extends AxiosGlobal{
 
     updateStoreLogo(store_id:any, data:any): AxiosPromise<Array<any>> {
         return this.axios.post(`${configs.contextUser}/store/${store_id}/updateLogo`,  data,{
-            headers: {   "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
         });
     }
 

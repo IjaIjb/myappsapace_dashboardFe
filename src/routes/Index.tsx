@@ -10,6 +10,7 @@ const AddStorePage = lazy(() => import("../pages/auth/AddStore"));
 const ChooseProfessionPage = lazy(() => import("../pages/auth/Profession"));
 const UsagePage = lazy(() => import("../pages/auth/Usage"));
 const HoldOnPage = lazy(() => import("../pages/auth/Holdon"));
+const KycPage = lazy(() => import("../pages/auth/Kyc"));
 const DashboardPage = lazy(() => import("../pages/dashboard/home/Home"));
 const CustomerPage = lazy(() => import("../pages/dashboard/customers/Customers"));
 const CreateCustomerPage = lazy(() => import("../pages/dashboard/customers/CreateCustomer"));
@@ -31,6 +32,7 @@ const StorePage = lazy(() => import("../pages/dashboard/store/Store"));
 const EditStorePage = lazy(() => import("../pages/dashboard/store/EditStore"));
 const CreateStorePage = lazy(() => import("../pages/dashboard/store/CreateStore"));
 const ThemePage = lazy(() => import("../pages/dashboard/theme/Theme"));
+const ClassicThemePage = lazy(() => import("../pages/dashboard/theme/previewTemplates/classicYoga/ClassicYoga"));
 const FinancesPage = lazy(() => import("../pages/dashboard/finances/Finance"));
 const GiftCardPage = lazy(() => import("../pages/dashboard/giftCards/GiftCards"));
 const DiscountsPage = lazy(() => import("../pages/dashboard/discounts/Discounts"));
@@ -38,7 +40,8 @@ const AnalyticsPage = lazy(() => import("../pages/dashboard/analytics/Analytics"
 const MarketingPage = lazy(() => import("../pages/dashboard/marketing/Marketing"));
 const SettingsPage = lazy(() => import("../pages/dashboard/settings/Settings"));
 const GeneralInfoPage = lazy(() => import("../pages/dashboard/settings/inner/GeneralInfo"));
-const PaymentPreferencePage = lazy(() => import("../pages/dashboard/settings//payment/Payment"));
+const PaymentPreferencePage = lazy(() => import("../pages/dashboard/settings/payment/Payment"));
+const AboutPreferencePage = lazy(() => import("../pages/dashboard/settings/about/About"));
 const StaffAndPermissionPage = lazy(() => import("../pages/dashboard/settings/inner/StaffAndPermission"));
 const ThemeSetupPage = lazy(() => import("../pages/dashboard/themeSetup/ThemeSetup"));
 const SubscriptionPage = lazy(() => import("../pages/dashboard/subscription/Subscription"));
@@ -66,6 +69,10 @@ const routes = [
   {
     path: "/auth/signup",
     component: PersonalPage,
+  },
+  {
+    path: "/auth/kyc",
+    component: KycPage,
   },
   {
     path: "/auth/verify-email",
@@ -154,7 +161,7 @@ const routes = [
     component: EditCouponPage,
   },
   {
-    path: "/dashboard/store",
+    path: "/dashboard/site",
     component: StorePage,
   },
   {
@@ -168,6 +175,10 @@ const routes = [
   {
     path: "/dashboard/theme",
     component: ThemePage,
+  },
+  {
+    path: "/theme-preview/classic",
+    component: ClassicThemePage,
   },
   {
     path: "/dashboard/finances",
@@ -212,6 +223,10 @@ const routes = [
   {
     path: "/dashboard/settings/payment-preference",
     component: PaymentPreferencePage,
+  }, 
+  {
+    path: "/dashboard/settings/about-preference",
+    component: AboutPreferencePage,
   }, 
   {
     path: "/dashboard/settings/staff-and-permission",

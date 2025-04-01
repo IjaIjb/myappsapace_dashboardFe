@@ -5,9 +5,12 @@ import { UserApis } from "../../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
 import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
+
+// Updated interface to accept banner index
 interface ImageUploadProps {
   image: string | null; // URL of the uploaded image
   setImage: (image: string | null) => void; // Updates the image URL
+  index: number; // Index of the banner
 }
 
 const BannerSettings = () => {
@@ -16,8 +19,6 @@ const BannerSettings = () => {
   );
 
   const sectionName = "banner";
-  const [image, setImage] = useState<any>(null);
-
   const [loading, setLoading] = useState(false);
   const [themeColor, setThemeColor] = useState("#ff0000");
   const [welcomeText, setWelcomeText] = useState(
@@ -39,36 +40,42 @@ const BannerSettings = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        if (response?.data?.settings) {
-          // console.log(response?.data?.settings);
+        // console.log(response.data);
+
+        if (response?.data) {
           setThemeColor(
-            response.data?.settings.settings.theme_color || "#ff0000"
+            response.data?.banner.settings.banners.theme_color || "#ff0000"
           );
-          setWelcomeText(response.data?.settings.settings.welcome_text || "");
-          setBanners(response.data?.settings.settings.banners || []);
+          setWelcomeText(response.data?.banner.settings.banners.welcome_text || "");
+          
+          // Make sure banners have the image property
+          const fetchedBanners = response.data?.banner.settings.banners || [];
+          if (fetchedBanners.length > 0) {
+            setBanners(fetchedBanners);
+          }
         }
       })
       .catch(() => {
-        // toast.error("Failed to load store settings.");
+        // Error handling is silent as per original code
       })
       .finally(() => setLoading(false));
   }, [selectedStore]);
 
-  const ImageUpload: React.FC<ImageUploadProps> = ({ image, setImage }) => {
-    const [loading, setLoading] = useState(false);
+  const ImageUpload: React.FC<ImageUploadProps> = ({ image, setImage, index }) => {
+    const [uploadLoading, setUploadLoading] = useState(false);
 
     const handleImageChange = async (
       e: React.ChangeEvent<HTMLInputElement>
     ) => {
       const file = e.target.files?.[0];
       if (file) {
-        setLoading(true); // Show loading spinner or indicator
+        setUploadLoading(true);
 
         try {
           // Create a FormData object
           const formData = new FormData();
           formData.append("file", file);
-          formData.append("upload_preset", "urban_image"); // Replace with your Cloudinary preset
+          formData.append("upload_preset", "urban_image");
 
           // Upload to Cloudinary
           const response = await fetch(
@@ -81,49 +88,39 @@ const BannerSettings = () => {
 
           const result = await response.json();
           if (result.secure_url) {
-            // Set the image URL in the state
+            // Set the image URL directly to the banner
             setImage(result.secure_url);
           }
-
-          setLoading(false); // Stop loading
         } catch (error) {
           console.error("Error uploading image", error);
           toast.error("Error uploading image. Please try again.");
-          setLoading(false);
+        } finally {
+          setUploadLoading(false);
         }
       }
     };
 
     return (
-      <div className="flex justify-center text-center">
+      <div className="flex justify-center text-center mb-3">
         <label className="flex w-full bg-[#FBFBFF] border border-[#D8D8E2] flex-col items-center justify-center rounded-[5px] cursor-pointer relative">
-          <div className="flex flex-col items-center justify-center h-[80px]">
+          <div className="flex flex-col items-center justify-center h-[120px] w-full">
             {image ? (
               <img
-                className=""
-                src={image} // This should now be the Cloudinary URL
-                alt="Uploaded logo"
-                width={100}
-                height={100}
+                src={image}
+                alt="Banner"
+                className="max-h-[110px] max-w-full object-contain"
               />
             ) : (
               <div className="flex justify-center items-center">
                 <div className="flex flex-col">
-                  <h4 className="text-[#9D9D9D] text-[12px] font-[400] ">
-                    Upload Logo Image here{" "}
+                  <h4 className="text-[#9D9D9D] text-[12px] font-[400]">
+                    Upload Banner Image here
                   </h4>
-                  <h4 className="text-[#9D9D9D] text-[10px] font-[400] ">
-                    Recommended size 32px by 32px{" "}
+                  <h4 className="text-[#9D9D9D] text-[10px] font-[400]">
+                    Recommended size 1200px by 400px
                   </h4>
                 </div>
               </div>
-              //   <img
-              //     className=""
-              //     src="/onboarding/Icon.svg" // Default placeholder image
-              //     alt="Default"
-              //     width={100}
-              //     height={100}
-              //   />
             )}
           </div>
           <input
@@ -133,7 +130,7 @@ const BannerSettings = () => {
             onChange={handleImageChange}
           />
         </label>
-        {loading && <p><LoadingSpinner /></p>}
+        {uploadLoading && <div className="absolute"><LoadingSpinner /></div>}
       </div>
     );
   };
@@ -154,8 +151,6 @@ const BannerSettings = () => {
       );
       if (response?.status === 200 || response?.status === 201) {
         toast.success("Settings updated successfully!");
-      } else {
-        // toast.error("Failed to update settings.");
       }
     } catch (error) {
       toast.error("Error updating settings. Please try again.");
@@ -169,14 +164,11 @@ const BannerSettings = () => {
     setBanners(updatedBanners);
   };
 
-  // const handleImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     const file = e.target.files[0];
-  //     const updatedBanners = [...banners];
-  //     updatedBanners[index].image = file; // Save the file reference
-  //     setBanners(updatedBanners);
-  //   }
-  // };
+  const handleSetBannerImage = (index: number, imageUrl: string | null) => {
+    const updatedBanners = [...banners];
+    updatedBanners[index].image = imageUrl;
+    setBanners(updatedBanners);
+  };
 
   const handleAddBanner = () => {
     setBanners([
@@ -199,7 +191,7 @@ const BannerSettings = () => {
       <div>
         {/* Theme Color */}
         <div className="mb-4">
-          <label className="block font-semibold">Theme Color:</label>
+          <label className="block font-semibold mb-1">Theme Color:</label>
           <input
             type="color"
             value={themeColor}
@@ -210,7 +202,7 @@ const BannerSettings = () => {
 
         {/* Welcome Text */}
         <div className="mb-4">
-          <label className="block font-semibold">Welcome Text:</label>
+          <label className="block font-semibold mb-1">Welcome Text:</label>
           <input
             type="text"
             value={welcomeText}
@@ -222,53 +214,62 @@ const BannerSettings = () => {
         {/* Banner Section */}
         <div>
           <h4 className="text-lg font-bold mb-2">Banners:</h4>
-          {banners.map((banner: any, index: any) => (
+          {banners.map((banner: any, index: number) => (
             <div key={index} className="border p-4 rounded-lg mb-4">
+              {/* Banner Number */}
+              <div className="bg-gray-100 px-3 py-1 mb-3 inline-block rounded-md">
+                <span className="font-medium">Banner {index + 1}</span>
+              </div>
+              
               {/* Banner Image */}
-              <label className="block font-semibold">Banner Image:</label>
-              <ImageUpload image={image} setImage={setImage} />
+              <label className="block font-semibold mb-1">Banner Image:</label>
+              <ImageUpload 
+                image={banner.image} 
+                setImage={(imageUrl) => handleSetBannerImage(index, imageUrl)}
+                index={index}
+              />
 
               {/* Title */}
-              <label className="block font-semibold">Title:</label>
+              <label className="block font-semibold mb-1">Title:</label>
               <input
                 type="text"
                 value={banner.title}
                 onChange={(e) =>
                   handleBannerChange(index, "title", e.target.value)
                 }
-                className="w-full h-10 border rounded-md p-2 mb-2"
+                className="w-full h-10 border rounded-md p-2 mb-3"
               />
 
               {/* Description */}
-              <label className="block font-semibold">Description:</label>
+              <label className="block font-semibold mb-1">Description:</label>
               <textarea
                 value={banner.description}
                 onChange={(e) =>
                   handleBannerChange(index, "description", e.target.value)
                 }
-                className="w-full h-16 border rounded-md p-2 mb-2"
+                className="w-full h-16 border rounded-md p-2 mb-3"
               />
 
               {/* CTA Text */}
-              <label className="block font-semibold">CTA Text:</label>
+              <label className="block font-semibold mb-1">CTA Text:</label>
               <input
                 type="text"
                 value={banner.cta_text}
                 onChange={(e) =>
                   handleBannerChange(index, "cta_text", e.target.value)
                 }
-                className="w-full h-10 border rounded-md p-2 mb-2"
+                className="w-full h-10 border rounded-md p-2 mb-3"
               />
 
               {/* CTA Link */}
-              <label className="block font-semibold">CTA Link:</label>
+              <label className="block font-semibold mb-1">CTA Link:</label>
               <input
                 type="text"
                 value={banner.cta_link}
                 onChange={(e) =>
                   handleBannerChange(index, "cta_link", e.target.value)
                 }
-                className="w-full h-10 border rounded-md p-2 mb-2"
+                className="w-full h-10 border rounded-md p-2 mb-3"
               />
 
               {/* Remove Button */}
@@ -276,7 +277,7 @@ const BannerSettings = () => {
                 <button
                   type="button"
                   onClick={() => handleRemoveBanner(index)}
-                  className="bg-red-500 text-white py-1 px-3 rounded-md"
+                  className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md"
                 >
                   Remove Banner
                 </button>
@@ -288,7 +289,7 @@ const BannerSettings = () => {
           <button
             type="button"
             onClick={handleAddBanner}
-            className="bg-blue-500 text-white py-2 px-4 rounded-md"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
           >
             Add Banner
           </button>
@@ -299,22 +300,24 @@ const BannerSettings = () => {
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className="bg-green-500 text-white py-2 px-6 rounded-md mt-4 w-full"
+          className={`text-white py-2 px-6 rounded-md mt-6 w-full ${
+            loading ? "bg-green-400" : "bg-green-500 hover:bg-green-600"
+          }`}
         >
           {loading ? "Saving..." : "Save Settings"}
         </button>
       </div>
-         <ToastContainer
-              position="top-right"
-              autoClose={2000}
-              hideProgressBar={true}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

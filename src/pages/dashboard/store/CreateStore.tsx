@@ -95,7 +95,7 @@ const CreateStore = () => {
       // console.log(response);
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "Store created successfully!");
-        navigate("/dashboard/store");
+        navigate("/dashboard/site");
       } else {
         toast.error(response?.data?.message || "Failed to create Site.");
       }
