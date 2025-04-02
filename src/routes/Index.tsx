@@ -42,6 +42,8 @@ const SettingsPage = lazy(() => import("../pages/dashboard/settings/Settings"));
 const GeneralInfoPage = lazy(() => import("../pages/dashboard/settings/inner/GeneralInfo"));
 const PaymentPreferencePage = lazy(() => import("../pages/dashboard/settings/payment/Payment"));
 const AboutPreferencePage = lazy(() => import("../pages/dashboard/settings/about/About"));
+const PolicyPreferencePage = lazy(() => import("../pages/dashboard/settings/policy/Policy"));
+const FaqPreferencePage = lazy(() => import("../pages/dashboard/settings/faq/Faq"));
 const StaffAndPermissionPage = lazy(() => import("../pages/dashboard/settings/inner/StaffAndPermission"));
 const ThemeSetupPage = lazy(() => import("../pages/dashboard/themeSetup/ThemeSetup"));
 const SubscriptionPage = lazy(() => import("../pages/dashboard/subscription/Subscription"));
@@ -227,6 +229,14 @@ const routes = [
   {
     path: "/dashboard/settings/about-preference",
     component: AboutPreferencePage,
+  }, 
+  {
+    path: "/dashboard/settings/faq-preference",
+    component: FaqPreferencePage,
+  }, 
+  {
+    path: "/dashboard/settings/policy-preference",
+    component: PolicyPreferencePage,
   }, 
   {
     path: "/dashboard/settings/staff-and-permission",
