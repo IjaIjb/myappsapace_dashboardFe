@@ -14,13 +14,13 @@ const About = () => {
       <div className="col-span-6 flex flex-col gap-3">
   <AboutHeroSettings />
      <WhatWeDo />
-     <PolicySettings />
+     {/* <PolicySettings /> */}
       </div>
       <div className="col-span-6">
         {/* <CheckoutSettings /> */}
         <AboutMission />
         <TeamSettings />
-        <FAQSettings />
+        {/* <FAQSettings /> */}
       </div>
     </div>
   </DashboardLayout>
