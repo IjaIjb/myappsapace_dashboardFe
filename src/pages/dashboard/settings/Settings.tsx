@@ -1,298 +1,156 @@
 import React from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
-// import { IoAddCircleOutline } from "react-icons/io5";
-// import { FaChevronRight } from "react-icons/fa";
 import { MdChevronRight } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { FiSettings, FiCreditCard, FiInfo, FiHelpCircle, FiShield, FiFileText } from "react-icons/fi";
+
+const settingsSections = [
+  {
+    id: "site",
+    title: "Site Settings",
+    icon: <FiSettings className="text-blue-500" size={20} />,
+    items: [
+      {
+        title: "General Information",
+        description: "Manage your store name, logo, contact details, and basic settings",
+        path: "/dashboard/settings/general-information"
+      }
+    ]
+  },
+  {
+    id: "payment",
+    title: "Payment Preferences",
+    icon: <FiCreditCard className="text-green-500" size={20} />,
+    items: [
+      {
+        title: "Payment Methods",
+        description: "Configure payment gateways, currencies, and checkout options",
+        path: "/dashboard/settings/payment-preference"
+      }
+    ]
+  },
+  {
+    id: "about",
+    title: "About Settings",
+    icon: <FiInfo className="text-purple-500" size={20} />,
+    items: [
+      {
+        title: "Company Information",
+        description: "Update your mission, vision, and company story for the About Us page",
+        path: "/dashboard/settings/about-preference"
+      }
+    ]
+  },
+  {
+    id: "faq",
+    title: "FAQ Settings",
+    icon: <FiHelpCircle className="text-yellow-500" size={20} />,
+    items: [
+      {
+        title: "Frequently Asked Questions",
+        description: "Manage common questions and answers to help your customers",
+        path: "/dashboard/settings/faq-preference"
+      }
+    ]
+  },
+  {
+    id: "policy",
+    title: "Policy Settings",
+    icon: <FiShield className="text-red-500" size={20} />,
+    items: [
+      {
+        title: "Store Policies",
+        description: "Define your privacy, shipping, returns, and payment policies",
+        path: "/dashboard/settings/policy-preference"
+      }
+    ]
+  },
+  {
+    id: "terms",
+    title: "Terms And Conditions",
+    icon: <FiFileText className="text-gray-700" size={20} />,
+    items: [
+      {
+        title: "Legal Terms",
+        description: "Set the legal terms and conditions for using your store",
+        path: "/dashboard/settings/terms-and-condition"
+      }
+    ]
+  }
+];
+
+const SettingCard = ({ item }:any) => {
+  return (
+    <Link 
+      to={item.path} 
+      className="border-[0.5px] rounded-[8px] bg-[#FBFBFF] pl-4 pr-4 py-3 border-[#D8D8E2] hover:bg-blue-50 hover:border-blue-200 transition-all duration-200 shadow-sm hover:shadow"
+    >
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-1">
+          <h5 className="text-[#000000] text-[14px] font-[500]">
+            {item.title}
+          </h5>
+          <h6 className="text-gray-600 text-[12px] font-[300] max-w-md">
+            {item.description}
+          </h6>
+        </div>
+        <MdChevronRight className="text-gray-400 group-hover:text-blue-500" size={22} />
+      </div>
+    </Link>
+  );
+};
 
 const Settings = () => {
   return (
     <DashboardLayout>
-      <div>
-        <div className="grid lg:grid-cols-12 gap-3">
-          <div className="col-span-8 flex flex-col gap-3">
-            <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">
-             <div className="flex flex-col gap-3">
-             <div>
-              <h4 className="text-[#000000] text-[14px] font-[600] ">
-                Site Settings
-              </h4>
-
-              <div className="flex flex-col gap-3 mt-3">
-                <Link to="/dashboard/settings/general-information" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                        General Information
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </Link>
-
-                {/* <Link to="/dashboard/settings/staff-and-permission" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                      Staff and Permissions
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </Link>
-
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Domain
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
+      <div className="px-1 py-4">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Settings</h2>
+          <p className="text-gray-600 text-sm">Manage your store settings and preferences</p>
+        </div>
+        
+        <div className="grid lg:grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
+            {settingsSections.map((section) => (
+              <div key={section.id} className="bg-white rounded-[14px] p-5 shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                  {section.icon}
+                  <h4 className="text-[#000000] text-[16px] font-[600]">
+                    {section.title}
+                  </h4>
                 </div>
-
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Policies
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </div>
-
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Failed
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </div> */}
-
-              </div>
-              </div>
-
-              {/* <div>
-              <h4 className="text-[#000000] text-[14px] font-[600] ">
-                Security Settings
-              </h4>
-              <div className="flex flex-col gap-3 mt-3">
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Choose 3rd Party Courier
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </div>
-
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                  Choose 3rd Party 
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
+                
+                <div className="flex flex-col gap-3">
+                  {section.items.map((item, index) => (
+                    <SettingCard key={index} item={item} />
+                  ))}
                 </div>
               </div>
-              </div> */}
-
-              {/* <div>
-              <h4 className="text-[#000000] text-[14px] font-[600] ">
-                Security Settings
+            ))}
+          </div>
+          
+          <div className="col-span-12 lg:col-span-4">
+            <div className="bg-white rounded-[14px] p-5 shadow-sm h-auto sticky top-20">
+              <h4 className="text-[#000000] text-[16px] font-[600] mb-4">
+                Need Help?
               </h4>
-              <div className="flex flex-col gap-3 mt-3">
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Choose 3rd Party Courier
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
+              <p className="text-gray-600 text-sm mb-4">
+                If you need assistance with setting up your store, check out our documentation or contact our support team.
+              </p>
+              <div className="flex flex-col gap-3">
+                <div
+                  className="text-blue-500 flex items-center gap-2 hover:text-blue-700 transition-colors duration-200"
+                >
+                  <FiHelpCircle /> View Documentation
                 </div>
-
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                 Type of Notification
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
+                <div 
+                  className="text-blue-500 flex items-center gap-2 hover:text-blue-700 transition-colors duration-200"
+                >
+                  <FiInfo /> Contact Support
                 </div>
-
-                <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                 Type of Notification
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </div>
-              </div>
-              </div> */}
-
-              <div>
-              <h4 className="text-[#000000] text-[14px] font-[600] ">
-              Payment Preferences
-              </h4>
-              <div className="flex flex-col gap-3 mt-3">
-              <Link to="/dashboard/settings/payment-preference" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Choose 3rd Party Courier
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </Link>
-
-                {/* <div className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                  Choose 3rd Party 
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </div> */}
-              </div>
-              </div>
-
-              <div>
-              <h4 className="text-[#000000] text-[14px] font-[600] ">
-            About Settings
-              </h4>
-              <div className="flex flex-col gap-3 mt-3">
-              <Link to="/dashboard/settings/about-preference" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Choose 3rd Party Courier
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </Link>
-              </div>
-              </div>
-
-              <div>
-              <h4 className="text-[#000000] text-[14px] font-[600] ">
-            Faq Settings
-              </h4>
-              <div className="flex flex-col gap-3 mt-3">
-              <Link to="/dashboard/settings/faq-preference" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Choose 3rd Party Courier
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </Link>
-              </div>
-              </div>
-
-              
-              <div>
-              <h4 className="text-[#000000] text-[14px] font-[600] ">
-          Policy Settings
-              </h4>
-              <div className="flex flex-col gap-3 mt-3">
-              <Link to="/dashboard/settings/policy-preference" className="border-[0.5px] rounded-[5px] bg-[#FBFBFF] pl-4 pr-10 py-3 border-[#D8D8E2]">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-1">
-                      <h5 className="text-[#000000] text-[12px] font-[500]">
-                       Choose 3rd Party Courier
-                      </h5>
-                      <h6 className="text-[#000000] text-[12px] font-[300]">
-                        Type of Notification Appears description appears here{" "}
-                      </h6>
-                    </div>
-
-                    <MdChevronRight />
-                  </div>
-                </Link>
-              </div>
-              </div>
               </div>
             </div>
           </div>
-          <div className="col-span-4"></div>
         </div>
       </div>
     </DashboardLayout>

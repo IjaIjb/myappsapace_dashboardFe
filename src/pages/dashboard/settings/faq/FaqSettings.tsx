@@ -37,7 +37,7 @@ const FAQSettings = () => {
         console.log(response.data);
 
         if (response?.data) {
-          const settings = response.data?.faq.aboutSettings;
+          const settings = response.data?.faq.faqSettings;
           setFaqTitle(settings.faq_title || "Frequently Asked Questions");
           
           // Set FAQ items if available
@@ -59,7 +59,7 @@ const FAQSettings = () => {
         selectedStore,
         sectionName,
         {
-          aboutSettings: {
+          faqSettings: {
             faq_title: faqTitle,
             faq_items: faqItems,
           },

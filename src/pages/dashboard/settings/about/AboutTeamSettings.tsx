@@ -16,7 +16,7 @@ interface ImageUploadProps {
 // Interface for team member
 interface TeamMember {
   name: string;
-  role: string;
+  position: string;
   image: string | null;
   xHandle: string;
   linkedinHandle: string;
@@ -34,7 +34,7 @@ const TeamSettings = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     {
       name: "",
-      role: "",
+      position: "",
       image: null,
       xHandle: "",
       linkedinHandle: "",
@@ -56,8 +56,8 @@ const TeamSettings = () => {
           setHeaderTitle(settings.header_title || "Our Team");
           
           // Set team members if available
-          if (settings.team_members && settings.team_members.length > 0) {
-            setTeamMembers(settings.team_members);
+          if (settings.members && settings.members.length > 0) {
+            setTeamMembers(settings.members);
           }
         }
       })
@@ -149,7 +149,7 @@ const TeamSettings = () => {
         {
           aboutSettings: {
             header_title: headerTitle,
-            team_members: teamMembers,
+            members: teamMembers,
           },
         }
       );
@@ -185,7 +185,7 @@ const TeamSettings = () => {
       ...teamMembers,
       {
         name: "",
-        role: "",
+        position: "",
         image: null,
         xHandle: "",
         linkedinHandle: "",
@@ -239,13 +239,13 @@ const TeamSettings = () => {
                 placeholder="John Doe"
               />
 
-              {/* Role */}
-              <label className="block font-semibold mb-1">Role:</label>
+              {/* position */}
+              <label className="block font-semibold mb-1">Position:</label>
               <input
                 type="text"
-                value={member.role}
+                value={member.position}
                 onChange={(e) =>
-                  handleTeamMemberChange(index, "role", e.target.value)
+                  handleTeamMemberChange(index, "position", e.target.value)
                 }
                 className="w-full h-10 border rounded-md p-2 mb-3"
                 placeholder="CEO & Founder"

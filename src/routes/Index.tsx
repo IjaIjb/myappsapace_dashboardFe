@@ -43,6 +43,7 @@ const GeneralInfoPage = lazy(() => import("../pages/dashboard/settings/inner/Gen
 const PaymentPreferencePage = lazy(() => import("../pages/dashboard/settings/payment/Payment"));
 const AboutPreferencePage = lazy(() => import("../pages/dashboard/settings/about/About"));
 const PolicyPreferencePage = lazy(() => import("../pages/dashboard/settings/policy/Policy"));
+const TermsAndConditionPreferencePage = lazy(() => import("../pages/dashboard/settings/termsAndCondition/TermsAndCondition"));
 const FaqPreferencePage = lazy(() => import("../pages/dashboard/settings/faq/Faq"));
 const StaffAndPermissionPage = lazy(() => import("../pages/dashboard/settings/inner/StaffAndPermission"));
 const ThemeSetupPage = lazy(() => import("../pages/dashboard/themeSetup/ThemeSetup"));
@@ -237,6 +238,10 @@ const routes = [
   {
     path: "/dashboard/settings/policy-preference",
     component: PolicyPreferencePage,
+  }, 
+  {
+    path: "/dashboard/settings/terms-and-condition",
+    component: TermsAndConditionPreferencePage,
   }, 
   {
     path: "/dashboard/settings/staff-and-permission",

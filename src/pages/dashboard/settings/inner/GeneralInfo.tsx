@@ -2,6 +2,7 @@ import React from "react";
 import DashboardLayout from "../../../../components/DashboardLayout";
 import BannerSettings from "./BannerSettings";
 import SocialAndContact from "./SocialAndContact";
+import SeoSettings from "./SeoSettings";
 const GeneralInfo = () => {
   return (
     <DashboardLayout>
@@ -15,6 +16,7 @@ const GeneralInfo = () => {
         </div>
         <div className="col-span-6">
           {/* <CheckoutSettings /> */}
+          <SeoSettings />
         </div>
       </div>
     </DashboardLayout>

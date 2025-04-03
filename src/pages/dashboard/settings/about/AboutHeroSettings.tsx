@@ -18,10 +18,10 @@ const AboutHeroSettings = () => {
     (state: RootState) => state.globalState?.selectedStore || null
   );
 
-  const sectionName = "abouthero";
+  const sectionName = "about-hero";
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("Welcome to Our Store");
-  const [description, setDescription] = useState("Discover our amazing products and services");
+  const [subtitle, setSubtitle] = useState("Discover our amazing products and services");
   const [heroImage, setHeroImage] = useState<string | null>(null);
 
   // Fetch settings from the API
@@ -36,8 +36,8 @@ const AboutHeroSettings = () => {
         if (response?.data) {
           const settings = response.data?.abouthero.aboutSettings;
           setTitle(settings.title || "Welcome to Our Store");
-          setDescription(settings.description || "Discover our amazing products and services");
-          setHeroImage(settings.hero_image || null);
+          setSubtitle(settings.subtitle || "Discover our amazing products and services");
+          setHeroImage(settings.background_image || null);
         }
       })
       .catch(() => {
@@ -128,8 +128,8 @@ const AboutHeroSettings = () => {
         {
             aboutSettings: {
             title: title,
-            description: description,
-            hero_image: heroImage,
+            subtitle: subtitle,
+            background_image: heroImage,
           },
         }
       );
@@ -160,14 +160,14 @@ const AboutHeroSettings = () => {
           />
         </div>
 
-        {/* Description */}
+        {/* subtitle */}
         <div className="mb-4">
-          <label className="block font-semibold mb-1">Description:</label>
+          <label className="block font-semibold mb-1">Subtitle:</label>
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
             className="w-full h-24 border rounded-md p-2"
-            placeholder="Enter a compelling description for your hero section"
+            placeholder="Enter a compelling subtitle for your hero section"
           />
         </div>
 

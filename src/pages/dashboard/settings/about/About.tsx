@@ -4,8 +4,9 @@ import WhatWeDo from './WhatWeDo'
 import AboutHeroSettings from './AboutHeroSettings'
 import AboutMission from './AboutMission'
 import TeamSettings from './AboutTeamSettings'
-import FAQSettings from '../faq/FaqSettings'
-import PolicySettings from '../policy/PolicySettings'
+import ServicesSettings from './Services'
+import CoreValuesSettings from './CoreValuesSettings'
+import TestimonialsSettings from './Testimonials'
 
 const About = () => {
   return (
@@ -14,11 +15,14 @@ const About = () => {
       <div className="col-span-6 flex flex-col gap-3">
   <AboutHeroSettings />
      <WhatWeDo />
+     <ServicesSettings />
+     <TestimonialsSettings />
      {/* <PolicySettings /> */}
       </div>
       <div className="col-span-6">
         {/* <CheckoutSettings /> */}
         <AboutMission />
+        <CoreValuesSettings />
         <TeamSettings />
         {/* <FAQSettings /> */}
       </div>

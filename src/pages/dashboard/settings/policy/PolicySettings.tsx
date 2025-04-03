@@ -16,9 +16,9 @@ const PolicySettings = () => {
   const [loading, setLoading] = useState(false);
   const [policyTitle, setPolicyTitle] = useState("Our Policies");
   const [privacyPolicy, setPrivacyPolicy] = useState("");
-  const [termsConditions, setTermsConditions] = useState("");
-  const [returnPolicy, setReturnPolicy] = useState("");
+ const [returnPolicy, setReturnPolicy] = useState("");
   const [shippingPolicy, setShippingPolicy] = useState("");
+  const [paymentPolicy, setPaymentPolicy] = useState("");
 
   // Fetch settings from the API
   useEffect(() => {
@@ -33,9 +33,9 @@ const PolicySettings = () => {
           const settings = response.data?.policy.policySettings;
           setPolicyTitle(settings.policy_title || "Our Policies");
           setPrivacyPolicy(settings.privacy_policy || "");
-          setTermsConditions(settings.terms_conditions || "");
-          setReturnPolicy(settings.return_policy || "");
+          setReturnPolicy(settings.refund_policy || "");
           setShippingPolicy(settings.shipping_policy || "");
+          setPaymentPolicy(settings.payment_policy || "");
         }
       })
       .catch(() => {
@@ -54,9 +54,9 @@ const PolicySettings = () => {
           policySettings: {
             policy_title: policyTitle,
             privacy_policy: privacyPolicy,
-            terms_conditions: termsConditions,
-            return_policy: returnPolicy,
-            shipping_policy: shippingPolicy
+            refund_policy: returnPolicy,
+            shipping_policy: shippingPolicy,
+            payment_policy: paymentPolicy
           },
         }
       );
@@ -104,27 +104,11 @@ const PolicySettings = () => {
           </div>
         </div>
 
-        {/* Terms & Conditions */}
-        <div className="mb-6">
-          <div className="flex items-center mb-2">
-            <label className="block font-semibold">Terms & Conditions:</label>
-            <div className="ml-2 text-xs text-gray-500">
-              (Outline the rules and guidelines for using your store)
-            </div>
-          </div>
-          <div className="border rounded-md">
-            <ImprovedRichTextEditor
-              value={termsConditions}
-              onChange={setTermsConditions}
-              placeholder="Enter your terms and conditions here..."
-            />
-          </div>
-        </div>
 
         {/* Return Policy */}
         <div className="mb-6">
           <div className="flex items-center mb-2">
-            <label className="block font-semibold">Return Policy:</label>
+            <label className="block font-semibold">Return/Refund Policy:</label>
             <div className="ml-2 text-xs text-gray-500">
               (Explain your return, refund, and exchange procedures)
             </div>
@@ -151,6 +135,22 @@ const PolicySettings = () => {
               value={shippingPolicy}
               onChange={setShippingPolicy}
               placeholder="Enter your shipping policy details here..."
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex items-center mb-2">
+            <label className="block font-semibold">Payment Policy:</label>
+            <div className="ml-2 text-xs text-gray-500">
+              (Payment policy)
+            </div>
+          </div>
+          <div className="border rounded-md">
+            <ImprovedRichTextEditor
+              value={paymentPolicy}
+              onChange={setPaymentPolicy}
+              placeholder="Enter your payment policy details here..."
             />
           </div>
         </div>

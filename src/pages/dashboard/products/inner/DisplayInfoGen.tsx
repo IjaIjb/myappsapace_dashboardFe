@@ -14,18 +14,17 @@ const DisplayInfoGen = () => {
 
   const [currencies, setCurrencies] = useState<string[]>(["USD", "EUR", "GBP", "NGN"]);
   const [newCurrency, setNewCurrency] = useState<string>("");
-  const [defaultCurrency, setDefaultCurrency] = useState<string>("NGN");
+  // const [defaultCurrency, setDefaultCurrency] = useState<string>("NGN");
   const [availablePaymentGateways, setAvailablePaymentGateways] = useState<string[]>([
     "stripe", "paypal", "flutterwave", "paystack"
   ]);
   const [selectedGateways, setSelectedGateways] = useState<string[]>([]);
-  // const [singleSelectedGateway, setSingleSelectedGateway] = useState<string>("");
-  const [paymentGatewayAccess, setPaymentGatewayAccess] = useState<number>(0);
-  const [gatewayCredentials, setGatewayCredentials] = useState<Record<string, Record<string, string>>>({
-    flutterwave: { public_key: "", secret_key: "" },
-    paypal: { public_key: "", secret_key: "" },
-    stripe: { public_key: "", secret_key: "" },
-    paystack: { public_key: "", secret_key: "" }
+  const [selectedGateway, setSelectedGateway] = useState<string>("");
+  const [gatewayCredentials, setGatewayCredentials] = useState<Record<string, { enabled: number, public_key: string, secret_key: string }>>({
+    flutterwave: { enabled: 1, public_key: "", secret_key: "" },
+    paypal: { enabled: 1, public_key: "", secret_key: "" },
+    stripe: { enabled: 1, public_key: "", secret_key: "" },
+    paystack: { enabled: 1, public_key: "", secret_key: "" }
   });
   const [loading, setLoading] = useState(false);
 
@@ -36,41 +35,42 @@ const DisplayInfoGen = () => {
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
         if (response?.data) {
-          const settings = response.data?.settings;
+          console.log(response);
+
+          const settings = response.data?.payment;
           console.log(settings);
 
           setCurrencies(settings?.settings?.currencies || []);
-          setDefaultCurrency(settings?.settings?.default_currency || "");
+          // setDefaultCurrency(settings?.settings?.default_currency || "");
           setAvailablePaymentGateways(settings?.settings?.available_payment_gateways || [
             "stripe", "paypal", "flutterwave", "paystack"
           ]);
-          setPaymentGatewayAccess(settings?.settings?.payment_gateway_access || 0);
           
-          // Handle payment gateway selection based on access mode
-          if (settings?.settings?.payment_gateway_access === 1) {
-            setSelectedGateways(settings?.settings?.payment_gateways || []);
-          } else {
-            // setSingleSelectedGateway(settings?.settings?.selected_gateway || "");
-          }
+          setSelectedGateways(settings?.settings?.payment_gateways || []);
+          setSelectedGateway(settings?.settings?.selected_gateway || "");
           
           // Initialize gateway credentials
           const credentials = settings?.settings?.payment_credentials || {};
           const initialGatewayCredentials = {
             flutterwave: {
-              public_key: credentials?.flutterwave_public_key || "",
-              secret_key: credentials?.flutterwave_secret_key || ""
+              enabled: credentials?.flutterwave?.enabled || 1,
+              public_key: credentials?.flutterwave?.public_key || "",
+              secret_key: credentials?.flutterwave?.secret_key || ""
             },
             paypal: {
-              public_key: credentials?.paypal_public_key || "",
-              secret_key: credentials?.paypal_secret_key || ""
+              enabled: credentials?.paypal?.enabled || 1,
+              public_key: credentials?.paypal?.public_key || "",
+              secret_key: credentials?.paypal?.secret_key || ""
             },
             stripe: {
-              public_key: credentials?.stripe_public_key || "",
-              secret_key: credentials?.stripe_secret_key || ""
+              enabled: credentials?.stripe?.enabled || 1,
+              public_key: credentials?.stripe?.public_key || "",
+              secret_key: credentials?.stripe?.secret_key || ""
             },
             paystack: {
-              public_key: credentials?.paystack_public_key || "",
-              secret_key: credentials?.paystack_secret_key || ""
+              enabled: credentials?.paystack?.enabled || 1,
+              public_key: credentials?.paystack?.public_key || "",
+              secret_key: credentials?.paystack?.secret_key || ""
             }
           };
           
@@ -104,6 +104,10 @@ const DisplayInfoGen = () => {
       setSelectedGateways([...selectedGateways, gateway]);
     }
   };
+  
+  const handleDefaultGatewayChange = (gateway: string) => {
+    setSelectedGateway(gateway);
+  };
 
   const handleGatewayCredentialChange = (gateway: string, field: string, value: string) => {
     setGatewayCredentials(prev => ({
@@ -116,53 +120,41 @@ const DisplayInfoGen = () => {
   };
 
   const handleSubmit = async () => {
-    if (!defaultCurrency || !currencies.includes(defaultCurrency)) {
-      toast.error("Default currency must be in the currency list.");
-      return;
-    }
+    // if (!defaultCurrency || !currencies.includes(defaultCurrency)) {
+    //   toast.error("Default currency must be in the currency list.");
+    //   return;
+    // }
 
-    if (paymentGatewayAccess === 1 && selectedGateways.length === 0) {
+    if (selectedGateways.length === 0) {
       toast.error("Please select at least one payment gateway.");
       return;
     }
 
-    // Check if all selected gateways have credentials
-    if (paymentGatewayAccess === 1) {
-      const missingCredentials = selectedGateways.some(gateway => 
-        !gatewayCredentials[gateway]?.public_key || !gatewayCredentials[gateway]?.secret_key
-      );
-      
-      if (missingCredentials) {
-        toast.error("Please provide all required credentials for selected payment gateways.");
-        return;
-      }
-    }
-
-    // Format payment credentials based on selected gateways
-    const paymentCredentials: Record<string, string> = {};
-    
-    if (paymentGatewayAccess === 1) {
-      // For gateways when user has access
-      selectedGateways.forEach(gateway => {
-        paymentCredentials[`${gateway}_public_key`] = gatewayCredentials[gateway].public_key;
-        paymentCredentials[`${gateway}_secret_key`] = gatewayCredentials[gateway].secret_key;
-      });
-    }
+    // Prepare credentials format based on selection
+    const paymentCredentials:any = {};
+    selectedGateways.forEach(gateway => {
+      paymentCredentials[gateway] = {
+        enabled: 1,
+        public_key: gatewayCredentials[gateway].public_key,
+        secret_key: gatewayCredentials[gateway].secret_key
+      };
+    });
 
     const payload = {
       settings: {
         currencies,
-        default_currency: defaultCurrency,
+        // default_currency: defaultCurrency,
         currency_display: "symbol",
-        payment_gateways: paymentGatewayAccess === 1 ? selectedGateways : [],
-        // selected_gateway: paymentGatewayAccess === 1 && selectedGateways.length === 1 ? selectedGateways[0] : "",
-        payment_gateway_access: paymentGatewayAccess,
+        payment_gateways: selectedGateways,
+        selected_gateway: selectedGateways.length === 1 ? selectedGateways[0] : selectedGateway || selectedGateways[0],
+        payment_gateway_access: 0, // We're no longer using this field as per your requirement
         payment_credentials: paymentCredentials,
       },
     };
 
-    setLoading(true);
-// console.log(payload)
+    // setLoading(true);
+    console.log(payload);
+
     try {
       const response = await UserApis.updateSettings(
         selectedStore,
@@ -296,7 +288,7 @@ const DisplayInfoGen = () => {
           </div>
 
           {/* Default Currency */}
-          <div>
+          {/* <div>
             <label className="text-[13px]">Select Default Currency</label>
             <select
               className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
@@ -308,68 +300,51 @@ const DisplayInfoGen = () => {
                 <option key={currency} value={currency}>{currency}</option>
               ))}
             </select>
-          </div>
+          </div> */}
 
-          {/* Payment Gateway Access Question */}
+          {/* Payment Gateways Selection */}
           <div>
-            <label className="text-[13px]">Do you have payment gateway access?</label>
-            <div className="flex items-center mt-2 space-x-4">
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="gateway-access-yes"
-                  name="gateway-access"
-                  checked={paymentGatewayAccess === 1}
-                  onChange={() => setPaymentGatewayAccess(1)}
-                  className="mr-2"
-                />
-                <label htmlFor="gateway-access-yes" className="text-[12px] font-[400] text-black">
-                  Yes
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="gateway-access-no"
-                  name="gateway-access"
-                  checked={paymentGatewayAccess === 0}
-                  onChange={() => setPaymentGatewayAccess(0)}
-                  className="mr-2"
-                />
-                <label htmlFor="gateway-access-no" className="text-[12px] font-[400] text-black">
-                  No
-                </label>
-              </div>
+            <label className="text-[13px]">Select Payment Gateways</label>
+            <div className="mt-1 space-y-2 border p-3 rounded-md">
+              {availablePaymentGateways.map((gateway) => (
+                <div key={gateway} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`gateway-${gateway}`}
+                    checked={selectedGateways.includes(gateway)}
+                    onChange={() => handleGatewayCheckboxChange(gateway)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={`gateway-${gateway}`} className="text-[12px] font-[400] text-black capitalize">
+                    {gateway}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Payment Gateways Selection - Only show if user has access */}
-          {paymentGatewayAccess === 1 && (
+          {/* Default Gateway Selection - Show if multiple gateways selected */}
+          {selectedGateways.length > 1 && (
             <div>
-              <label className="text-[13px]">Select Payment Gateways</label>
-              <div className="mt-1 space-y-2 border p-3 rounded-md">
-                {availablePaymentGateways.map((gateway) => (
-                  <div key={gateway} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`gateway-${gateway}`}
-                      checked={selectedGateways.includes(gateway)}
-                      onChange={() => handleGatewayCheckboxChange(gateway)}
-                      className="mr-2"
-                    />
-                    <label htmlFor={`gateway-${gateway}`} className="text-[12px] font-[400] text-black capitalize">
-                      {gateway}
-                    </label>
-                  </div>
+              <label className="text-[13px]">Select Default Payment Gateway</label>
+              <select
+                className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                value={selectedGateway}
+                onChange={(e) => handleDefaultGatewayChange(e.target.value)}
+              >
+                <option value="">Select Default Gateway</option>
+                {selectedGateways.map((gateway) => (
+                  <option key={gateway} value={gateway} className="capitalize">{gateway}</option>
                 ))}
-              </div>
+              </select>
             </div>
           )}
 
-          {/* Payment Credentials - Only show if user has gateway access */}
-          {paymentGatewayAccess === 1 && selectedGateways.length > 0 && (
+          {/* Payment Credentials */}
+          {selectedGateways.length > 0 && (
             <div className="space-y-4">
               <label className="text-[13px] font-semibold">Payment Gateway Credentials</label>
+              <p className="text-[12px] text-gray-500 italic">Leave blank to use MyAppSpace credentials</p>
               
               <div className="space-y-6">
                 {selectedGateways.map((gateway) => (
@@ -383,6 +358,7 @@ const DisplayInfoGen = () => {
                           className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md"
                           value={gatewayCredentials[gateway]?.public_key || ""}
                           onChange={(e) => handleGatewayCredentialChange(gateway, "public_key", e.target.value)}
+                          placeholder="Leave blank to use MyAppSpace credentials"
                         />
                       </div>
                       <div>
@@ -392,6 +368,7 @@ const DisplayInfoGen = () => {
                           className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md"
                           value={gatewayCredentials[gateway]?.secret_key || ""}
                           onChange={(e) => handleGatewayCredentialChange(gateway, "secret_key", e.target.value)}
+                          placeholder="Leave blank to use MyAppSpace credentials"
                         />
                       </div>
                     </div>
@@ -405,7 +382,7 @@ const DisplayInfoGen = () => {
           <button 
             className="bg-blue-500 mt-3 text-white px-4 py-2 rounded-md w-full disabled:opacity-50 disabled:bg-gray-800" 
             onClick={handleSubmit} 
-            disabled={loading || paymentGatewayAccess === 0 || (paymentGatewayAccess === 1 && selectedGateways.length === 0)}
+            disabled={loading || selectedGateways.length === 0}
           >
             {loading ? <LoadingSpinner /> : "Update Settings"}
           </button>
