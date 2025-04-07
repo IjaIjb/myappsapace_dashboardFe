@@ -30,7 +30,7 @@ const TeamSettings = () => {
 
   const sectionName = "team";
   const [loading, setLoading] = useState(false);
-  const [headerTitle, setHeaderTitle] = useState("Our Team");
+  const [headerTitle, setHeaderTitle] = useState("");
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     {
       name: "",
@@ -53,7 +53,7 @@ const TeamSettings = () => {
 
         if (response?.data) {
           const settings = response.data?.team.aboutSettings;
-          setHeaderTitle(settings.header_title || "Our Team");
+          setHeaderTitle(settings.header_title);
           
           // Set team members if available
           if (settings.members && settings.members.length > 0) {

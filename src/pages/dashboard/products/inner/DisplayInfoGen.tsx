@@ -12,7 +12,7 @@ const DisplayInfoGen = () => {
   );
   const sectionName = "payment";
 
-  const [currencies, setCurrencies] = useState<string[]>(["USD", "EUR", "GBP", "NGN"]);
+  const [currencies, setCurrencies] = useState<string[]>([]);
   const [newCurrency, setNewCurrency] = useState<string>("");
   // const [defaultCurrency, setDefaultCurrency] = useState<string>("NGN");
   const [availablePaymentGateways, setAvailablePaymentGateways] = useState<string[]>([

@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
+import { FaArrowRight, FaStore } from "react-icons/fa";
 
 const Category = () => {
   const selectedStore = useSelector(
@@ -84,17 +85,27 @@ const Category = () => {
         showCloseIcon={false} // Hides the close button
         center
       >
-        <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
-          <div>
-            <h4 className="text-[20px] font-[600] mb-4">Don't have a Site?</h4>
-            <Link
-              to="/dashboard/create-site"
-              className="underline text-blue-800"
-            >
-              Create a Site
-            </Link>
-          </div>
+      <div className="flex flex-col items-center">
+        <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+          {/* Using Font Awesome instead of SVG */}
+          <FaStore className="text-blue-600 text-4xl" />
         </div>
+        <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Site Selected</h3>
+        <p className="text-gray-600 mb-6">You need to create or select a site before adding products</p>
+        <Link 
+          to="/dashboard/create-site" 
+          className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <span>Create a New Site</span>
+          <FaArrowRight size={14} />
+        </Link>
+        <Link 
+          to="/dashboard/sites" 
+          className="mt-3 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
+        >
+          Select Existing Site
+        </Link>
+      </div>
       </Modal>
       <div>
         <div className="flex gap-3 items-center mb-7">

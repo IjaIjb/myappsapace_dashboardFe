@@ -20,8 +20,8 @@ const AboutHeroSettings = () => {
 
   const sectionName = "about-hero";
   const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("Welcome to Our Store");
-  const [subtitle, setSubtitle] = useState("Discover our amazing products and services");
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
   const [heroImage, setHeroImage] = useState<string | null>(null);
 
   // Fetch settings from the API
@@ -35,8 +35,8 @@ const AboutHeroSettings = () => {
 
         if (response?.data) {
           const settings = response.data?.abouthero.aboutSettings;
-          setTitle(settings.title || "Welcome to Our Store");
-          setSubtitle(settings.subtitle || "Discover our amazing products and services");
+          setTitle(settings.title);
+          setSubtitle(settings.subtitle);
           setHeroImage(settings.background_image || null);
         }
       })

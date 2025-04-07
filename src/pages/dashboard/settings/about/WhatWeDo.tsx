@@ -20,9 +20,9 @@ const WhatWeDoSettings = () => {
 
   const sectionName = "whatwedo";
   const [loading, setLoading] = useState(false);
-  const [headerTitle, setHeaderTitle] = useState("What We Do?");
+  const [headerTitle, setHeaderTitle] = useState("");
   const [featuredImage, setFeaturedImage] = useState<string | null>(null);
-  const [viewDetailBtnText, setViewDetailBtnText] = useState("View Detail");
+  const [viewDetailBtnText, setViewDetailBtnText] = useState("");
   const [services, setServices] = useState<any>([
     { 
     //   icon: "mobile", 
@@ -43,9 +43,9 @@ const WhatWeDoSettings = () => {
         if (response?.data) {
             console.log(response.data)
           const settings = response.data?.whatwedo.aboutSettings;
-          setHeaderTitle(settings.header_title || "What We Do?");
+          setHeaderTitle(settings.header_title);
           setFeaturedImage(settings.featured_image || null);
-          setViewDetailBtnText(settings.view_detail_btn_text || "View Detail");
+          setViewDetailBtnText(settings.view_detail_btn_text);
           
           // Set services if available
           if (settings.services && settings.services.length > 0) {

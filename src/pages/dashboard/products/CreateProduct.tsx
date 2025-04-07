@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaMoneyBillWave, FaStore } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 // import LoadingSpinnerPage from "../../../components/UI/LoadingSpinnerPage";
@@ -47,6 +47,7 @@ const CreateProduct = () => {
 
   useEffect(() => {
     if (!selectedStore || !currencies || currencies.length === 0) {
+      // if (!selectedStore || !currencies || currencies.length === 0) {
       onOpenModal();
     } else {
       onCloseModal();
@@ -82,9 +83,9 @@ const CreateProduct = () => {
     setLoader(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        // console.log(response);
+        console.log(response);
         if (response?.data) {
-          const settings = response.data?.settings.settings;
+          const settings = response.data?.payment.settings;
   
           // Populate the form fields with existing settings
           setCurrencies(settings.currencies || []);
@@ -243,32 +244,64 @@ const CreateProduct = () => {
 // console.log(currencies)
   return (
     <div>
-              <Modal
-        classNames={{
-          modal: "rounded-[10px] overflow-visible relative",
-        }}
-        open={open}
-        onClose={() => {}} // Prevents closing the modal
-        closeOnEsc={false} // Prevent closing with the Escape key
-        closeOnOverlayClick={false} // Prevent closing by clicking outside
-        showCloseIcon={false} // Hides the close button
-         center
-      >
-        <div className="px-2 md:px-5  h-[100px] flex justify-center items-center  text-center">
-       {!selectedStore ? (
-  <div>
-  <h4 className="text-[20px] font-[600] mb-4">Don't have a Site?</h4>
-<Link to="/dashboard/create-site" className="underline text-blue-800">Create a Site</Link>
-</div>
-       ) : (
-        <div>
-        <h4 className="text-[20px] font-[600] mb-4">Don't have a Currency?</h4>
-      <Link to="/dashboard/settings/general-information" className="underline text-blue-800">Set Currency</Link>
-      </div>
-       )}
-       
+       {/* Replace the existing Modal component with this improved version */}
+       <Modal
+  classNames={{
+    modal: "rounded-xl overflow-visible relative",
+    overlay: "bg-black bg-opacity-70",
+  }}
+  open={open}
+  onClose={() => {}} // Prevents closing the modal
+  closeOnEsc={false} // Prevent closing with the Escape key
+  closeOnOverlayClick={false} // Prevent closing by clicking outside
+  showCloseIcon={false} // Hides the close button
+  center
+>
+  <div className="px-8 py-10 text-center">
+    {!selectedStore ? (
+      <div className="flex flex-col items-center">
+        <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+          {/* Using Font Awesome instead of SVG */}
+          <FaStore className="text-blue-600 text-4xl" />
         </div>
-      </Modal>
+        <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Site Selected</h3>
+        <p className="text-gray-600 mb-6">You need to create or select a site before adding products</p>
+        <Link 
+          to="/dashboard/create-site" 
+          className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <span>Create a New Site</span>
+          <FaArrowRight size={14} />
+        </Link>
+        <Link 
+          to="/dashboard/sites" 
+          className="mt-3 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
+        >
+          Select Existing Site
+        </Link>
+      </div>
+    ) : (
+      <div className="flex flex-col items-center">
+        <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-6">
+          {/* Using Font Awesome for currency icon */}
+          <FaMoneyBillWave className="text-green-600 text-4xl" />
+        </div>
+        <h3 className="text-2xl font-semibold text-gray-800 mb-2">Currency Not Set</h3>
+        <p className="text-gray-600 mb-6">Please set up your currency preferences before adding products</p>
+        <Link 
+          to="/dashboard/settings/payment-preference" 
+          className="inline-flex items-center justify-center gap-2 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
+        >
+          <span>Set Up Currency</span>
+          <FaArrowRight size={14} />
+        </Link>
+        <p className="mt-4 text-sm text-gray-500">
+          Currency settings are required to define product prices correctly
+        </p>
+      </div>
+    )}
+  </div>
+</Modal>
       <DashboardLayout>
         <div>
           <form
