@@ -184,8 +184,8 @@ const showProfileConnector = () => {
             </Modal>
       {loader ? null : (
         <div>
-          <div className="flex gap-3 items-center mb-7">
-            <div className="grid lg:grid-cols-5 w-full items gap-2">
+          <div className="md:flex gap-3 items-center mb-7">
+            <div className="grid lg:grid-cols-5 md:mb-0 mb-3 w-full items gap-2">
               <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
                 <div className="flex flex-col gap-1">
                   <h5 className="text-[#9D9D9D] text-[12px] font-[600]">
@@ -294,7 +294,7 @@ const showProfileConnector = () => {
             </div>
             <Link
               to={"/dashboard/create-an-order"}
-              className="rounded-full h-fit flex items-center gap-3 px-4 py-2"
+              className="rounded-full h-fit w-fit flex items-center gap-3 px-4 py-2"
               style={{
                 background: "linear-gradient(to bottom, #382B67, #7056CD)",
               }}

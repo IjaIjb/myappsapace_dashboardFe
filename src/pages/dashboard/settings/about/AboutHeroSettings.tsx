@@ -5,12 +5,20 @@ import { UserApis } from "../../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
 import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 // Interface for image upload component
 interface ImageUploadProps {
   image: string | null;
   setImage: (image: string | null) => void;
   index?: number;
+}
+
+// Section type interface
+interface AccordionSection {
+  id: string;
+  title: string;
+  isOpen: boolean;
 }
 
 const AboutHeroSettings = () => {
@@ -24,6 +32,28 @@ const AboutHeroSettings = () => {
   const [subtitle, setSubtitle] = useState("");
   const [heroImage, setHeroImage] = useState<string | null>(null);
 
+  // Accordion state - all sections closed initially
+  const [sections, setSections] = useState<AccordionSection[]>([
+    { id: "content", title: "Hero Content", isOpen: false },
+    { id: "image", title: "Hero Image", isOpen: false }
+  ]);
+
+  // Toggle section visibility
+  const toggleSection = (sectionId: string) => {
+    setSections(prevSections => 
+      prevSections.map(section => 
+        section.id === sectionId 
+          ? { ...section, isOpen: !section.isOpen } 
+          : section
+      )
+    );
+  };
+
+  // Get section open state
+  const isSectionOpen = (sectionId: string): boolean => {
+    return sections.find(section => section.id === sectionId)?.isOpen || false;
+  };
+
   // Fetch settings from the API
   useEffect(() => {
     if (!selectedStore) return;
@@ -31,8 +61,6 @@ const AboutHeroSettings = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response.data);
-
         if (response?.data) {
           const settings = response.data?.abouthero.aboutSettings;
           setTitle(settings.title);
@@ -126,7 +154,7 @@ const AboutHeroSettings = () => {
         selectedStore,
         sectionName,
         {
-            aboutSettings: {
+          aboutSettings: {
             title: title,
             subtitle: subtitle,
             background_image: heroImage,
@@ -142,42 +170,69 @@ const AboutHeroSettings = () => {
     setLoading(false);
   };
 
+  // Section header component
+  const SectionHeader = ({ id, title }: { id: string; title: string }) => (
+    <div 
+      className="flex justify-between items-center py-3 px-4 bg-gray-100 rounded-lg cursor-pointer mb-3 hover:bg-gray-200 transition-colors"
+      onClick={() => toggleSection(id)}
+    >
+      <h5 className="font-semibold">{title}</h5>
+      <div className="text-gray-600">
+        {isSectionOpen(id) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-[14px] p-6 shadow-lg">
-      <h4 className="text-[#000000] text-[18px] font-bold pb-4">
+      <h4 className="text-[#000000] text-[18px] font-bold pb-6">
         Hero Section Settings
       </h4>
 
-      <div>
-        {/* Title */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Title:</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full h-12 border rounded-md p-2"
-          />
+      <div className="space-y-5">
+        {/* Content Section */}
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="content" title="Hero Content" />
+          
+          {isSectionOpen("content") && (
+            <div className="p-4 space-y-4 transition-all duration-300 ease-in-out">
+              {/* Title */}
+              <div>
+                <label className="block font-semibold mb-1">Title:</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full h-12 border rounded-md p-2"
+                />
+              </div>
+
+              {/* Subtitle */}
+              <div>
+                <label className="block font-semibold mb-1">Subtitle:</label>
+                <textarea
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  className="w-full h-24 border rounded-md p-2"
+                  placeholder="Enter a compelling subtitle for your hero section"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* subtitle */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Subtitle:</label>
-          <textarea
-            value={subtitle}
-            onChange={(e) => setSubtitle(e.target.value)}
-            className="w-full h-24 border rounded-md p-2"
-            placeholder="Enter a compelling subtitle for your hero section"
-          />
-        </div>
-
-        {/* Hero Image */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Hero Image:</label>
-          <ImageUpload 
-            image={heroImage} 
-            setImage={setHeroImage}
-          />
+        {/* Image Section */}
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="image" title="Hero Image" />
+          
+          {isSectionOpen("image") && (
+            <div className="p-4 transition-all duration-300 ease-in-out">
+              <ImageUpload 
+                image={heroImage} 
+                setImage={setHeroImage}
+              />
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}

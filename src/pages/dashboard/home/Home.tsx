@@ -75,7 +75,7 @@ const Home = () => {
       <DashboardLayout>
         <div className="w-full">
           <div className="grid lg:grid-cols-12 gap-3">
-            <div className="col-span-8 flex flex-col gap-3">
+            <div className="lg:col-span-8 flex flex-col gap-3">
               <div className="grid lg:grid-cols-4 gap-2">
                 <div className="bg-white rounded-[10px] pt-2 pb-1 px-3">
                   <div className="flex flex-col gap-1">
@@ -173,7 +173,7 @@ const Home = () => {
               )}
             </div>
 
-            <div className="col-span-4 flex flex-col gap-3">
+            <div className="lg:col-span-4 flex flex-col gap-3">
               <TopSelling />
               <QuickAction />
 

@@ -6,7 +6,7 @@ const TopSelling = () => {
         <div className='bg-white rounded-[14px] pt-3 pb-4 px-3'>
         <h4 className='text-[#382B67] text-[16px] font-[700] pb-4'>Top Selling</h4>
         
-        <div className='grid lg:grid-cols-3 gap-3'>
+        <div className='grid md:grid-cols-2 justify-center w-full lg:grid-cols-3 gap-3'>
         <div>
         <img
                       aria-hidden

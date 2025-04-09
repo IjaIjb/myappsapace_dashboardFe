@@ -122,15 +122,9 @@ const Login = () => {
   return (
     <div>
       <div className="p-8">
-        <div className="grid md:grid-cols-2 ">
-          {/* <div className="h-screen md:block hidden ">
-            <img
-              src="/images/auth/authImage1.svg"
-              className="h-screen"
-              alt="mart Logo"
-            />
-          </div> */}
-              <div className="h-screen md:block hidden relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 ">
+        
+              <div className="h-screen lg:block hidden relative overflow-hidden">
       <AnimatePresence>
         <motion.img
           key={images[index]} // Ensure smooth transition
@@ -145,8 +139,8 @@ const Login = () => {
       </AnimatePresence>
     </div>
 
-          <div className="md:block flex ">
-            <div className=" pt-10  px-5">
+          <div className="lg:block flex ">
+            <div className=" pt-10  lg:px-5">
               <div className="">
 
 <div className="flex justify-center">
@@ -239,7 +233,7 @@ const Login = () => {
                     <p className="text-[#000] text-sm font-semibold">Forgot Password?</p>
                   </Link>
 </div>
-                        <p className="flex items-center justify-center gap-x-1 text-[#1A1A1A] text-[16px] md:text-[18px] font-normal">
+                        <p className="flex items-center justify-center gap-x-1 text-[#1A1A1A] text-[16px] lg:text-[18px] font-normal">
                           Don&apos;t have an account yet?
                           <Link
                             to="/auth/signup"

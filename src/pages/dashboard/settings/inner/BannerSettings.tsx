@@ -5,12 +5,20 @@ import { UserApis } from "../../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
 import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 // Updated interface to accept banner index
 interface ImageUploadProps {
   image: string | null; // URL of the uploaded image
   setImage: (image: string | null) => void; // Updates the image URL
   index: number; // Index of the banner
+}
+
+// Section type interface
+interface AccordionSection {
+  id: string;
+  title: string;
+  isOpen: boolean;
 }
 
 const BannerSettings = () => {
@@ -28,6 +36,28 @@ const BannerSettings = () => {
     { image: null, title: "", description: "", cta_text: "", cta_link: "" },
   ]);
 
+  // Accordion state - all sections closed initially
+  const [sections, setSections] = useState<AccordionSection[]>([
+    { id: "general", title: "General Settings", isOpen: false },
+    { id: "banners", title: "Banner Management", isOpen: false }
+  ]);
+
+  // Toggle section visibility
+  const toggleSection = (sectionId: string) => {
+    setSections(prevSections => 
+      prevSections.map(section => 
+        section.id === sectionId 
+          ? { ...section, isOpen: !section.isOpen } 
+          : section
+      )
+    );
+  };
+
+  // Get section open state
+  const isSectionOpen = (sectionId: string): boolean => {
+    return sections.find(section => section.id === sectionId)?.isOpen || false;
+  };
+
   // Apply theme color dynamically
   useEffect(() => {
     document.body.style.setProperty("--theme-color", themeColor);
@@ -40,8 +70,6 @@ const BannerSettings = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        // console.log(response.data);
-
         if (response?.data) {
           setThemeColor(
             response.data?.banner.settings.banners.theme_color || "#ff0000"
@@ -181,118 +209,171 @@ const BannerSettings = () => {
     const updatedBanners = banners.filter((_: any, i: any) => i !== index);
     setBanners(updatedBanners);
   };
+  
+  // Individual banner accordion state - all closed initially
+  const [openBanners, setOpenBanners] = useState<number[]>([]); // All banners closed by default
+  
+  const toggleBanner = (index: number) => {
+    setOpenBanners(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index) 
+        : [...prev, index]
+    );
+  };
+
+  const isBannerOpen = (index: number): boolean => {
+    return openBanners.includes(index);
+  };
+
+  // Section header component
+  const SectionHeader = ({ id, title }: { id: string; title: string }) => (
+    <div 
+      className="flex justify-between items-center py-3 px-4 bg-gray-100 rounded-lg cursor-pointer mb-4 hover:bg-gray-200 transition-colors"
+      onClick={() => toggleSection(id)}
+    >
+      <h4 className="text-lg font-semibold">{title}</h4>
+      <div className="text-gray-600">
+        {isSectionOpen(id) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-white rounded-[14px] p-6 shadow-lg">
-      <h4 className="text-[#000000] text-[18px] font-bold pb-4">
+      <h4 className="text-[#000000] text-[18px] font-bold pb-6">
         Update Site Settings
       </h4>
 
-      <div>
-        {/* Theme Color */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Theme Color:</label>
-          <input
-            type="color"
-            value={themeColor}
-            onChange={(e) => setThemeColor(e.target.value)}
-            className="w-full h-10 border rounded-md"
-          />
-        </div>
-
-        {/* Welcome Text */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Welcome Text:</label>
-          <input
-            type="text"
-            value={welcomeText}
-            onChange={(e) => setWelcomeText(e.target.value)}
-            className="w-full h-12 border rounded-md p-2"
-          />
-        </div>
-
-        {/* Banner Section */}
+      <div className="space-y-6">
+        {/* General Settings Section */}
         <div>
-          <h4 className="text-lg font-bold mb-2">Banners:</h4>
-          {banners.map((banner: any, index: number) => (
-            <div key={index} className="border p-4 rounded-lg mb-4">
-              {/* Banner Number */}
-              <div className="bg-gray-100 px-3 py-1 mb-3 inline-block rounded-md">
-                <span className="font-medium">Banner {index + 1}</span>
+          <SectionHeader id="general" title="General Settings" />
+          
+          {isSectionOpen("general") && (
+            <div className="px-2 py-2 space-y-4 transition-all duration-300 ease-in-out">
+              {/* Theme Color */}
+              <div className="mb-4">
+                <label className="block font-semibold mb-1">Theme Color:</label>
+                <input
+                  type="color"
+                  value={themeColor}
+                  onChange={(e) => setThemeColor(e.target.value)}
+                  className="w-full h-10 border rounded-md"
+                />
               </div>
-              
-              {/* Banner Image */}
-              <label className="block font-semibold mb-1">Banner Image:</label>
-              <ImageUpload 
-                image={banner.image} 
-                setImage={(imageUrl) => handleSetBannerImage(index, imageUrl)}
-                index={index}
-              />
 
-              {/* Title */}
-              <label className="block font-semibold mb-1">Title:</label>
-              <input
-                type="text"
-                value={banner.title}
-                onChange={(e) =>
-                  handleBannerChange(index, "title", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-              />
-
-              {/* Description */}
-              <label className="block font-semibold mb-1">Description:</label>
-              <textarea
-                value={banner.description}
-                onChange={(e) =>
-                  handleBannerChange(index, "description", e.target.value)
-                }
-                className="w-full h-16 border rounded-md p-2 mb-3"
-              />
-
-              {/* CTA Text */}
-              <label className="block font-semibold mb-1">CTA Text:</label>
-              <input
-                type="text"
-                value={banner.cta_text}
-                onChange={(e) =>
-                  handleBannerChange(index, "cta_text", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-              />
-
-              {/* CTA Link */}
-              <label className="block font-semibold mb-1">CTA Link:</label>
-              <input
-                type="text"
-                value={banner.cta_link}
-                onChange={(e) =>
-                  handleBannerChange(index, "cta_link", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-              />
-
-              {/* Remove Button */}
-              {banners.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => handleRemoveBanner(index)}
-                  className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md"
-                >
-                  Remove Banner
-                </button>
-              )}
+              {/* Welcome Text */}
+              <div className="mb-4">
+                <label className="block font-semibold mb-1">Welcome Text:</label>
+                <input
+                  type="text"
+                  value={welcomeText}
+                  onChange={(e) => setWelcomeText(e.target.value)}
+                  className="w-full h-12 border rounded-md p-2"
+                />
+              </div>
             </div>
-          ))}
+          )}
+        </div>
 
-          {/* Add Banner Button */}
-          <button
-            type="button"
-            onClick={handleAddBanner}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
-          >
-            Add Banner
-          </button>
+        {/* Banner Management Section */}
+        <div>
+          <SectionHeader id="banners" title="Banner Management" />
+          
+          {isSectionOpen("banners") && (
+            <div className="px-2 py-2 space-y-4 transition-all duration-300 ease-in-out">
+              {banners.map((banner: any, index: number) => (
+                <div key={index} className="border rounded-lg mb-4 overflow-hidden">
+                  {/* Banner Header with Toggle */}
+                  <div 
+                    className="flex justify-between items-center px-4 py-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                    onClick={() => toggleBanner(index)}
+                  >
+                    <div className="font-medium">Banner {index + 1}</div>
+                    <div>
+                      {isBannerOpen(index) ? <FaChevronUp /> : <FaChevronDown />}
+                    </div>
+                  </div>
+                  
+                  {/* Banner Content */}
+                  {isBannerOpen(index) && (
+                    <div className="p-4 bg-white transition-all duration-300 ease-in-out">
+                      {/* Banner Image */}
+                      <label className="block font-semibold mb-1">Banner Image:</label>
+                      <ImageUpload 
+                        image={banner.image} 
+                        setImage={(imageUrl) => handleSetBannerImage(index, imageUrl)}
+                        index={index}
+                      />
+
+                      {/* Title */}
+                      <label className="block font-semibold mb-1">Title:</label>
+                      <input
+                        type="text"
+                        value={banner.title}
+                        onChange={(e) =>
+                          handleBannerChange(index, "title", e.target.value)
+                        }
+                        className="w-full h-10 border rounded-md p-2 mb-3"
+                      />
+
+                      {/* Description */}
+                      <label className="block font-semibold mb-1">Description:</label>
+                      <textarea
+                        value={banner.description}
+                        onChange={(e) =>
+                          handleBannerChange(index, "description", e.target.value)
+                        }
+                        className="w-full h-16 border rounded-md p-2 mb-3"
+                      />
+
+                      {/* CTA Text */}
+                      <label className="block font-semibold mb-1">CTA Text:</label>
+                      <input
+                        type="text"
+                        value={banner.cta_text}
+                        onChange={(e) =>
+                          handleBannerChange(index, "cta_text", e.target.value)
+                        }
+                        className="w-full h-10 border rounded-md p-2 mb-3"
+                      />
+
+                      {/* CTA Link */}
+                      <label className="block font-semibold mb-1">CTA Link:</label>
+                      <input
+                        type="text"
+                        value={banner.cta_link}
+                        onChange={(e) =>
+                          handleBannerChange(index, "cta_link", e.target.value)
+                        }
+                        className="w-full h-10 border rounded-md p-2 mb-3"
+                      />
+
+                      {/* Remove Button */}
+                      {banners.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveBanner(index)}
+                          className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md"
+                        >
+                          Remove Banner
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Add Banner Button */}
+              <button
+                type="button"
+                onClick={handleAddBanner}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
+              >
+                Add Banner
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}

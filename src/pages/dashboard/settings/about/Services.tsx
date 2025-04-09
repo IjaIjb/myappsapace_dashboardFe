@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
-
-// Import the UserApis from your actual API
 import { UserApis } from "../../../../apis/userApi/userApi";
 import { RootState } from "../../../../store/store";
 import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
-// Interface for image upload component
-
+// Section type interface
+interface AccordionSection {
+  id: string;
+  title: string;
+  isOpen: boolean;
+}
 
 const ServicesSettings = () => {
   const selectedStore = useSelector((state:RootState) => state.globalState?.selectedStore || null);
@@ -28,6 +31,45 @@ const ServicesSettings = () => {
     },
   ]);
 
+  // Accordion state - all sections closed initially
+  const [sections, setSections] = useState<AccordionSection[]>([
+    { id: "general", title: "General Settings", isOpen: false },
+    { id: "services", title: "Services List", isOpen: false }
+  ]);
+
+  // Individual service accordion state - all closed initially
+  const [openServices, setOpenServices] = useState<number[]>([]);
+
+  // Toggle section visibility
+  const toggleSection = (sectionId: string) => {
+    setSections(prevSections => 
+      prevSections.map(section => 
+        section.id === sectionId 
+          ? { ...section, isOpen: !section.isOpen } 
+          : section
+      )
+    );
+  };
+
+  // Toggle service visibility
+  const toggleService = (index: number) => {
+    setOpenServices(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index) 
+        : [...prev, index]
+    );
+  };
+
+  // Get section open state
+  const isSectionOpen = (sectionId: string): boolean => {
+    return sections.find(section => section.id === sectionId)?.isOpen || false;
+  };
+
+  // Get service open state
+  const isServiceOpen = (index: number): boolean => {
+    return openServices.includes(index);
+  };
+
   // Fetch settings from the API
   useEffect(() => {
     if (!selectedStore) return;
@@ -35,8 +77,6 @@ const ServicesSettings = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response.data);
-
         if (response?.data) {
           const settings = response.data?.services.aboutSettings;
           setHeaderTitle(settings.header_title);
@@ -171,128 +211,190 @@ const ServicesSettings = () => {
         duration: ""
       },
     ]);
+    
+    // Auto-open the newly added service
+    const newIndex = services.length;
+    setOpenServices(prev => [...prev, newIndex]);
   };
 
   const handleRemoveService = (index:any) => {
     const updatedServices = services.filter((_, i) => i !== index);
     setServices(updatedServices);
+    
+    // Remove from open services if it was open
+    setOpenServices(prev => prev.filter(i => i !== index).map(i => i > index ? i - 1 : i));
   };
+
+  // Section header component
+  const SectionHeader = ({ id, title }: { id: string; title: string }) => (
+    <div 
+      className="flex justify-between items-center py-3 px-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+      onClick={() => toggleSection(id)}
+    >
+      <h5 className="font-semibold">{title}</h5>
+      <div className="text-gray-600">
+        {isSectionOpen(id) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
+
+  // Service header component
+  const ServiceHeader = ({ index, title }: { index: number; title: string }) => (
+    <div 
+      className="flex justify-between items-center py-2 px-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+      onClick={() => toggleService(index)}
+    >
+      <div className="font-medium">
+        {title || `Service ${index + 1}`}
+      </div>
+      <div className="text-gray-600">
+        {isServiceOpen(index) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-white rounded-[14px] p-6 shadow-lg">
-      <h4 className="text-[#000000] text-[18px] font-bold pb-4">
+      <h4 className="text-[#000000] text-[18px] font-bold pb-6">
         Services Section Settings
       </h4>
 
-      <div>
-        {/* Header Title */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Header Title:</label>
-          <input
-            type="text"
-            value={headerTitle}
-            onChange={(e) => setHeaderTitle(e.target.value)}
-            className="w-full h-12 border rounded-md p-2"
-          />
-        </div>
+      <div className="space-y-5">
+        {/* General Settings Section */}
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="general" title="General Settings" />
+          
+          {isSectionOpen("general") && (
+            <div className="p-4 space-y-4 transition-all duration-300 ease-in-out">
+              {/* Header Title */}
+              <div>
+                <label className="block font-semibold mb-1">Header Title:</label>
+                <input
+                  type="text"
+                  value={headerTitle}
+                  onChange={(e) => setHeaderTitle(e.target.value)}
+                  className="w-full h-12 border rounded-md p-2"
+                />
+              </div>
 
-        {/* Subheading */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Subheading:</label>
-          <input
-            type="text"
-            value={subheading}
-            onChange={(e) => setSubheading(e.target.value)}
-            className="w-full h-12 border rounded-md p-2"
-          />
+              {/* Subheading */}
+              <div>
+                <label className="block font-semibold mb-1">Subheading:</label>
+                <input
+                  type="text"
+                  value={subheading}
+                  onChange={(e) => setSubheading(e.target.value)}
+                  className="w-full h-12 border rounded-md p-2"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Services Section */}
-        <div>
-          <h4 className="text-lg font-bold mb-2">Services:</h4>
-          {services.map((service, index) => (
-            <div key={index} className="border p-4 rounded-lg mb-4">
-              {/* Service Number */}
-              <div className="bg-gray-100 px-3 py-1 mb-3 inline-block rounded-md">
-                <span className="font-medium">Service {index + 1}</span>
-              </div>
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="services" title="Services List" />
+          
+          {isSectionOpen("services") && (
+            <div className="p-4 space-y-4 transition-all duration-300 ease-in-out">
+              <div className="space-y-3">
+                {services.map((service, index) => (
+                  <div key={index} className="border rounded-lg overflow-hidden">
+                    <ServiceHeader index={index} title={service.title} />
+                    
+                    {isServiceOpen(index) && (
+                      <div className="p-4 space-y-3 transition-all duration-300 ease-in-out">
+                        {/* Title */}
+                        <div>
+                          <label className="block font-semibold mb-1">Title:</label>
+                          <input
+                            type="text"
+                            value={service.title}
+                            onChange={(e) =>
+                              handleServiceChange(index, "title", e.target.value)
+                            }
+                            className="w-full h-10 border rounded-md p-2"
+                            placeholder="e.g. Web Development"
+                          />
+                        </div>
 
-              {/* Title */}
-              <label className="block font-semibold mb-1">Title:</label>
-              <input
-                type="text"
-                value={service.title}
-                onChange={(e) =>
-                  handleServiceChange(index, "title", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-                placeholder="e.g. Web Development"
-              />
+                        {/* Description */}
+                        <div>
+                          <label className="block font-semibold mb-1">Description:</label>
+                          <textarea
+                            value={service.description}
+                            onChange={(e) =>
+                              handleServiceChange(index, "description", e.target.value)
+                            }
+                            className="w-full h-16 border rounded-md p-2"
+                            placeholder="Describe this service..."
+                          />
+                        </div>
 
-              {/* Description */}
-              <label className="block font-semibold mb-1">Description:</label>
-              <textarea
-                value={service.description}
-                onChange={(e) =>
-                  handleServiceChange(index, "description", e.target.value)
-                }
-                className="w-full h-16 border rounded-md p-2 mb-3"
-                placeholder="Describe this service..."
-              />
+                        {/* Service Image */}
+                        <div>
+                          <label className="block font-semibold mb-1">Service Image:</label>
+                          <ImageUpload 
+                            image={service.image} 
+                            setImage={(img:any) => handleServiceChange(index, "image", img)}
+                            index={index}
+                          />
+                        </div>
 
-              {/* Service Image */}
-              <label className="block font-semibold mb-1">Service Image:</label>
-              <ImageUpload 
-                image={service.image} 
-                setImage={(img:any) => handleServiceChange(index, "image", img)}
-                index={index}
-              />
+                        {/* Price */}
+                        <div>
+                          <label className="block font-semibold mb-1">Price:</label>
+                          <input
+                            type="text"
+                            value={service.price}
+                            onChange={(e) =>
+                              handleServiceChange(index, "price", e.target.value)
+                            }
+                            className="w-full h-10 border rounded-md p-2"
+                            placeholder="e.g. $999"
+                          />
+                        </div>
 
-              {/* Price */}
-              <label className="block font-semibold mb-1">Price:</label>
-              <input
-                type="text"
-                value={service.price}
-                onChange={(e) =>
-                  handleServiceChange(index, "price", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-                placeholder="e.g. $999"
-              />
+                        {/* Duration */}
+                        <div>
+                          <label className="block font-semibold mb-1">Duration:</label>
+                          <input
+                            type="text"
+                            value={service.duration}
+                            onChange={(e) =>
+                              handleServiceChange(index, "duration", e.target.value)
+                            }
+                            className="w-full h-10 border rounded-md p-2"
+                            placeholder="e.g. 2 weeks"
+                          />
+                        </div>
 
-              {/* Duration */}
-              <label className="block font-semibold mb-1">Duration:</label>
-              <input
-                type="text"
-                value={service.duration}
-                onChange={(e) =>
-                  handleServiceChange(index, "duration", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-                placeholder="e.g. 2 weeks"
-              />
-
-              {/* Remove Button */}
-              {services.length > 1 && (
+                        {/* Remove Button */}
+                        {services.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveService(index)}
+                            className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md"
+                          >
+                            Remove Service
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                
+                {/* Add Service Button */}
                 <button
                   type="button"
-                  onClick={() => handleRemoveService(index)}
-                  className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md"
+                  onClick={handleAddService}
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md w-full"
                 >
-                  Remove Service
+                  Add Service
                 </button>
-              )}
+              </div>
             </div>
-          ))}
-
-          {/* Add Service Button */}
-          <button
-            type="button"
-            onClick={handleAddService}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
-          >
-            Add Service
-          </button>
+          )}
         </div>
 
         {/* Submit Button */}

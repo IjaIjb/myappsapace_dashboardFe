@@ -66,6 +66,18 @@ const settingsSections = [
     ]
   },
   {
+    id: "seo and analytics",
+    title: "Analytics Settings",
+    icon: <FiShield className="text-red-500" size={20} />,
+    items: [
+      {
+        title: "analytics",
+        description: "State you preference analytics",
+        path: "/dashboard/settings/analytics"
+      }
+    ]
+  },
+  {
     id: "terms",
     title: "Terms And Conditions",
     icon: <FiFileText className="text-gray-700" size={20} />,

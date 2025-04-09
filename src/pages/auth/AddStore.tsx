@@ -88,7 +88,7 @@ const AddSite = () => {
       const response = await UserApis.createStore(form);
       if (response?.status === 200 || response.status === 201) {
         toast.success("Site created successfully!");
-        navigate("/auth/choose-profession");
+        navigate("/dashboard/home");
       } else {
         toast.error("Failed to create site. Please try again.");
       }
@@ -108,8 +108,8 @@ const AddSite = () => {
 
   return (
     <div className="p-8">
-      <div className="grid md:grid-cols-2">
-        <div className="h-screen md:block hidden relative overflow-hidden">
+      <div className="grid lg:grid-cols-2">
+        <div className="h-screen lg:block hidden relative overflow-hidden">
           <AnimatePresence>
             <motion.img
               key={images[index]}
@@ -123,7 +123,7 @@ const AddSite = () => {
             />
           </AnimatePresence>
         </div>
-        <div className="md:block flex pt-10 px-5">
+        <div className="lg:block flex pt-10 lg:px-5">
           <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-[570px]">
             <label className="text-sm font-medium">Add Logo</label>
             <div className="flex justify-center text-center">
@@ -350,8 +350,8 @@ export default AddSite;
 //   };
 //   return (
 //     <div className="p-8">
-//     <div className="grid md:grid-cols-2">
-//       <div className="h-screen md:block hidden relative overflow-hidden">
+//     <div className="grid lg:grid-cols-2">
+//       <div className="h-screen lg:block hidden relative overflow-hidden">
 //         <AnimatePresence>
 //           <motion.img
 //             key={images[index]}
@@ -365,7 +365,7 @@ export default AddSite;
 //           />
 //         </AnimatePresence>
 //       </div>
-//       <div className="md:block flex pt-10 px-5">
+//       <div className="lg:block flex pt-10 px-5">
 //         <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-[570px]">
 //           <label className="text-sm font-medium">Add Logo</label>
 //           <div className="flex justify-center text-center">

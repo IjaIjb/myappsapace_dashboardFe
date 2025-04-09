@@ -12,7 +12,7 @@ const QuickAction = () => {
 Access our fast services below with what we offer
         </h5>
 
-        <div className="flex justify-between pt-6">
+        <div className="lg:flex justify-between pt-6">
           <Link
             to="/dashboard/create-product"
             className="flex gap-2 items-center"
@@ -32,7 +32,7 @@ Access our fast services below with what we offer
 
           <Link
             to="/dashboard/create-customer"
-            className="flex gap-2 items-center"
+            className="flex gap-2 lg:mt-0 mt-4 items-center"
           >
             <img
               aria-hidden

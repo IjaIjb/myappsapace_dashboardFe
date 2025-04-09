@@ -5,6 +5,7 @@ import { UserApis } from "../../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
 import LoadingSpinner from "../../../../components/UI/LoadingSpinner";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 // Interface for image upload component
 interface ImageUploadProps {
@@ -21,6 +22,13 @@ interface TeamMember {
   xHandle: string;
   linkedinHandle: string;
   instagramHandle: string;
+}
+
+// Section type interface
+interface AccordionSection {
+  id: string;
+  title: string;
+  isOpen: boolean;
 }
 
 const TeamSettings = () => {
@@ -42,6 +50,45 @@ const TeamSettings = () => {
     },
   ]);
 
+  // Accordion state - all sections closed initially
+  const [sections, setSections] = useState<AccordionSection[]>([
+    { id: "general", title: "General Settings", isOpen: false },
+    { id: "members", title: "Team Members", isOpen: false }
+  ]);
+
+  // Individual team member accordion state - all closed initially
+  const [openMembers, setOpenMembers] = useState<number[]>([]);
+
+  // Toggle section visibility
+  const toggleSection = (sectionId: string) => {
+    setSections(prevSections => 
+      prevSections.map(section => 
+        section.id === sectionId 
+          ? { ...section, isOpen: !section.isOpen } 
+          : section
+      )
+    );
+  };
+
+  // Toggle team member visibility
+  const toggleMember = (index: number) => {
+    setOpenMembers(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index) 
+        : [...prev, index]
+    );
+  };
+
+  // Get section open state
+  const isSectionOpen = (sectionId: string): boolean => {
+    return sections.find(section => section.id === sectionId)?.isOpen || false;
+  };
+
+  // Get team member open state
+  const isMemberOpen = (index: number): boolean => {
+    return openMembers.includes(index);
+  };
+
   // Fetch settings from the API
   useEffect(() => {
     if (!selectedStore) return;
@@ -49,8 +96,6 @@ const TeamSettings = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response.data);
-
         if (response?.data) {
           const settings = response.data?.team.aboutSettings;
           setHeaderTitle(settings.header_title);
@@ -181,150 +226,208 @@ const TeamSettings = () => {
   };
 
   const handleAddTeamMember = () => {
-    setTeamMembers([
-      ...teamMembers,
-      {
-        name: "",
-        position: "",
-        image: null,
-        xHandle: "",
-        linkedinHandle: "",
-        instagramHandle: ""
-      },
-    ]);
+    const newMember = {
+      name: "",
+      position: "",
+      image: null,
+      xHandle: "",
+      linkedinHandle: "",
+      instagramHandle: ""
+    };
+    
+    setTeamMembers([...teamMembers, newMember]);
+    
+    // Auto-open the newly added member
+    const newIndex = teamMembers.length;
+    setOpenMembers(prev => [...prev, newIndex]);
   };
 
   const handleRemoveTeamMember = (index: number) => {
     const updatedTeamMembers = teamMembers.filter((_, i) => i !== index);
     setTeamMembers(updatedTeamMembers);
+    
+    // Update open members state
+    setOpenMembers(prev => 
+      prev.filter(i => i !== index)
+        .map(i => i > index ? i - 1 : i)
+    );
   };
+
+  // Section header component
+  const SectionHeader = ({ id, title }: { id: string; title: string }) => (
+    <div 
+      className="flex justify-between items-center py-3 px-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+      onClick={() => toggleSection(id)}
+    >
+      <h5 className="font-semibold">{title}</h5>
+      <div className="text-gray-600">
+        {isSectionOpen(id) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
+
+  // Team member header component
+  const MemberHeader = ({ index, name }: { index: number; name: string }) => (
+    <div 
+      className="flex justify-between items-center py-2 px-3 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+      onClick={() => toggleMember(index)}
+    >
+      <div className="font-medium">
+        {name ? `${name} - Member ${index + 1}` : `Team Member ${index + 1}`}
+      </div>
+      <div className="text-gray-600">
+        {isMemberOpen(index) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-white mt-4 rounded-[14px] p-6 shadow-lg">
-      <h4 className="text-[#000000] text-[18px] font-bold pb-4">
+      <h4 className="text-[#000000] text-[18px] font-bold pb-6">
         Team Section Settings
       </h4>
 
-      <div>
-        {/* Header Title */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Team Section Title:</label>
-          <input
-            type="text"
-            value={headerTitle}
-            onChange={(e) => setHeaderTitle(e.target.value)}
-            className="w-full h-12 border rounded-md p-2"
-          />
+      <div className="space-y-5">
+        {/* General Settings Section */}
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="general" title="General Settings" />
+          
+          {isSectionOpen("general") && (
+            <div className="p-4 transition-all duration-300 ease-in-out">
+              <label className="block font-semibold mb-1">Team Section Title:</label>
+              <input
+                type="text"
+                value={headerTitle}
+                onChange={(e) => setHeaderTitle(e.target.value)}
+                className="w-full h-12 border rounded-md p-2"
+              />
+            </div>
+          )}
         </div>
 
         {/* Team Members Section */}
-        <div>
-          <h4 className="text-lg font-bold mb-2">Team Members:</h4>
-          {teamMembers.map((member, index) => (
-            <div key={index} className="border p-4 rounded-lg mb-4">
-              {/* Member Number */}
-              <div className="bg-gray-100 px-3 py-1 mb-3 inline-block rounded-md">
-                <span className="font-medium">Team Member {index + 1}</span>
-              </div>
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="members" title="Team Members" />
+          
+          {isSectionOpen("members") && (
+            <div className="p-4 space-y-4 transition-all duration-300 ease-in-out">
+              {teamMembers.map((member, index) => (
+                <div key={index} className="border rounded-lg overflow-hidden">
+                  <MemberHeader index={index} name={member.name} />
+                  
+                  {isMemberOpen(index) && (
+                    <div className="p-4 space-y-3 transition-all duration-300 ease-in-out">
+                      {/* Name */}
+                      <div>
+                        <label className="block font-semibold mb-1">Name:</label>
+                        <input
+                          type="text"
+                          value={member.name}
+                          onChange={(e) =>
+                            handleTeamMemberChange(index, "name", e.target.value)
+                          }
+                          className="w-full h-10 border rounded-md p-2"
+                          placeholder="John Doe"
+                        />
+                      </div>
+
+                      {/* Position */}
+                      <div>
+                        <label className="block font-semibold mb-1">Position:</label>
+                        <input
+                          type="text"
+                          value={member.position}
+                          onChange={(e) =>
+                            handleTeamMemberChange(index, "position", e.target.value)
+                          }
+                          className="w-full h-10 border rounded-md p-2"
+                          placeholder="CEO & Founder"
+                        />
+                      </div>
+
+                      {/* Member Photo */}
+                      <div>
+                        <label className="block font-semibold mb-1">Team Member Photo:</label>
+                        <ImageUpload 
+                          image={member.image} 
+                          setImage={(imageUrl) => handleTeamMemberImageChange(index, imageUrl)}
+                          index={index}
+                        />
+                      </div>
+
+                      {/* Social Media Handles */}
+                      <div>
+                        <label className="block font-semibold mb-2">Social Media:</label>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          {/* X Handle */}
+                          <div>
+                            <label className="block text-sm mb-1">X (Twitter) Handle:</label>
+                            <input
+                              type="text"
+                              value={member.xHandle}
+                              onChange={(e) =>
+                                handleTeamMemberChange(index, "xHandle", e.target.value)
+                              }
+                              className="w-full h-10 border rounded-md p-2"
+                              placeholder="@username"
+                            />
+                          </div>
+
+                          {/* LinkedIn Handle */}
+                          <div>
+                            <label className="block text-sm mb-1">LinkedIn Handle:</label>
+                            <input
+                              type="text"
+                              value={member.linkedinHandle}
+                              onChange={(e) =>
+                                handleTeamMemberChange(index, "linkedinHandle", e.target.value)
+                              }
+                              className="w-full h-10 border rounded-md p-2"
+                              placeholder="username"
+                            />
+                          </div>
+
+                          {/* Instagram Handle */}
+                          <div>
+                            <label className="block text-sm mb-1">Instagram Handle:</label>
+                            <input
+                              type="text"
+                              value={member.instagramHandle}
+                              onChange={(e) =>
+                                handleTeamMemberChange(index, "instagramHandle", e.target.value)
+                              }
+                              className="w-full h-10 border rounded-md p-2"
+                              placeholder="username"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Remove Button */}
+                      {teamMembers.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTeamMember(index)}
+                          className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md mt-2"
+                        >
+                          Remove Team Member
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
               
-              {/* Name */}
-              <label className="block font-semibold mb-1">Name:</label>
-              <input
-                type="text"
-                value={member.name}
-                onChange={(e) =>
-                  handleTeamMemberChange(index, "name", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-                placeholder="John Doe"
-              />
-
-              {/* position */}
-              <label className="block font-semibold mb-1">Position:</label>
-              <input
-                type="text"
-                value={member.position}
-                onChange={(e) =>
-                  handleTeamMemberChange(index, "position", e.target.value)
-                }
-                className="w-full h-10 border rounded-md p-2 mb-3"
-                placeholder="CEO & Founder"
-              />
-
-              {/* Member Photo */}
-              <label className="block font-semibold mb-1">Team Member Photo:</label>
-              <ImageUpload 
-                image={member.image} 
-                setImage={(imageUrl) => handleTeamMemberImageChange(index, imageUrl)}
-                index={index}
-              />
-
-              {/* Social Media Handles */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-                {/* X Handle */}
-                <div>
-                  <label className="block font-semibold mb-1">X (Twitter) Handle:</label>
-                  <input
-                    type="text"
-                    value={member.xHandle}
-                    onChange={(e) =>
-                      handleTeamMemberChange(index, "xHandle", e.target.value)
-                    }
-                    className="w-full h-10 border rounded-md p-2 mb-3"
-                    placeholder="@username"
-                  />
-                </div>
-
-                {/* LinkedIn Handle */}
-                <div>
-                  <label className="block font-semibold mb-1">LinkedIn Handle:</label>
-                  <input
-                    type="text"
-                    value={member.linkedinHandle}
-                    onChange={(e) =>
-                      handleTeamMemberChange(index, "linkedinHandle", e.target.value)
-                    }
-                    className="w-full h-10 border rounded-md p-2 mb-3"
-                    placeholder="username"
-                  />
-                </div>
-
-                {/* Instagram Handle */}
-                <div>
-                  <label className="block font-semibold mb-1">Instagram Handle:</label>
-                  <input
-                    type="text"
-                    value={member.instagramHandle}
-                    onChange={(e) =>
-                      handleTeamMemberChange(index, "instagramHandle", e.target.value)
-                    }
-                    className="w-full h-10 border rounded-md p-2 mb-3"
-                    placeholder="username"
-                  />
-                </div>
-              </div>
-
-              {/* Remove Button */}
-              {teamMembers.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => handleRemoveTeamMember(index)}
-                  className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md"
-                >
-                  Remove Team Member
-                </button>
-              )}
+              {/* Add Team Member Button */}
+              <button
+                type="button"
+                onClick={handleAddTeamMember}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md w-full"
+              >
+                Add Team Member
+              </button>
             </div>
-          ))}
-
-          {/* Add Team Member Button */}
-          <button
-            type="button"
-            onClick={handleAddTeamMember}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md"
-          >
-            Add Team Member
-          </button>
+          )}
         </div>
 
         {/* Submit Button */}

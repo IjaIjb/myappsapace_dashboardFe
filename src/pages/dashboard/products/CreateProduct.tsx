@@ -361,7 +361,7 @@ const CreateProduct = () => {
                       Recommended dimension: 930px x 1163px, Max file size: 5mb
                     </h4>
                   </div>
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {media.map(({ id, file }) => (
                       <div
                         key={id}
@@ -519,7 +519,9 @@ const CreateProduct = () => {
                   <h5 className="text-[10px] font-[400]">Add Another Option</h5>
                 </div>
 
+<div className="md:block hidden">
                 <VariantTable />
+                </div>
               </div>
               {/* <ProductInventory /> */}
               <div className="bg-white rounded-[14px] pt-3 pb-4 pl-3 pr-5">

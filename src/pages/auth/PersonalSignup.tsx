@@ -113,8 +113,8 @@ const PersonalSignup = () => {
   return (
     <div>
       <div className="p-8">
-        <div className="grid md:grid-cols-2 ">
-          <div className="h-screen md:block hidden relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 ">
+          <div className="h-screen lg:block hidden relative overflow-hidden">
             <AnimatePresence>
               <motion.img
                 key={images[index]} // Ensure smooth transition
@@ -129,8 +129,8 @@ const PersonalSignup = () => {
             </AnimatePresence>
           </div>
 
-          <div className="md:block flex ">
-            <div className=" pt-10  px-5">
+          <div className="lg:block flex ">
+            <div className=" pt-10  lg:px-5">
               <div className="">
 <div className="flex justify-center">
 
@@ -158,7 +158,7 @@ const PersonalSignup = () => {
                   {({ values, isSubmitting, handleChange, errors, touched, setFieldValue }) => (
                     <Form className="w-full  mb-6 flex flex-col justify-between">
                       <div className="">
-                        <div className="flex gap-3">
+                        <div className="md:flex gap-3">
                           <div className=" mb-3 w-full relative">
                             <label
                               className=" text-[#2B2C2B] text-[12px] font-[400] "
@@ -202,7 +202,7 @@ const PersonalSignup = () => {
                           </div>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="md:flex gap-3">
                           <div className=" mb-5 w-full relative">
                             <label
                               className=" text-[#2B2C2B] text-[12px] font-[400] "
@@ -241,7 +241,7 @@ const PersonalSignup = () => {
                           </div>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="md:flex gap-3">
                           <div className=" mb-3 w-full relative">
                             <label
                               className=" text-[#2B2C2B] text-[12px] font-[400] "
@@ -314,7 +314,7 @@ const PersonalSignup = () => {
                           </div>
                         </div>
                       </div>
-                      <p className="flex items-center justify-center gap-x-1 text-[#1A1A1A] text-[16px] md:text-[18px] font-normal">
+                      <p className="flex items-center justify-center gap-x-1 text-[#1A1A1A] text-[16px] lg:text-[18px] font-normal">
                         Already have an account?
                         <Link
                           to="/"

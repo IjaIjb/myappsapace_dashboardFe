@@ -4,6 +4,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { UserApis } from "../../../../apis/userApi/userApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store/store";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+// Section type interface
+interface AccordionSection {
+  id: string;
+  title: string;
+  isOpen: boolean;
+}
 
 const VisionMissionSettings = () => {
   const selectedStore = useSelector(
@@ -12,12 +20,30 @@ const VisionMissionSettings = () => {
 
   const sectionName = "vision-and-mission";
   const [loading, setLoading] = useState(false);
-  const [vision, setVision] = useState(
-    ""
-  );
-  const [mission, setMission] = useState(
-    ""
-  );
+  const [vision, setVision] = useState("");
+  const [mission, setMission] = useState("");
+
+  // Accordion state - all sections closed initially
+  const [sections, setSections] = useState<AccordionSection[]>([
+    { id: "vision", title: "Company Vision", isOpen: false },
+    { id: "mission", title: "Company Mission", isOpen: false }
+  ]);
+
+  // Toggle section visibility
+  const toggleSection = (sectionId: string) => {
+    setSections(prevSections => 
+      prevSections.map(section => 
+        section.id === sectionId 
+          ? { ...section, isOpen: !section.isOpen } 
+          : section
+      )
+    );
+  };
+
+  // Get section open state
+  const isSectionOpen = (sectionId: string): boolean => {
+    return sections.find(section => section.id === sectionId)?.isOpen || false;
+  };
 
   // Fetch settings from the API
   useEffect(() => {
@@ -26,8 +52,6 @@ const VisionMissionSettings = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response.data);
-
         if (response?.data) {
           const settings = response.data?.[sectionName].aboutSettings;
           setVision(settings.vision || "To be the leading online store in the world, offering the best shopping experience.");
@@ -62,39 +86,62 @@ const VisionMissionSettings = () => {
     setLoading(false);
   };
 
+  // Section header component
+  const SectionHeader = ({ id, title }: { id: string; title: string }) => (
+    <div 
+      className="flex justify-between items-center py-3 px-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+      onClick={() => toggleSection(id)}
+    >
+      <h5 className="font-semibold">{title}</h5>
+      <div className="text-gray-600">
+        {isSectionOpen(id) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-[14px] p-6 shadow-lg">
-      <h4 className="text-[#000000] text-[18px] font-bold pb-4">
+      <h4 className="text-[#000000] text-[18px] font-bold pb-6">
         Vision and Mission Settings
       </h4>
 
-      <div>
-        {/* Vision */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-1">Company Vision:</label>
-          <textarea
-            value={vision}
-            onChange={(e) => setVision(e.target.value)}
-            className="w-full h-32 border rounded-md p-2"
-            placeholder="Enter your company's vision statement"
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            Your vision statement should describe what you want your company to become in the future.
-          </p>
+      <div className="space-y-5">
+        {/* Vision Section */}
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="vision" title="Company Vision" />
+          
+          {isSectionOpen("vision") && (
+            <div className="p-4 transition-all duration-300 ease-in-out">
+              <textarea
+                value={vision}
+                onChange={(e) => setVision(e.target.value)}
+                className="w-full h-32 border rounded-md p-2"
+                placeholder="Enter your company's vision statement"
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Your vision statement should describe what you want your company to become in the future.
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Mission */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Company Mission:</label>
-          <textarea
-            value={mission}
-            onChange={(e) => setMission(e.target.value)}
-            className="w-full h-32 border rounded-md p-2"
-            placeholder="Enter your company's mission statement"
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            Your mission statement should describe why your company exists and its purpose.
-          </p>
+        {/* Mission Section */}
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="mission" title="Company Mission" />
+          
+          {isSectionOpen("mission") && (
+            <div className="p-4 transition-all duration-300 ease-in-out">
+              <textarea
+                value={mission}
+                onChange={(e) => setMission(e.target.value)}
+                className="w-full h-32 border rounded-md p-2"
+                placeholder="Enter your company's mission statement"
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Your mission statement should describe why your company exists and its purpose.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}

@@ -14,24 +14,27 @@ const Coupon = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  const [coupons, setCoupons] = React.useState<any>([]);
+  const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [open, setOpen] = useState(false);
+  
   const onOpenModal = () => {
     setOpen(true);
   };
+  
   const onCloseModal = () => setOpen(false);
-   const [formData, setFormData] = useState({
-     guest_checkout: false,
-     min_order_amount: "",
-     max_cart_items: "",
-     allow_coupons: false,
-     tax: {
-       tax_type: "none", // product or order or none
-       tax_rate: "" // 0 or greater than 0
-     }
-   });
+  
+  const [formData, setFormData] = useState({
+    guest_checkout: false,
+    min_order_amount: "",
+    max_cart_items: "",
+    allow_coupons: false,
+    tax: {
+      tax_type: "none", // product or order or none
+      tax_rate: "" // 0 or greater than 0
+    }
+  });
+  
   const sectionName = "checkout";
 
   // Fetch settings from the API
@@ -41,7 +44,6 @@ const Coupon = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response.data?.settings)
         if (response?.data?.settings) {
           setFormData((prev) => ({
             ...prev,
@@ -52,7 +54,6 @@ const Coupon = () => {
       .finally(() => setLoading(false));
   }, [selectedStore]);
 
-
   useEffect(() => {
     if (!selectedStore) {
       onOpenModal();
@@ -61,13 +62,12 @@ const Coupon = () => {
     }
   }, [selectedStore]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedStore) {
       setLoading(true);
       UserApis.getCoupon(selectedStore)
         .then((response) => {
           if (response?.data) {
-            console.log(response?.data);
             // Make sure we're accessing the coupons array from the response
             setCoupons(response?.data?.coupons || []);
           }
@@ -82,7 +82,7 @@ const Coupon = () => {
   }, [selectedStore]);
 
   // Format date from "2025-04-05 00:00:00" to "Apr 5, 2025"
-  const formatDate = (dateStr: any) => {
+  const formatDate = (dateStr:any) => {
     try {
       const date = new Date(dateStr);
       return date.toLocaleDateString("en-US", {
@@ -96,7 +96,7 @@ const Coupon = () => {
   };
 
   // Handle coupon activation/deactivation
-  const toggleCouponStatus = (id: any, currentStatus: any) => {
+  const toggleCouponStatus = (id:any, currentStatus:any) => {
     // Implement your API call to toggle status here
     console.log(
       `Toggling coupon ${id} from ${currentStatus ? "active" : "inactive"} to ${
@@ -120,7 +120,6 @@ const Coupon = () => {
       >
       <div className="flex flex-col items-center">
         <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
-          {/* Using Font Awesome instead of SVG */}
           <FaStore className="text-blue-600 text-4xl" />
         </div>
         <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Site Selected</h3>
@@ -140,6 +139,7 @@ const Coupon = () => {
         </Link>
       </div>
       </Modal>
+      
       <div>
         {/* Coupon Disabled Warning */}
         {!formData.allow_coupons && !loading && (
@@ -183,104 +183,185 @@ const Coupon = () => {
           </Link>
         </div>
 
-        <div className="shadow-lg sm:rounded-lg w-full mt-6 overflow-x-auto">
-          {loading ? (
-            <div className="flex justify-center items-center py-10">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-700"></div>
-            </div>
-          ) : coupons.length === 0 ? (
-            <div className="text-center py-10 text-gray-500">
-              {formData.allow_coupons ? 
-                "No coupons found. Create your first coupon to get started." :
-                "No coupons found. Enable coupons in your site settings, then create your first coupon."
-              }
-            </div>
-          ) : (
-            <table className="min-w-full text-sm text-gray-500 divide-y divide-gray-200">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    S/N
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    Coupon Code
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    Discount
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    Expiry Date
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    Created At
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {coupons.map((coupon: any, index: any) => (
-                  <tr key={coupon.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium">
-                      {coupon.code}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {coupon.discount_value}
-                      {coupon.discount_type === "percentage" ? "%" : " (Fixed)"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {formatDate(coupon.expiry_date)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {formatDate(coupon.created_at)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          coupon.is_active
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {coupon.is_active ? (formData.allow_coupons ? "Active" : "Inactive (Site)") : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                      <div className="flex items-center space-x-4">
-                        <button
-                          onClick={() =>
-                            toggleCouponStatus(coupon.id, coupon.is_active)
-                          }
-                          className={`text-purple-600 hover:text-purple-900 ${!formData.allow_coupons ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          title={!formData.allow_coupons ? "Enable coupons in settings first" : (coupon.is_active ? "Deactivate" : "Activate")}
-                          disabled={!formData.allow_coupons}
-                        >
-                          {coupon.is_active ? (
-                            <FaToggleOn className="text-xl" />
-                          ) : (
-                            <FaToggleOff className="text-xl" />
-                          )}
-                        </button>
-                        <Link
-                          to={`/dashboard/edit-coupon/${coupon.id}`}
-                          className="text-indigo-600 hover:text-indigo-900"
-                          title="Edit"
-                        >
-                          <FaEdit />
-                        </Link>
-                      </div>
-                    </td>
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-10">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-700"></div>
+          </div>
+        )}
+        
+        {/* Empty State */}
+        {!loading && coupons.length === 0 && (
+          <div className="text-center py-10 text-gray-500 bg-white rounded-lg shadow">
+            {formData.allow_coupons ? 
+              "No coupons found. Create your first coupon to get started." :
+              "No coupons found. Enable coupons in your site settings, then create your first coupon."
+            }
+          </div>
+        )}
+
+        {/* Desktop Table (hidden on small screens) */}
+        {!loading && coupons.length > 0 && (
+          <div className="hidden md:block shadow-lg rounded-lg overflow-hidden mt-6">
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm text-gray-500 divide-y divide-gray-200">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left">
+                      S/N
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left">
+                      Coupon Code
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left">
+                      Discount
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left">
+                      Expiry Date
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left">
+                      Created At
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left">
+                      Status
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {coupons.map((coupon:any, index:any) => (
+                    <tr key={coupon.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+                      <td className="px-6 py-4 whitespace-nowrap font-medium">
+                        {coupon.code}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {coupon.discount_value}
+                        {coupon.discount_type === "percentage" ? "%" : " (Fixed)"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {formatDate(coupon.expiry_date)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {formatDate(coupon.created_at)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            coupon.is_active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {coupon.is_active ? (formData.allow_coupons ? "Active" : "Inactive (Site)") : "Inactive"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() =>
+                              toggleCouponStatus(coupon.id, coupon.is_active)
+                            }
+                            className={`text-purple-600 hover:text-purple-900 ${!formData.allow_coupons ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            title={!formData.allow_coupons ? "Enable coupons in settings first" : (coupon.is_active ? "Deactivate" : "Activate")}
+                            disabled={!formData.allow_coupons}
+                          >
+                            {coupon.is_active ? (
+                              <FaToggleOn className="text-xl" />
+                            ) : (
+                              <FaToggleOff className="text-xl" />
+                            )}
+                          </button>
+                          <Link
+                            to={`/dashboard/edit-coupon/${coupon.id}`}
+                            className="text-indigo-600 hover:text-indigo-900"
+                            title="Edit"
+                          >
+                            <FaEdit />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile View (shown only on small screens) */}
+        {!loading && coupons.length > 0 && (
+          <div className="md:hidden space-y-4">
+            {coupons.map((coupon:any, index:any) => (
+              <div key={coupon.id} className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+                <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                  <div>
+                    <div className="text-sm text-gray-500">Coupon Code</div>
+                    <div className="font-bold text-lg">{coupon.code}</div>
+                  </div>
+                  <div>
+                    <span
+                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        coupon.is_active
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {coupon.is_active ? (formData.allow_coupons ? "Active" : "Inactive (Site)") : "Inactive"}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="p-4 space-y-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-xs text-gray-500">Discount</div>
+                      <div className="font-medium">
+                        {coupon.discount_value}
+                        {coupon.discount_type === "percentage" ? "%" : " (Fixed)"}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="text-xs text-gray-500">Expiry Date</div>
+                      <div className="font-medium">{formatDate(coupon.expiry_date)}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500">Created At</div>
+                  <div className="text-sm">{formatDate(coupon.created_at)}</div>
+                </div>
+                
+                <div className="bg-gray-50 px-4 py-3 flex justify-between items-center">
+                  <span className="text-xs text-gray-500">#{index + 1}</span>
+                  <div className="flex items-center space-x-6">
+                    <button
+                      onClick={() => toggleCouponStatus(coupon.id, coupon.is_active)}
+                      className={`text-purple-600 hover:text-purple-900 ${!formData.allow_coupons ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      title={!formData.allow_coupons ? "Enable coupons in settings first" : (coupon.is_active ? "Deactivate" : "Activate")}
+                      disabled={!formData.allow_coupons}
+                    >
+                      {coupon.is_active ? (
+                        <FaToggleOn className="text-2xl" />
+                      ) : (
+                        <FaToggleOff className="text-2xl" />
+                      )}
+                    </button>
+                    <Link
+                      to={`/dashboard/edit-coupon/${coupon.id}`}
+                      className="text-indigo-600 hover:text-indigo-900"
+                      title="Edit"
+                    >
+                      <FaEdit className="text-xl" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

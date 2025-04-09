@@ -4,6 +4,14 @@ import { RootState } from "../../../../store/store";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserApis } from "../../../../apis/userApi/userApi";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+// Section type interface
+interface AccordionSection {
+  id: string;
+  title: string;
+  isOpen: boolean;
+}
 
 const SocialAndContact = () => {
   const selectedStore = useSelector(
@@ -22,6 +30,28 @@ const SocialAndContact = () => {
     tiktok: "",
   });
 
+  // Accordion state - all sections closed initially
+  const [sections, setSections] = useState<AccordionSection[]>([
+    { id: "contacts", title: "Contact Information", isOpen: false },
+    { id: "social", title: "Social Media Links", isOpen: false }
+  ]);
+
+  // Toggle section visibility
+  const toggleSection = (sectionId: string) => {
+    setSections(prevSections => 
+      prevSections.map(section => 
+        section.id === sectionId 
+          ? { ...section, isOpen: !section.isOpen } 
+          : section
+      )
+    );
+  };
+
+  // Get section open state
+  const isSectionOpen = (sectionId: string): boolean => {
+    return sections.find(section => section.id === sectionId)?.isOpen || false;
+  };
+
   const sectionName = "contacts";
 
   // Fetch settings from the API
@@ -31,7 +61,6 @@ const SocialAndContact = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        console.log(response)
         if (response?.data) {
           setFormData((prev) => ({
             ...prev,
@@ -73,93 +102,134 @@ const SocialAndContact = () => {
     setLoading(false);
   };
 
+  // Section header component
+  const SectionHeader = ({ id, title }: { id: string; title: string }) => (
+    <div 
+      className="flex justify-between items-center py-3 px-4 bg-gray-100 rounded-lg cursor-pointer mb-3 hover:bg-gray-200 transition-colors"
+      onClick={() => toggleSection(id)}
+    >
+      <h5 className="text-base font-semibold">{title}</h5>
+      <div className="text-gray-600">
+        {isSectionOpen(id) ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-[14px] p-6 shadow-lg">
-      <h4 className="text-[#000000] text-[18px] font-bold pb-4">
+      <h4 className="text-[#000000] text-[18px] font-bold pb-6">
         Update Contacts and Socials
       </h4>
 
-      <div>
+      <div className="space-y-5">
         {/* Contacts Section */}
-        <div className="border p-4 rounded-lg mb-4">
-          <h5 className="font-semibold mb-2">Contacts</h5>
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="contacts" title="Contact Information" />
+          
+          {isSectionOpen("contacts") && (
+            <div className="p-4 transition-all duration-300 ease-in-out">
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-semibold mb-1">Phone Number:</label>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
 
-          <label className="block font-semibold">Phone Number:</label>
-          <input
-            type="text"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
+                <div>
+                  <label className="block font-semibold mb-1">Email:</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
 
-          <label className="block font-semibold">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
-
-          <label className="block font-semibold">Address:</label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
+                <div>
+                  <label className="block font-semibold mb-1">Address:</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Social Media Section */}
-        <div className="border p-4 rounded-lg mb-4">
-          <h5 className="font-semibold mb-2">Social Media Links</h5>
+        <div className="border rounded-lg overflow-hidden">
+          <SectionHeader id="social" title="Social Media Links" />
+          
+          {isSectionOpen("social") && (
+            <div className="p-4 transition-all duration-300 ease-in-out">
+              <div className="space-y-4">
+                <div>
+                  <label className="block font-semibold mb-1">Facebook:</label>
+                  <input
+                    type="text"
+                    name="facebook"
+                    value={formData.facebook}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
 
-          <label className="block font-semibold">Facebook:</label>
-          <input
-            type="text"
-            name="facebook"
-            value={formData.facebook}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
+                <div>
+                  <label className="block font-semibold mb-1">Twitter:</label>
+                  <input
+                    type="text"
+                    name="twitter"
+                    value={formData.twitter}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
 
-          <label className="block font-semibold">Twitter:</label>
-          <input
-            type="text"
-            name="twitter"
-            value={formData.twitter}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
+                <div>
+                  <label className="block font-semibold mb-1">Instagram:</label>
+                  <input
+                    type="text"
+                    name="instagram"
+                    value={formData.instagram}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
 
-          <label className="block font-semibold">Instagram:</label>
-          <input
-            type="text"
-            name="instagram"
-            value={formData.instagram}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
+                <div>
+                  <label className="block font-semibold mb-1">YouTube:</label>
+                  <input
+                    type="text"
+                    name="youtube"
+                    value={formData.youtube}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
 
-          <label className="block font-semibold">YouTube:</label>
-          <input
-            type="text"
-            name="youtube"
-            value={formData.youtube}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
-
-          <label className="block font-semibold">TikTok:</label>
-          <input
-            type="text"
-            name="tiktok"
-            value={formData.tiktok}
-            onChange={handleChange}
-            className="w-full h-10 border rounded-md p-2 mb-2"
-          />
+                <div>
+                  <label className="block font-semibold mb-1">TikTok:</label>
+                  <input
+                    type="text"
+                    name="tiktok"
+                    value={formData.tiktok}
+                    onChange={handleChange}
+                    className="w-full h-10 border rounded-md p-2"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}
@@ -167,7 +237,9 @@ const SocialAndContact = () => {
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className="bg-green-500 text-white py-2 px-6 rounded-md mt-4 w-full"
+          className={`text-white py-2 px-6 rounded-md mt-6 w-full ${
+            loading ? "bg-green-400" : "bg-green-500 hover:bg-green-600"
+          }`}
         >
           {loading ? "Saving..." : "Save Settings"}
         </button>

@@ -320,7 +320,7 @@ const KYCOnboardingForm = () => {
                   key={`${stepIndex}-${idx}`}
                   className="transition-all duration-500 ease-in-out"
                 >
-                  <div className="p-8">
+                  <div className="p-4 lg:p-8">
                     {/* Step content */}
                     <div className="mb-8">
                       <h1 className="text-3xl font-bold mb-3 text-gray-800">{step.title}</h1>
