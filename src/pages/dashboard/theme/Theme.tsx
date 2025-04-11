@@ -22,6 +22,13 @@ const themes:any = {
       category: "ecommerce"
     },
     { 
+      theme_name: "mart", 
+      price: "NGN 5,000", 
+      image: "/images/theme/theme1Default.png",
+      previewUrl: "/theme-preview/mart",
+      category: "ecommerce"
+    },
+    { 
       theme_name: "classic", 
       price: "NGN 5,000", 
       image: "/images/theme/theme2Classic.png",
@@ -164,7 +171,7 @@ const Theme = () => {
              <FaArrowRight size={14} />
            </Link>
            <Link 
-             to="/dashboard/sites" 
+             to="/dashboard/site" 
              className="mt-3 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
            >
              Select Existing Site

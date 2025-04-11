@@ -21,7 +21,7 @@ const EditStore = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [storeData, setStoreData] = useState({
     store_name: "",
-    domain_name: "",
+    // domain_name: "",
     store_abbreviation: "",
     industry_type: "",
     product_type: "",
@@ -147,7 +147,7 @@ const EditStore = () => {
     // Construct JSON payload for store data
     const payload: Record<string, any> = {
       store_name: storeData.store_name,
-      store_abbreviation: storeData.store_abbreviation || "",
+      // store_abbreviation: storeData.store_abbreviation || "",
       industry_type: storeData.industry_type,
       product_type: storeData.product_type,
       store_description: storeData.store_description,
@@ -156,9 +156,9 @@ const EditStore = () => {
     };
 
     // Only include domain_name if it has a value
-    if (storeData.domain_name) {
-      payload.domain_name = storeData.domain_name;
-    }
+    // if (storeData.domain_name) {
+    //   payload.domain_name = storeData.domain_name;
+    // }
 
     try {
       const response = await UserApis.updateStore(storeId, payload);
@@ -288,7 +288,7 @@ const EditStore = () => {
           </div>
 
           {/* Domain Name */}
-          <div>
+          {/* <div>
             <label
               htmlFor="domain_name"
               className="text-[#2B2C2B] text-[12px] font-[400]"
@@ -304,7 +304,7 @@ const EditStore = () => {
               placeholder="Enter domain name"
               required
             />
-          </div>
+          </div> */}
           
           {/* Store Abbreviation */}
           <div>
@@ -319,9 +319,9 @@ const EditStore = () => {
               name="store_abbreviation"
               value={storeData.store_abbreviation}
               onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
+              className="block bg-white w-full mt-1 border px-3 py-2 rounded"
               placeholder="Enter abbreviation"
-              required
+              disabled
             />
           </div>
 

@@ -2,6 +2,7 @@ import React from "react";
 import DashboardLayout from "../../../../components/DashboardLayout";
 import BannerSettings from "./BannerSettings";
 import SocialAndContact from "./SocialAndContact";
+import SeoSettings from "../analytics/SeoSettings";
 const GeneralInfo = () => {
   return (
     <DashboardLayout>

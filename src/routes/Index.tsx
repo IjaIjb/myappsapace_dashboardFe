@@ -32,6 +32,9 @@ const StorePage = lazy(() => import("../pages/dashboard/store/Store"));
 const EditStorePage = lazy(() => import("../pages/dashboard/store/EditStore"));
 const CreateStorePage = lazy(() => import("../pages/dashboard/store/CreateStore"));
 const ThemePage = lazy(() => import("../pages/dashboard/theme/Theme"));
+const DeliveryPage = lazy(() => import("../pages/dashboard/delivery/Delivery"));
+const DeliveryTrackingPage = lazy(() => import("../pages/dashboard/delivery/DeliveryTracking"));
+const DeliveryOrderDetailsPage = lazy(() => import("../pages/dashboard/delivery/OrderDetails"));
 const ClassicThemePage = lazy(() => import("../pages/dashboard/theme/previewTemplates/classicYoga/ClassicYoga"));
 const FinancesPage = lazy(() => import("../pages/dashboard/finances/Finance"));
 const GiftCardPage = lazy(() => import("../pages/dashboard/giftCards/GiftCards"));
@@ -188,6 +191,19 @@ const routes = [
     path: "/dashboard/finances",
     component: FinancesPage,
   },
+  {
+    path: "/dashboard/delivery",
+    component: DeliveryPage,
+  },
+  {
+    path: "/dashboard/delivery/track/:trackingNumber",
+    component: DeliveryTrackingPage,
+  },
+  {
+    path: "/dashboard/delivery/order/:orderId",
+    component: DeliveryOrderDetailsPage,
+  },
+ 
   {
     path: "/dashboard/gift-cards",
     component: GiftCardPage,

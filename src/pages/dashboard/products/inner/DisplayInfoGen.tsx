@@ -21,17 +21,18 @@ const DisplayInfoGen = () => {
   const sectionName = "payment";
 
   const [currencies, setCurrencies] = useState<string[]>([]);
+  const [defaultCurrency, setDefaultCurrency] = useState<string>("NGN");
   const [newCurrency, setNewCurrency] = useState<string>("");
   const [availablePaymentGateways, setAvailablePaymentGateways] = useState<string[]>([
-    "stripe", "paypal", "flutterwave", "paystack"
+    "qorepay", "paypal", "flutterwave", "paystack"
   ]);
   const [selectedGateways, setSelectedGateways] = useState<string[]>([]);
   const [selectedGateway, setSelectedGateway] = useState<string>("");
   const [gatewayCredentials, setGatewayCredentials] = useState<Record<string, { enabled: number, public_key: string, secret_key: string }>>({
-    flutterwave: { enabled: 1, public_key: "", secret_key: "" },
-    paypal: { enabled: 1, public_key: "", secret_key: "" },
-    stripe: { enabled: 1, public_key: "", secret_key: "" },
-    paystack: { enabled: 1, public_key: "", secret_key: "" }
+    flutterwave: { enabled: 0, public_key: "", secret_key: "" },
+    paypal: { enabled: 0, public_key: "", secret_key: "" },
+    qorepay: { enabled: 0, public_key: "", secret_key: "" },
+    paystack: { enabled: 0, public_key: "", secret_key: "" }
   });
   const [loading, setLoading] = useState(false);
 
@@ -66,10 +67,12 @@ const DisplayInfoGen = () => {
       .then((response) => {
         if (response?.data) {
           const settings = response.data?.payment;
-
+          console.log(settings);
+          
           setCurrencies(settings?.settings?.currencies || []);
+          setDefaultCurrency(settings?.settings?.default_currency || "NGN");
           setAvailablePaymentGateways(settings?.settings?.available_payment_gateways || [
-            "stripe", "paypal", "flutterwave", "paystack"
+            "qorepay", "paypal", "flutterwave", "paystack"
           ]);
           
           setSelectedGateways(settings?.settings?.payment_gateways || []);
@@ -79,22 +82,22 @@ const DisplayInfoGen = () => {
           const credentials = settings?.settings?.payment_credentials || {};
           const initialGatewayCredentials = {
             flutterwave: {
-              enabled: credentials?.flutterwave?.enabled || 1,
+              enabled: credentials?.flutterwave?.enabled || 0,
               public_key: credentials?.flutterwave?.public_key || "",
               secret_key: credentials?.flutterwave?.secret_key || ""
             },
             paypal: {
-              enabled: credentials?.paypal?.enabled || 1,
+              enabled: credentials?.paypal?.enabled || 0,
               public_key: credentials?.paypal?.public_key || "",
               secret_key: credentials?.paypal?.secret_key || ""
             },
-            stripe: {
-              enabled: credentials?.stripe?.enabled || 1,
-              public_key: credentials?.stripe?.public_key || "",
-              secret_key: credentials?.stripe?.secret_key || ""
+            qorepay: {
+              enabled: credentials?.qorepay?.enabled || 0,
+              public_key: credentials?.qorepay?.public_key || "",
+              secret_key: credentials?.qorepay?.secret_key || ""
             },
             paystack: {
-              enabled: credentials?.paystack?.enabled || 1,
+              enabled: credentials?.paystack?.enabled || 0,
               public_key: credentials?.paystack?.public_key || "",
               secret_key: credentials?.paystack?.secret_key || ""
             }
@@ -120,11 +123,22 @@ const DisplayInfoGen = () => {
 
   const handleRemoveCurrency = (currency: string) => {
     setCurrencies(currencies.filter((c) => c !== currency));
+    
+    // If removed currency is the default, reset default to first available or empty
+    if (currency === defaultCurrency) {
+      setDefaultCurrency(currencies.filter(c => c !== currency)[0] || "");
+    }
   };
 
   const handleGatewayCheckboxChange = (gateway: string) => {
     if (selectedGateways.includes(gateway)) {
-      setSelectedGateways(selectedGateways.filter(g => g !== gateway));
+      const updatedGateways = selectedGateways.filter(g => g !== gateway);
+      setSelectedGateways(updatedGateways);
+      
+      // If removed gateway is the default, reset default to first available or empty
+      if (gateway === selectedGateway) {
+        setSelectedGateway(updatedGateways[0] || "");
+      }
     } else {
       setSelectedGateways([...selectedGateways, gateway]);
     }
@@ -134,14 +148,28 @@ const DisplayInfoGen = () => {
     setSelectedGateway(gateway);
   };
 
+  const handleDefaultCurrencyChange = (currency: string) => {
+    setDefaultCurrency(currency);
+  };
+
   const handleGatewayCredentialChange = (gateway: string, field: string, value: string) => {
-    setGatewayCredentials(prev => ({
-      ...prev,
-      [gateway]: {
-        ...prev[gateway],
-        [field]: value
-      }
-    }));
+    setGatewayCredentials(prev => {
+      // Calculate enabled status based on whether both keys have values
+      const publicKey = field === "public_key" ? value : prev[gateway].public_key;
+      const secretKey = field === "secret_key" ? value : prev[gateway].secret_key;
+      
+      // Set enabled to 1 if both keys have values, otherwise 0
+      const enabled = (publicKey && secretKey) ? 1 : 0;
+      
+      return {
+        ...prev,
+        [gateway]: {
+          ...prev[gateway],
+          [field]: value,
+          enabled
+        }
+      };
+    });
   };
 
   const handleSubmit = async () => {
@@ -150,11 +178,20 @@ const DisplayInfoGen = () => {
       return;
     }
 
+    if (!defaultCurrency) {
+      toast.error("Please select a default currency.");
+      return;
+    }
+
     // Prepare credentials format based on selection
     const paymentCredentials:any = {};
     selectedGateways.forEach(gateway => {
+      // Set enabled to 1 only if both keys are provided
+      const hasKeys = gatewayCredentials[gateway].public_key && 
+                    gatewayCredentials[gateway].secret_key;
+      
       paymentCredentials[gateway] = {
-        enabled: 1,
+        enabled: hasKeys ? 1 : 0,
         public_key: gatewayCredentials[gateway].public_key,
         secret_key: gatewayCredentials[gateway].secret_key
       };
@@ -163,10 +200,11 @@ const DisplayInfoGen = () => {
     const payload = {
       settings: {
         currencies,
+        default_currency: defaultCurrency,
         currency_display: "symbol",
         payment_gateways: selectedGateways,
         selected_gateway: selectedGateways.length === 1 ? selectedGateways[0] : selectedGateway || selectedGateways[0],
-        payment_gateway_access: 0,
+        payment_gateway_access: 1, // Set to 1 when any payment gateway is selected
         payment_credentials: paymentCredentials,
       },
     };
@@ -323,6 +361,23 @@ const DisplayInfoGen = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* Default Currency Selection */}
+                {currencies.length > 0 && (
+                  <div>
+                    <label className="text-[13px]">Default Currency</label>
+                    <select
+                      className="w-full p-2 mt-1 border text-[12px] font-[400] text-black border-[#D8D8E2] bg-[#FBFBFF] rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      value={defaultCurrency}
+                      onChange={(e) => handleDefaultCurrencyChange(e.target.value)}
+                    >
+                      <option value="">Select Default Currency</option>
+                      {currencies.map((currency) => (
+                        <option key={currency} value={currency}>{currency}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -381,12 +436,19 @@ const DisplayInfoGen = () => {
               
               {isSectionOpen("credentials") && (
                 <div className="p-4 space-y-4 transition-all duration-300 ease-in-out">
-                  <p className="text-[12px] text-gray-500 italic">Leave blank to use MyAppSpace credentials</p>
+                  <p className="text-[12px] text-gray-500 italic">
+                    Leave blank to use MyAppSpace credentials. Keys will be enabled only if both public and secret keys are provided.
+                  </p>
                   
                   <div className="space-y-6">
                     {selectedGateways.map((gateway) => (
                       <div key={gateway} className="p-3 border rounded-md">
-                        <h5 className="text-[14px] font-[600] capitalize mb-2">{gateway}</h5>
+                        <div className="flex justify-between items-center">
+                          <h5 className="text-[14px] font-[600] capitalize mb-2">{gateway}</h5>
+                          <span className={`text-[12px] font-medium ${gatewayCredentials[gateway]?.enabled === 1 ? 'text-green-500' : 'text-gray-500'}`}>
+                            {gatewayCredentials[gateway]?.enabled === 1 ? 'Enabled' : 'Disabled'}
+                          </span>
+                        </div>
                         <div className="space-y-2">
                           <div>
                             <label className="text-[13px]">Public Key</label>
@@ -421,7 +483,7 @@ const DisplayInfoGen = () => {
           <button 
             className="bg-blue-500 mt-6 text-white px-4 py-2 rounded-md w-full disabled:opacity-50 disabled:bg-gray-800" 
             onClick={handleSubmit} 
-            disabled={loading || selectedGateways.length === 0}
+            disabled={loading || selectedGateways.length === 0 || !defaultCurrency}
           >
             {loading ? <LoadingSpinner /> : "Update Settings"}
           </button>

@@ -115,11 +115,11 @@ const SettingCard = ({ item }:any) => {
 const Settings = () => {
   return (
     <DashboardLayout>
-      <div className="px-1 py-4">
-        <div className="mb-6">
+      <div className="px-1 pb-4">
+        {/* <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Settings</h2>
           <p className="text-gray-600 text-sm">Manage your store settings and preferences</p>
-        </div>
+        </div> */}
         
         <div className="grid lg:grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">

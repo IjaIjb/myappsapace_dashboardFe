@@ -31,8 +31,8 @@ const Sidebar = (props: Props) => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  console.log(selectedStore);
-  console.log(userLoginData);
+  // console.log(selectedStore);
+  // console.log(userLoginData);
   const [stores, setStores] = useState<any>([]);
   const [openLoadModal, setOpenLoadModal] = useState(false); // Modal loader state
 
@@ -905,6 +905,33 @@ const Sidebar = (props: Props) => {
           </div>
         </Link>
       </div>
+
+      <div className="">
+        <Link to={"/dashboard/delivery"} className="relative gap-1  ">
+          <div
+            className={`${
+              ["dashboard", "delivery"].every((ai) => pathnames.includes(ai))
+                ? "bg-white text-primary "
+                : " text-white"
+            } gap-x-3 flex items-center px-6 text-[14px] hover:text-[16px] hover:font-[600] rounded-[10px] py-[10px] `}
+          >
+            <img
+              aria-hidden
+              src={
+                ["dashboard", "delivery"].every((ai) =>
+                  pathnames.includes(ai)
+                )
+                  ? "/images/theme.svg"
+                  : "/images/theme.svg"
+              }
+              alt="Window icon"
+              // width={16}
+              // height={16}
+            />
+            <h5 className="">Delivery</h5>
+          </div>
+        </Link>
+      </div>
     </div>
   </div>
 
@@ -994,6 +1021,8 @@ const Sidebar = (props: Props) => {
           </div>
         </Link>
       </div>
+
+
 
       {/* <div className="">
         <Link to={"/dashboard/gift-cards"} className="relative gap-1  ">

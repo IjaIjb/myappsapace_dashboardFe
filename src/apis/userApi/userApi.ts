@@ -111,6 +111,31 @@ export class UserApis {
         }
     } 
 
+    static getDeliveries(store_code:any, company_name:any ): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getDeliveries(store_code, company_name);
+        }
+    } 
+
+    static getTrackOneOrder(store_code:any, trackingNumber:any ): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getTrackOneOrder(store_code, trackingNumber);
+        }
+    } 
+
+    static getOneOrder(store_code:any, trackingNumber:any ): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getOneOrder(store_code, trackingNumber);
+        }
+    } 
+
+    
     static createCategory(storeCode:any, data: any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;

@@ -80,6 +80,25 @@ export class UserLiveApis extends AxiosGlobal{
         });
     }
     
+    getDeliveries(store_code:any, company_name:any ): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/deliveries/fetchAll`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+            params: { company_name }
+        });
+    }
+
+    getTrackOneOrder(store_code:any, trackingNumber:any ): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/deliveries/${trackingNumber}/trackOne`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" }
+        });
+    }
+
+    getOneOrder(store_code:any, trackingNumber:any ): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/deliveries/${trackingNumber}/getOne`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" }
+        });
+    }
+
     createCategory(storeCode:any, data:any): AxiosPromise<any> {
         return this.axios.post(`${configs.contextUser}/${storeCode}/categories/createOne`, data,{
             headers: { "Content-Type": "aplication/json","Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },

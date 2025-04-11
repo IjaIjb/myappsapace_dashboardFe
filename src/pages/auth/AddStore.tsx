@@ -16,12 +16,21 @@ const images = [
 // Field label mapping - changing "store" to "site" in UI only
 const fieldLabels = {
   store_name: "Site Name",
-  domain_name: "Domain Name",
   store_abbreviation: "Site Abbreviation",
   industry_type: "Industry Type",
   product_type: "Product Type",
   store_description: "Site Description",
   store_location: "Site Location"
+};
+
+// Field placeholder examples
+const fieldPlaceholders = {
+  store_name: "e.g. SureStore",
+  store_abbreviation: "e.g. HP",
+  industry_type: "e.g. Tech",
+  product_type: "e.g. Tech",
+  store_description: "e.g. Tech store (optional)",
+  store_location: "e.g. Lagos (optional)"
 };
 
 const AddSite = () => {
@@ -30,13 +39,11 @@ const AddSite = () => {
   const [preview, setPreview] = useState("");
   const [formData, setFormData] = useState<any>({
     store_name: "",
-    domain_name: "",
     store_abbreviation: "",
     industry_type: "",
     product_type: "",
     store_description: "",
     store_location: "",
-    already_have_domain: false,
   });
   const [loading, setLoading] = useState(false);
 
@@ -50,10 +57,10 @@ const AddSite = () => {
   }, []);
 
   const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev: any) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -73,15 +80,9 @@ const AddSite = () => {
       const form = new FormData();
       if (image) form.append("store_logo", image);
 
-      // Append form data
-      Object.keys(formData).forEach((key: any) => {
-        if (key === "already_have_domain") {
-          form.append(key, formData[key] ? "1" : "0"); // Convert boolean to 1 or 0
-        } else if (key === "domain_name" && !formData.already_have_domain) {
-          return; // Skip adding domain_name if already_have_domain is false
-        } else {
-          form.append(key, formData[key]);
-        }
+      // Append form data - only the fields present in the new payload sample
+      Object.keys(formData).forEach((key: string) => {
+        form.append(key, formData[key]);
       });
 
       // Keep the same API call - payload format stays the same
@@ -104,6 +105,10 @@ const AddSite = () => {
     toast.success("Logged in Successfully");
     localStorage.removeItem("selectedStore"); // Keep the original key name
     navigate("/dashboard/home");
+  };
+
+  const isRequiredField = (fieldName: string) => {
+    return !fieldName.includes("description") && !fieldName.includes("location");
   };
 
   return (
@@ -133,8 +138,8 @@ const AddSite = () => {
                     <img src={preview} alt="Uploaded logo" width={100} height={100} />
                   ) : (
                     <div className="flex flex-col">
-                      <h4 className="text-[#9D9D9D] text-[12px] font-[400] ">Upload Logo Image here</h4>
-                      <h4 className="text-[#9D9D9D] text-[10px] font-[400] ">Recommended size 32px by 32px</h4>
+                      <h4 className="text-[#9D9D9D] text-[12px] font-[400]">Upload Logo Image here</h4>
+                      <h4 className="text-[#9D9D9D] text-[10px] font-[400]">Recommended size 32px by 32px</h4>
                     </div>
                   )}
                 </div>
@@ -143,54 +148,23 @@ const AddSite = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              {Object.keys(formData).map((key) => {
-                if (key === "already_have_domain") return null;
-                if (key === "domain_name" && !formData.already_have_domain) return null;
-
-                return (
-                  <div key={key}>
-                    <label className="text-[#2B2C2B] text-[12px] font-[400]">
-                      {fieldLabels[key as keyof typeof fieldLabels] || key.replace("_", " ")}
-                    </label>
-                    <input
-                      type="text"
-                      name={key}
-                      value={formData[key as keyof typeof formData]}
-                      onChange={handleChange}
-                      className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
-                      required
-                    />
-                  </div>
-                );
-              })}
+              {Object.keys(formData).map((key) => (
+                <div key={key}>
+                  <label className="text-[#2B2C2B] text-[12px] font-[400]">
+                    {fieldLabels[key as keyof typeof fieldLabels] || key.replace("_", " ")}
+                  </label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={formData[key as keyof typeof formData]}
+                    onChange={handleChange}
+                    className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
+                    placeholder={fieldPlaceholders[key as keyof typeof fieldPlaceholders] || ""}
+                    required={isRequiredField(key)}
+                  />
+                </div>
+              ))}
             </div>
-
-            {/* Toggle for "Already Have a Domain" */}
-            <div className="flex items-center space-x-3 mt-4">
-              <input
-                type="checkbox"
-                name="already_have_domain"
-                checked={formData.already_have_domain}
-                onChange={handleChange}
-                className="h-4 w-4"
-              />
-              <label className="text-sm font-medium">Already have a domain?</label>
-            </div>
-
-            {/* Show domain name field only when checkbox is checked */}
-            {formData.already_have_domain && (
-              <div className="mt-2">
-                <label className="text-[#2B2C2B] text-[12px] font-[400]">Domain Name</label>
-                <input
-                  type="text"
-                  name="domain_name"
-                  value={formData.domain_name}
-                  onChange={handleChange}
-                  className="mt-1 block w-full h-[40px] border-[0.5px] pl-3 rounded-[5px] focus:outline-none text-sm bg-[#FBFBFF] border-[#D8D8E2]"
-                  required
-                />
-              </div>
-            )}
 
             <div className="flex justify-between items-center h-full mt-8">
               <div

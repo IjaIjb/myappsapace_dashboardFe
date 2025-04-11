@@ -178,7 +178,7 @@ const Products = () => {
            <FaArrowRight size={14} />
          </Link>
          <Link 
-           to="/dashboard/sites" 
+           to="/dashboard/site" 
            className="mt-3 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
          >
            Select Existing Site
