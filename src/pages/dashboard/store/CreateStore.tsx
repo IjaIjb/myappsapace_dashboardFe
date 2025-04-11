@@ -61,16 +61,18 @@ const CreateStore = () => {
 
     try {
       const response: any = await UserApis.createStore(formData);
-      
-      if (response?.status === 200 || response?.status === 201) {
+      // console.log(response)
+      if (response?.data) {
         toast.success(response?.data?.message || "Store created successfully!");
         navigate("/dashboard/site");
       } else {
-        toast.error(response?.data?.message || "Failed to create Site.");
+      // console.log(response)
+
+        toast.error(response || "Failed to create Site.");
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error creating Site:", error);
-      toast.error("An error occurred while creating the Site.");
+      toast.error(error?.response?.data?.message || "An error occurred while creating the Site.");
     } finally {
       setLoader(false);
     }

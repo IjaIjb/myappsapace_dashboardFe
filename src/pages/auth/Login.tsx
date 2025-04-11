@@ -61,13 +61,9 @@ const Login = () => {
       });
   
       const response: any = await UserApis.login(data);
-      // console.log(response)
   
       if (response?.data) {
-        // console.log(response)
         if (response?.data?.status === true) {
-          // console.log(response.data.data.token)
-          // console.log(response.data.data.token.access_token)
           const accessToken = response.data.data.token.access_token;
           dispatch(
             login({
@@ -77,38 +73,38 @@ const Login = () => {
               data: response?.data.data.user,
             })
           );
-        // ✅ Store token in localStorage to persist login
-        localStorage.setItem("token", accessToken);
-      localStorage.removeItem("selectedStore");
-
+          // Store token in localStorage to persist login
+          localStorage.setItem("token", accessToken);
+          localStorage.removeItem("selectedStore");
+  
           toast.success(response?.data?.message);
           navigate("/dashboard/home");
-          // window.scrollTo(0, 0); // Scroll to top
         } else {
-        // console.log(response)
-
-          toast.error("Invalid Login Credentials");
+          // Display the error message from the response
+          toast.error(response?.data?.message || "Invalid Login Credentials");
         }
       } else if (response === "Unauthorized") {
-      // toast.error(response);
-      dispatch(
-        login({
-          email: values.login,
-          // token: response.data.data.token.access_token,
-          // id: response.data.data.id,
-          // data: response?.data.data.user,
-        })
-      );
-      navigate("/auth/verify-email");
-
+        dispatch(
+          login({
+            email: values.login,
+          })
+        );
+        navigate("/auth/verify-email");
       } else {
-        toast.error(response);
-  
-        }
-    } catch (error:any) {
+        toast.error(response?.message || "An error occurred. Please try again.");
+      }
+    } catch (error: any) {
       console.error("Error during login:", error);
-      toast.error("An error occurred. Please try again.");
-    } 
+      
+      // Check if the error response contains data
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message || "Login failed. Please try again.");
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
   
 

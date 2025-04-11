@@ -32,7 +32,7 @@ const Sidebar = (props: Props) => {
     (state: RootState) => state.globalState?.selectedStore || null
   );
   // console.log(selectedStore);
-  // console.log(userLoginData);
+  console.log(userLoginData);
   const [stores, setStores] = useState<any>([]);
   const [openLoadModal, setOpenLoadModal] = useState(false); // Modal loader state
 
