@@ -128,7 +128,7 @@ const Customers = () => {
               </h5>
               <div className="flex justify-between">
                 <h5 className="text-[#9D9D9D] text-[16px] font-[300]">
-                  {/* 234 (780) */}
+               
                   {customer?.data?.customers?.length ?? 0}
                 </h5>
                 <svg

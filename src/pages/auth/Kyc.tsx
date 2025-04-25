@@ -32,7 +32,9 @@ const KYCOnboardingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const navigate = useNavigate();
+  const storeCode = localStorage.getItem('storeCode');
 
+  console.log(storeCode)
   // Define all steps/slides for the onboarding process
   const steps:any = [
     {
@@ -218,14 +220,14 @@ const KYCOnboardingForm = () => {
       console.log("Form submitted successfully:", payload);
       
       // Call the API endpoint
-      const response:any = await UserApis.submitKycQuestionaire(payload); 
+      const response:any = await UserApis.submitKycStoreQuestionaire(storeCode, payload); 
       // Handle successful submission
       if (response.data) {
         toast.success(
           response?.data?.message || "KYC questionnaire created successfully!"
         );
         console.log("Form submitted successfully:", response);
-        navigate("/auth/add-store"); // Navigate to the next page
+        navigate("/dashboard/home"); // Navigate to the next page
       } else {
         toast.error(
           response?.data?.message ||

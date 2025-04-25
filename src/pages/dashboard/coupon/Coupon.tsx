@@ -44,10 +44,10 @@ const Coupon = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        if (response?.data?.settings) {
+        if (response?.data?.checkout) {
           setFormData((prev) => ({
             ...prev,
-            ...response.data.settings.settings, // Populate state with API response
+            ...response.data.checkout.settings, // Populate state with API response
           }));
         }
       })
@@ -68,6 +68,7 @@ const Coupon = () => {
       UserApis.getCoupon(selectedStore)
         .then((response) => {
           if (response?.data) {
+            // console.log(response.data)
             // Make sure we're accessing the coupons array from the response
             setCoupons(response?.data?.coupons || []);
           }

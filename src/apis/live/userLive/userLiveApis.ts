@@ -32,6 +32,24 @@ export class UserLiveApis extends AxiosGlobal{
           });
     }
 
+    submitKycStoreQuestionaire(storeCode:any, data: any): AxiosPromise<any> {
+        return this.axios.post(`${configs.contextUser}/${storeCode}/business-questionnaire/submit`, data,{
+            headers: { "Content-Type": "aplication/json","Accept":"aplication/json","Authorization":`Bearer ${store.getState().data.login.value.token}`,"Access-Control-Allow-Origin":"*" },
+          });
+    }
+
+    getSingleKycStoreQuestionaire(store_code:any): AxiosPromise<Array<any>> {
+        return this.axios.get(`${configs.contextUser}/${store_code}/business-questionnaire/getOne`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
+    updateKycStoreQuestionaire(store_code:any, data:any): AxiosPromise<Array<any>> {
+        return this.axios.put(`${configs.contextUser}/${store_code}/business-questionnaire/update`,  data,{
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
     resendVerificationCode(data: any): AxiosPromise<any> {
         return this.axios.post(`${configs.contextUser}/auth/resend-code`, data);
     }
@@ -107,6 +125,12 @@ export class UserLiveApis extends AxiosGlobal{
 
     getCategory(storeCode:any): AxiosPromise<Array<any>> {
         return this.axios.get(`${configs.contextUser}/${storeCode}/categories/fetchAll`, {
+            headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
+        });
+    }
+
+    updateCategory(store_code:any, category_id:any, data:any): AxiosPromise<Array<any>> {
+        return this.axios.put(`${configs.contextUser}/${store_code}/categories/${category_id}/update`,  data,{
             headers: { "Content-Type": "aplication/json", "Accept": "aplication/json", "Authorization": `Bearer ${store.getState().data.login.value.token}`, "Access-Control-Allow-Origin": "*" },
         });
     }

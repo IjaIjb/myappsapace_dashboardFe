@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaEyeSlash, FaEye, FaArrowRight } from "react-icons/fa";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { UserApis } from '../../apis/userApi/userApi';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
+import { authService } from '../../apis/live/login';
 
 const OTPVerify = () => {
     const navigate = useNavigate();
@@ -12,9 +13,19 @@ const OTPVerify = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [timer, setTimer] = useState(0);
     const [isValidEmail, setIsValidEmail] = useState(false);
-  const [loader, setLoader] = React.useState<any>(false);
-
-  const [passwordError, setPasswordError] = useState("");
+    const [loader, setLoader] = React.useState<any>(false);
+    const [passwordError, setPasswordError] = useState("");
+    
+    // Create refs for OTP input boxes
+    const inputRefs = {
+      one: useRef<HTMLInputElement>(null),
+      two: useRef<HTMLInputElement>(null),
+      three: useRef<HTMLInputElement>(null),
+      four: useRef<HTMLInputElement>(null),
+      five: useRef<HTMLInputElement>(null),
+      six: useRef<HTMLInputElement>(null),
+    };
+    
     const [userData, setUserdata] = useState({
       'one': "",
       'two': "",
@@ -58,9 +69,9 @@ const OTPVerify = () => {
     const validateEmail = (email:any) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       setIsValidEmail(emailRegex.test(email));
-  };
+    };
 
-  const validatePassword = (password:any, confirmPassword:any) => {
+    const validatePassword = (password:any, confirmPassword:any) => {
       const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       if (!strongPasswordRegex.test(password)) {
           setPasswordError("Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
@@ -72,9 +83,79 @@ const OTPVerify = () => {
       }
       setPasswordError("");
       return true;
-  };
+    };
 
-  const handleChange = (e:any) => {
+    // Handle OTP input changes with auto-move functionality
+    const handleOTPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      
+      // Allow only numbers
+      const newValue = value.replace(/[^0-9]/g, '');
+      
+      // Update state with the new value
+      setUserdata((prevData) => ({ ...prevData, [name]: newValue.slice(0, 1) }));
+      
+      // Auto-move to next input if a digit was entered
+      if (newValue.length === 1) {
+        // Define the input field sequence
+        const inputSequence = ['one', 'two', 'three', 'four', 'five', 'six'];
+        const currentIndex = inputSequence.indexOf(name);
+        
+        // Move to next input if not the last one
+        if (currentIndex < inputSequence.length - 1) {
+          const nextField = inputSequence[currentIndex + 1];
+          inputRefs[nextField as keyof typeof inputRefs].current?.focus();
+        }
+      }
+    };
+    
+    // Handle backspace for OTP inputs
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, fieldName: string) => {
+      // If backspace is pressed and the field is empty, move to the previous field
+      if (e.key === 'Backspace' && userData[fieldName as keyof typeof userData] === '') {
+        const inputSequence = ['one', 'two', 'three', 'four', 'five', 'six'];
+        const currentIndex = inputSequence.indexOf(fieldName);
+        
+        // Move to previous input if not the first one
+        if (currentIndex > 0) {
+          const prevField = inputSequence[currentIndex - 1];
+          inputRefs[prevField as keyof typeof inputRefs].current?.focus();
+        }
+      }
+    };
+    
+    // Handle paste functionality for OTP
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+      
+      if (pastedData) {
+        const otpArray = pastedData.split('');
+        const fields = ['one', 'two', 'three', 'four', 'five', 'six'];
+        
+        // Create a new userData object with pasted values
+        const newUserData = { ...userData };
+        
+        // Fill available digits from pasted content
+        fields.forEach((field, index) => {
+          if (index < otpArray.length) {
+            newUserData[field as keyof typeof userData] = otpArray[index];
+          }
+        });
+        
+        setUserdata(newUserData);
+        
+        // Focus on the next empty field or the last field if all are filled
+        const lastFilledIndex = Math.min(otpArray.length, fields.length) - 1;
+        if (lastFilledIndex < fields.length - 1) {
+          inputRefs[fields[lastFilledIndex + 1] as keyof typeof inputRefs].current?.focus();
+        } else {
+          inputRefs.six.current?.focus();
+        }
+      }
+    };
+
+    const handleChange = (e:any) => {
       const { name, value } = e.target;
       if (name === 'email') {
           validateEmail(value);
@@ -85,36 +166,39 @@ const OTPVerify = () => {
             validatePassword(updatedData.password, updatedData.confirm_password);
         }
         return updatedData;
-    });
-  };
+      });
+    };
 
-  
-    const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!validatePassword(userData.password, userData.confirm_password)) {
         return;
-    }
-    setLoader(true)
+      }
+      setLoader(true);
       const formData = new FormData();
       formData.append('token', userData?.one + userData?.two + userData?.three + userData?.four + userData?.five + userData?.six);
       formData.append('email', userData?.email);
       formData.append('password', userData?.password);
       formData.append('password_confirmation', userData?.confirm_password);
   
-      UserApis.resetPassword(formData).then(
-        (response) => {
-          if (response?.data && response?.status === 200) {
+      authService.resetPassword(formData).then(
+        (response:any) => {
+          console.log(response);
+
+          if (response?.data) {
+            console.log(response);
             // Remove OTPEmail from local storage
             localStorage.removeItem('OTPEmail');
-            setLoader(false)
+            setLoader(false);
             
             navigate('/reset-success');
+          } else {
+            setLoader(false);
           }
         }
       ).catch(function (error) {
-        setLoader(false)
-
-        // console.log(error.response.data);
+        setLoader(false);
+        console.log(error);
       });
     };
   
@@ -123,13 +207,11 @@ const OTPVerify = () => {
         UserApis.forgotPassword({ email: userData.email }).then(
           (response) => {
             if (response?.data) {
-              
               const newTimerValue = 60;
               setTimer(newTimerValue);
               localStorage.setItem('resendOTPTimer', String(Math.floor(Date.now() / 1000) + newTimerValue));
               
               toast.success('OTP resent successfully');
-              // console.log('OTP resent successfully');
             }
           }
         ).catch(function (error) {
@@ -141,10 +223,9 @@ const OTPVerify = () => {
     
   return (
     <>
-    
-    <section className="bg-[#FBFBFB]  body-font font-poppins ">
+    <section className="bg-[#FBFBFB] body-font font-poppins ">
       <div className="flex justify-center py-24">
-        <div className="lg:px-24  md:w-[700px] px-5 mt-30">
+        <div className="lg:px-24 md:w-[700px] px-5 mt-30">
           <div className="flex justify-center">
           <a href="https://myappspace.net/" rel="noreferrer" target="_blank">
             <img
@@ -164,12 +245,74 @@ const OTPVerify = () => {
           </p>
           <form onSubmit={handleSubmit}>
             <div id="otp" className="flex flex-row justify-center text-center px-2 mt-5 mb-5">
-              <input className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" type="text" id="first" name="one" onChange={handleChange} maxLength={1} />
-              <input className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" type="text" id="second" name="two" onChange={handleChange} maxLength={1} />
-              <input className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" type="text" id="third" name="three" onChange={handleChange} maxLength={1} />
-              <input className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" type="text" id="fourth" name="four" onChange={handleChange} maxLength={1} />
-              <input className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" type="text" id="fifth" name="five" onChange={handleChange} maxLength={1} />
-              <input className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" type="text" id="sixth" name="six" onChange={handleChange} maxLength={1} />
+              <input 
+                className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" 
+                type="text" 
+                id="first" 
+                name="one" 
+                value={userData.one}
+                onChange={handleOTPChange}
+                onKeyDown={(e) => handleKeyDown(e, 'one')}
+                onPaste={handlePaste}
+                maxLength={1}
+                ref={inputRefs.one}
+                autoFocus
+              />
+              <input 
+                className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" 
+                type="text" 
+                id="second" 
+                name="two" 
+                value={userData.two}
+                onChange={handleOTPChange}
+                onKeyDown={(e) => handleKeyDown(e, 'two')}
+                maxLength={1}
+                ref={inputRefs.two}
+              />
+              <input 
+                className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" 
+                type="text" 
+                id="third" 
+                name="three" 
+                value={userData.three}
+                onChange={handleOTPChange}
+                onKeyDown={(e) => handleKeyDown(e, 'three')}
+                maxLength={1}
+                ref={inputRefs.three}
+              />
+              <input 
+                className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" 
+                type="text" 
+                id="fourth" 
+                name="four" 
+                value={userData.four}
+                onChange={handleOTPChange}
+                onKeyDown={(e) => handleKeyDown(e, 'four')}
+                maxLength={1}
+                ref={inputRefs.four}
+              />
+              <input 
+                className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" 
+                type="text" 
+                id="fifth" 
+                name="five" 
+                value={userData.five}
+                onChange={handleOTPChange}
+                onKeyDown={(e) => handleKeyDown(e, 'five')}
+                maxLength={1}
+                ref={inputRefs.five}
+              />
+              <input 
+                className="m-2 border h-14 w-12 text-center form-control focus:border-[#48B774] focus:ring-[#48B774] font-semibold text-3xl" 
+                type="text" 
+                id="sixth" 
+                name="six" 
+                value={userData.six}
+                onChange={handleOTPChange}
+                onKeyDown={(e) => handleKeyDown(e, 'six')}
+                maxLength={1}
+                ref={inputRefs.six}
+              />
             </div>
 
             <div className="mb-5">
@@ -223,19 +366,15 @@ const OTPVerify = () => {
               </button>
             </div>
             <div>
-            {passwordError && <p className="text-red-500 text-sm mb-3">{passwordError}</p>}
-
+              {passwordError && <p className="text-red-500 text-sm mb-3">{passwordError}</p>}
             </div>
             <button
               type="submit"
               disabled={userData.one === "" || userData.two === "" || userData.three === "" || userData.four === "" || userData.five === "" || userData.six === "" || userData.password !== userData.confirm_password}
-
-
-              className="w-full disabled:bg-gray-500 flex justify-center gap-2 text-center items-center  text-white bg-secondary hover:bg-secondary/[70%] focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2"
+              className="w-full disabled:bg-gray-500 flex justify-center gap-2 text-center items-center text-white bg-secondary hover:bg-secondary/[70%] focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2"
             >
-          {loader ? <LoadingSpinner /> : "Continue"}
-                      {!loader && <FaArrowRight />}
-
+              {loader ? <LoadingSpinner /> : "Continue"}
+              {!loader && <FaArrowRight />}
             </button>
           </form>
 

@@ -28,6 +28,7 @@ const CouponPage = lazy(() => import("../pages/dashboard/coupon/Coupon"));
 const CreateCouponPage = lazy(() => import("../pages/dashboard/coupon/CreateCoupon"));
 const EditCouponPage = lazy(() => import("../pages/dashboard/coupon/EditCoupon"));
 const CreateCategoryPage = lazy(() => import("../pages/dashboard/category/inner/CreateCategory"));
+const CategoryDetailsPage = lazy(() => import("../pages/dashboard/category/inner/CategoryDetails"));
 const StorePage = lazy(() => import("../pages/dashboard/store/Store"));
 const EditStorePage = lazy(() => import("../pages/dashboard/store/EditStore"));
 const CreateStorePage = lazy(() => import("../pages/dashboard/store/CreateStore"));
@@ -37,6 +38,7 @@ const DeliveryTrackingPage = lazy(() => import("../pages/dashboard/delivery/Deli
 const DeliveryOrderDetailsPage = lazy(() => import("../pages/dashboard/delivery/OrderDetails"));
 const ClassicThemePage = lazy(() => import("../pages/dashboard/theme/previewTemplates/classicYoga/ClassicYoga"));
 const FinancesPage = lazy(() => import("../pages/dashboard/finances/Finance"));
+const ChatPage = lazy(() => import("../pages/dashboard/chat/Chat"));
 const GiftCardPage = lazy(() => import("../pages/dashboard/giftCards/GiftCards"));
 const DiscountsPage = lazy(() => import("../pages/dashboard/discounts/Discounts"));
 const AnalyticsPage = lazy(() => import("../pages/dashboard/analytics/Analytics"));
@@ -156,6 +158,10 @@ const routes = [
     component: CreateCategoryPage,
   },
   {
+    path: "/dashboard/category-details/:customerId",
+    component: CategoryDetailsPage,
+  }, 
+  {
     path: "/dashboard/coupon",
     component: CouponPage,
   },
@@ -190,6 +196,10 @@ const routes = [
   {
     path: "/dashboard/finances",
     component: FinancesPage,
+  },
+  {
+    path: "/dashboard/chat",
+    component: ChatPage,
   },
   {
     path: "/dashboard/delivery",

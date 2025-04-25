@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../../components/DashboardLayout";
 import { UserApis } from "../../../apis/userApi/userApi";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
 import { FaArrowRight } from "react-icons/fa";
+import { BsClipboardData } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { authService } from "../../../apis/live/login";
+import StoreQuestionnaire from './StoreQuestionnaire';
 
 interface ImageUploadProps {
   image: string | undefined; // URL of the uploaded image for preview
@@ -15,35 +17,52 @@ interface ImageUploadProps {
 }
 
 const EditStore = () => {
-  const params = useParams();
-  const [storeId, setStoreId] = useState("");
+  // Get the store name from URL path and ID from query parameter
+  const { storeName } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const storeIdFromQuery = queryParams.get('id');
+  
+  const [storeId, setStoreId] = useState(storeIdFromQuery || "");
   const [image, setImage] = useState<string | undefined>(undefined);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [storeData, setStoreData] = useState({
     store_name: "",
-    // domain_name: "",
     store_abbreviation: "",
     industry_type: "",
     product_type: "",
     store_description: "",
     store_location: "",
     store_logo: "",
+    store_code: "", // Added store_code for questionnaire
   });
   const [loader, setLoader] = useState(false);
   const [logoLoader, setLogoLoader] = useState(false);
+  const [activeTab, setActiveTab] = useState("basic-info");
+  const [questionnaireExists, setQuestionnaireExists] = useState(false);
+  const [questionnaireLoading, setQuestionnaireLoading] = useState(false);
   const navigate = useNavigate();
 
   // Fetch store data when component mounts
   useEffect(() => {
     const fetchStoreData = async () => {
       try {
-        const response = await UserApis.getSingleStore(params?.id);
+        if (!storeId) {
+          toast.error("Store ID is missing");
+          return;
+        }
+        
+        const response = await UserApis.getSingleStore(storeId);
         if (response?.data) {
           setStoreData(response.data.store);
-          setStoreId(response.data.store.id);
           // Set the existing logo URL for preview
           if (response.data.store.store_logo) {
             setImage(response.data.store.store_logo);
+          }
+          
+          // Check if this store has existing questionnaire
+          if (response.data.store.store_code) {
+            checkQuestionnaireExists(response.data.store.store_code);
           }
         }
       } catch (error) {
@@ -52,13 +71,29 @@ const EditStore = () => {
       }
     };
 
-    if (params?.id) {
+    if (storeId) {
       fetchStoreData();
     }
-  }, [params?.id]);
+  }, [storeId]);
+
+  // Check if questionnaire exists for this store
+  const checkQuestionnaireExists = async (storeCode: string) => {
+    setQuestionnaireLoading(true);
+    try {
+      // Assuming there's an API to check if questionnaire exists
+      const response = await UserApis.getSingleKycStoreQuestionaire(storeCode);
+      setQuestionnaireExists(!!response?.data?.questionnaire);
+      console.log(response.data)
+    } catch (error) {
+      console.error("Error checking questionnaire:", error);
+      // If API doesn't exist yet, you can remove this or handle differently
+    } finally {
+      setQuestionnaireLoading(false);
+    }
+  };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setStoreData((prev) => ({ ...prev, [name]: value }));
@@ -90,9 +125,6 @@ const EditStore = () => {
             }
           };
           reader.readAsDataURL(file);
-
-          // Optional: Upload to Cloudinary if you want to continue using it for preview
-          // Removed Cloudinary upload to simplify and focus on fixing the issue
           
           setLoading(false);
         } catch (error) {
@@ -144,10 +176,15 @@ const EditStore = () => {
     e.preventDefault();
     setLoader(true);
 
+    if (!storeId) {
+      toast.error("Store ID is missing");
+      setLoader(false);
+      return;
+    }
+
     // Construct JSON payload for store data
     const payload: Record<string, any> = {
       store_name: storeData.store_name,
-      // store_abbreviation: storeData.store_abbreviation || "",
       industry_type: storeData.industry_type,
       product_type: storeData.product_type,
       store_description: storeData.store_description,
@@ -155,17 +192,16 @@ const EditStore = () => {
       id: storeId,
     };
 
-    // Only include domain_name if it has a value
-    // if (storeData.domain_name) {
-    //   payload.domain_name = storeData.domain_name;
-    // }
-
     try {
-      const response = await UserApis.updateStore(storeId, payload);
+      const response:any = await authService.updateSite(storeId, payload);
 
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response?.data?.message || "Site updated successfully!");
-        navigate("/dashboard/site");
+        
+        // If coming from questionnaire tab, don't navigate away
+        if (activeTab !== "questionnaire") {
+          navigate("/dashboard/site");
+        }
       } else {
         toast.error(response?.data?.message || "Failed to update Site.");
       }
@@ -180,6 +216,11 @@ const EditStore = () => {
   const handleLogoUpload = async () => {
     if (!logoFile) {
       toast.error("Please select a logo image to upload.");
+      return;
+    }
+
+    if (!storeId) {
+      toast.error("Store ID is missing");
       return;
     }
   
@@ -233,194 +274,270 @@ const EditStore = () => {
     }
   };
 
+  const onQuestionnaireComplete = () => {
+    setQuestionnaireExists(true);
+    toast.success("Questionnaire saved successfully!");
+  };
+
   return (
     <DashboardLayout>
-      <div className="pt-10 px-5">
-        <h5 className="text-[#000000] text-[16px] font-[600]">
-          Business Information
-        </h5>
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col max-w-[570px] mt-5 gap-3"
-        >
-          {/* Add Logo */}
-          <div>
-            <label className="text-[#2B2C2B] text-[12px] font-[400]">Add Logo</label>
-            <ImageUpload 
-              image={image} 
-              setImage={setImage} 
-              onFileChange={(file) => setLogoFile(file)} 
-            />
-            <button
-              type="button"
-              disabled={logoLoader || !logoFile}
-              onClick={handleLogoUpload}
-              className={`${
-                logoLoader || !logoFile 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'
-              } text-white py-2 px-4 mt-2 rounded transition-colors`}
+      <div className="pt-6 px-5">
+        <h4 className="text-[#000000] text-[20px] font-[600] mb-6">
+          {storeName && `${decodeURIComponent(storeName)}`} - Site Management
+        </h4>
+        
+        {/* Tab Navigation */}
+        <div className="mb-6 border-b">
+          <div className="flex space-x-1">
+            <button 
+              onClick={() => setActiveTab("basic-info")} 
+              className={`py-2 px-4 font-medium text-sm transition-colors duration-150 ${
+                activeTab === "basic-info" 
+                  ? "border-b-2 border-indigo-600 text-indigo-600" 
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
             >
-              {logoLoader ? <LoadingSpinner /> : "Upload Logo"}
+              Basic Information
             </button>
-            {!logoFile && image && 
-              <p className="text-xs text-gray-500 mt-1">Click on the image area to select a new logo</p>
-            }
-          </div>
-
-          {/* Store Name */}
-          <div>
-            <label
-              htmlFor="store_name"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
+            <button 
+              onClick={() => setActiveTab("questionnaire")} 
+              className={`py-2 px-4 font-medium text-sm transition-colors duration-150 flex items-center gap-2 ${
+                activeTab === "questionnaire" 
+                  ? "border-b-2 border-indigo-600 text-indigo-600" 
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
             >
-              Site Name
-            </label>
-            <input
-              type="text"
-              name="store_name"
-              value={storeData.store_name}
-              onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter store name"
-              required
-            />
-          </div>
-
-          {/* Domain Name */}
-          {/* <div>
-            <label
-              htmlFor="domain_name"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Domain Name
-            </label>
-            <input
-              type="text"
-              name="domain_name"
-              value={storeData.domain_name || ""}
-              onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter domain name"
-              required
-            />
-          </div> */}
-          
-          {/* Store Abbreviation */}
-          <div>
-            <label
-              htmlFor="store_abbreviation"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Site Abbreviation
-            </label>
-            <input
-              type="text"
-              name="store_abbreviation"
-              value={storeData.store_abbreviation}
-              onChange={handleInputChange}
-              className="block bg-white w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter abbreviation"
-              disabled
-            />
-          </div>
-
-          {/* Industry Type */}
-          <div>
-            <label
-              htmlFor="industry_type"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Industry Type
-            </label>
-            <input
-              type="text"
-              name="industry_type"
-              value={storeData.industry_type}
-              onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="E.g., Retail, Fashion"
-              required
-            />
-          </div>
-
-          {/* Product Type */}
-          <div>
-            <label
-              htmlFor="product_type"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Product Type
-            </label>
-            <input
-              type="text"
-              name="product_type"
-              value={storeData.product_type}
-              onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Physical, Digital, Both"
-              required
-            />
-          </div>
-
-          {/* Store Location */}
-          <div>
-            <label
-              htmlFor="store_location"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Business Location
-            </label>
-            <input
-              type="text"
-              name="store_location"
-              value={storeData.store_location}
-              onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              placeholder="Enter business location"
-              required
-            />
-          </div>
-
-          {/* Store Description */}
-          <div>
-            <label
-              htmlFor="store_description"
-              className="text-[#2B2C2B] text-[12px] font-[400]"
-            >
-              Business Description
-            </label>
-            <textarea
-              name="store_description"
-              value={storeData.store_description}
-              onChange={handleInputChange}
-              className="block w-full mt-1 border px-3 py-2 rounded"
-              rows={4}
-              placeholder="Enter a short description"
-              required
-            />
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex justify-end items-end h-full">
-            <button
-              type="submit"
-              disabled={loader}
-              className={`flex items-center gap-2 ${
-                loader 
-                  ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-secondary hover:bg-green-700'
-              } text-white py-2 px-4 rounded transition-colors`}
-            >
-              {loader ? <LoadingSpinner /> : (
-                <>
-                  Proceed
-                  <FaArrowRight />
-                </>
+              <BsClipboardData />
+              Questionnaire
+              {questionnaireExists && (
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
               )}
             </button>
           </div>
-        </form>
+        </div>
+        
+        {activeTab === "basic-info" ? (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col max-w-[570px] gap-3"
+          >
+            {/* Add Logo */}
+            <div>
+              <label className="text-[#2B2C2B] text-[12px] font-[400]">Add Logo</label>
+              <ImageUpload 
+                image={image} 
+                setImage={setImage} 
+                onFileChange={(file) => setLogoFile(file)} 
+              />
+              <button
+                type="button"
+                disabled={logoLoader || !logoFile}
+                onClick={handleLogoUpload}
+                className={`${
+                  logoLoader || !logoFile 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700'
+                } text-white py-2 px-4 mt-2 rounded transition-colors`}
+              >
+                {logoLoader ? <LoadingSpinner /> : "Upload Logo"}
+              </button>
+              {!logoFile && image && 
+                <p className="text-xs text-gray-500 mt-1">Click on the image area to select a new logo</p>
+              }
+            </div>
+
+            {/* Store Name */}
+            <div>
+              <label
+                htmlFor="store_name"
+                className="text-[#2B2C2B] text-[12px] font-[400]"
+              >
+                Site Name
+              </label>
+              <input
+                type="text"
+                name="store_name"
+                value={storeData.store_name}
+                onChange={handleInputChange}
+                className="block w-full mt-1 border px-3 py-2 rounded"
+                placeholder="Enter store name"
+                required
+              />
+            </div>
+            
+            {/* Store Abbreviation */}
+            <div>
+              <label
+                htmlFor="store_abbreviation"
+                className="text-[#2B2C2B] text-[12px] font-[400]"
+              >
+                Site Abbreviation
+              </label>
+              <input
+                type="text"
+                name="store_abbreviation"
+                value={storeData.store_abbreviation}
+                onChange={handleInputChange}
+                className="block bg-white w-full mt-1 border px-3 py-2 rounded"
+                placeholder="Enter abbreviation"
+                disabled
+              />
+            </div>
+
+            {/* Industry Type - Updated to Dropdown */}
+            <div>
+              <label
+                htmlFor="industry_type"
+                className="text-[#2B2C2B] text-[12px] font-[400]"
+              >
+                Industry Type
+              </label>
+              <select
+                name="industry_type"
+                value={storeData.industry_type}
+                onChange={handleInputChange}
+                className="block w-full mt-1 border px-3 py-2 rounded"
+                required
+              >
+                <option value="">Select Industry Type</option>
+                <option value="Retail">Retail</option>
+                <option value="E-commerce">E-commerce</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Technology">Technology</option>
+                <option value="Food & Beverage">Food & Beverage</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Education">Education</option>
+                <option value="Finance">Finance</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Travel & Tourism">Travel & Tourism</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Agriculture">Agriculture</option>
+                <option value="Art & Design">Art & Design</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            {/* Product Type - Updated to Dropdown */}
+            <div>
+              <label
+                htmlFor="product_type"
+                className="text-[#2B2C2B] text-[12px] font-[400]"
+              >
+                Product Type
+              </label>
+              <select
+                name="product_type"
+                value={storeData.product_type}
+                onChange={handleInputChange}
+                className="block w-full mt-1 border px-3 py-2 rounded"
+                required
+              >
+                <option value="">Select Product Type</option>
+                <option value="Physical">Physical</option>
+                <option value="Digital">Digital</option>
+                <option value="Service">Service</option>
+                <option value="Online">Online</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Subscription">Subscription</option>
+                <option value="Customizable">Customizable</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            {/* Store Location */}
+            <div>
+              <label
+                htmlFor="store_location"
+                className="text-[#2B2C2B] text-[12px] font-[400]"
+              >
+                Business Location
+              </label>
+              <input
+                type="text"
+                name="store_location"
+                value={storeData.store_location}
+                onChange={handleInputChange}
+                className="block w-full mt-1 border px-3 py-2 rounded"
+                placeholder="Enter business location"
+                required
+              />
+            </div>
+
+            {/* Store Description */}
+            <div>
+              <label
+                htmlFor="store_description"
+                className="text-[#2B2C2B] text-[12px] font-[400]"
+              >
+                Business Description
+              </label>
+              <textarea
+                name="store_description"
+                value={storeData.store_description}
+                onChange={handleInputChange}
+                className="block w-full mt-1 border px-3 py-2 rounded"
+                rows={4}
+                placeholder="Enter a short description"
+                required
+              />
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end items-end h-full mt-4">
+              <button
+                type="submit"
+                disabled={loader}
+                className={`flex items-center gap-2 ${
+                  loader 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-secondary hover:bg-green-700'
+                } text-white py-2 px-4 rounded transition-colors`}
+              >
+                {loader ? <LoadingSpinner /> : (
+                  <>
+                    Save Changes
+                    <FaArrowRight />
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="bg-white rounded-lg shadow-sm border p-5">
+            {questionnaireLoading ? (
+              <div className="flex justify-center items-center py-10">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-700"></div>
+              </div>
+            ) : storeData.store_code ? (
+              <div>
+                <div className="mb-4">
+                  <h5 className="text-lg font-medium text-gray-800">
+                    {questionnaireExists ? 'Edit Site Questionnaire' : 'Create Site Questionnaire'}
+                  </h5>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {questionnaireExists 
+                      ? 'Update your existing questionnaire to better understand your site requirements.' 
+                      : 'Complete this questionnaire to help us understand your site requirements better.'}
+                  </p>
+                </div>
+                
+                <StoreQuestionnaire 
+                  storeCode={storeData.store_code} 
+                  onComplete={onQuestionnaireComplete}
+                  isModal={false}
+                  questionnaireExists={questionnaireExists}
+                />
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                Please save basic site information first to create a questionnaire.
+              </div>
+            )}
+          </div>
+        )}
+        
         <ToastContainer
           position="top-right"
           autoClose={2000}

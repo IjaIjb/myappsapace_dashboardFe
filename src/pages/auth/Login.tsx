@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { login } from "../../reducer/loginSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import { authService } from "../../apis/live/login";
 
 const images = [
   "/images/auth/authImage1.svg",
@@ -55,15 +56,15 @@ const Login = () => {
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
     try {
-      const data = JSON.stringify({
+      const data:any = JSON.stringify({
         login: values.login,
         password: values.password,
       });
   
-      const response: any = await UserApis.login(data);
-  
+      const response: any = await authService.login(data);
+  console.log(response)
       if (response?.data) {
-        if (response?.data?.status === true) {
+        // if (response?.data?.status === true) {
           const accessToken = response.data.data.token.access_token;
           dispatch(
             login({
@@ -79,10 +80,10 @@ const Login = () => {
   
           toast.success(response?.data?.message);
           navigate("/dashboard/home");
-        } else {
-          // Display the error message from the response
-          toast.error(response?.data?.message || "Invalid Login Credentials");
-        }
+        // } else {
+        //   // Display the error message from the response
+        //   toast.error(response?.data?.message || "Invalid Login Credentials");
+        // }
       } else if (response === "Unauthorized") {
         dispatch(
           login({
@@ -91,10 +92,11 @@ const Login = () => {
         );
         navigate("/auth/verify-email");
       } else {
-        toast.error(response?.message || "An error occurred. Please try again.");
+        toast.error(response || "An error occurred. Please try again.");
       }
     } catch (error: any) {
       console.error("Error during login:", error);
+      toast.error(error || "An error occurred. Please try again.");
       
       // Check if the error response contains data
       if (error.response && error.response.data) {

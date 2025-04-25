@@ -1,11 +1,10 @@
 import DashboardLayout from "../../../components/DashboardLayout";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { FaArrowRight } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingSpinner from "../../../components/UI/LoadingSpinner";
-import { UserApis } from "../../../apis/userApi/userApi";
+import { authService } from "../../../apis/live/login";
 
 const CreateStore = () => {
   const [formValues, setFormValues] = useState({
@@ -22,7 +21,7 @@ const CreateStore = () => {
   const navigate = useNavigate();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
@@ -60,14 +59,11 @@ const CreateStore = () => {
     }
 
     try {
-      const response: any = await UserApis.createStore(formData);
-      // console.log(response)
+      const response: any = await authService.createSite(formData);
       if (response?.data) {
         toast.success(response?.data?.message || "Store created successfully!");
         navigate("/dashboard/site");
       } else {
-      // console.log(response)
-
         toast.error(response || "Failed to create Site.");
       }
     } catch (error:any) {
@@ -133,7 +129,6 @@ const CreateStore = () => {
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 Site Name <span className="text-red-500">*</span>
-                {/* <span className="text-gray-400 text-xs ml-1">(e.g. Hewlett-Packard)</span> */}
               </label>
               <input
                 type="text"
@@ -150,7 +145,6 @@ const CreateStore = () => {
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 Site Abbreviation <span className="text-red-500">*</span>
-                {/* <span className="text-gray-400 text-xs ml-1">(e.g. HP)</span> */}
               </label>
               <input
                 type="text"
@@ -163,36 +157,68 @@ const CreateStore = () => {
               />
             </div>
 
-            {/* Industry Type */}
+            {/* Industry Type - Updated Dropdown */}
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 Industry Type <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 name="industry_type"
                 value={formValues.industry_type}
                 onChange={handleInputChange}
-                placeholder=""
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 required
-              />
+              >
+                <option value="">Select Industry Type</option>
+                <option value="Agriculture & Farming">Agriculture & Farming</option>
+                <option value="Food & Beverage">Food & Beverage</option>
+                <option value="Fashion & Apparel">Fashion & Apparel</option>
+                <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                <option value="Health & Wellness">Health & Wellness</option>
+                <option value="Education & Training">Education & Training</option>
+                <option value="Technology & Software">Technology & Software</option>
+                <option value="Retail & E-Commerce">Retail & E-Commerce</option>
+                <option value="Manufacturing & Industrial">Manufacturing & Industrial</option>
+                <option value="Transportation & Logistics">Transportation & Logistics</option>
+                <option value="Finance & Fintech">Finance & Fintech</option>
+                <option value="Real Estate & Property">Real Estate & Property</option>
+                <option value="Art & Craft">Art & Craft</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Construction & Engineering">Construction & Engineering</option>
+                <option value="Hospitality & Tourism">Hospitality & Tourism</option>
+                <option value="Media & Entertainment">Media & Entertainment</option>
+                <option value="Home & Living">Home & Living</option>
+                <option value="Legal & Consulting Services">Legal & Consulting Services</option>
+                <option value="Events & Rentals">Events & Rentals</option>
+                <option value="Sports & Fitness">Sports & Fitness</option>
+                <option value="Energy & Environment">Energy & Environment</option>
+                <option value="Telecommunications">Telecommunications</option>
+                <option value="Nonprofit & NGOs">Nonprofit & NGOs</option>
+                <option value="Publishing & Printing">Publishing & Printing</option>
+                <option value="Others">Others</option>
+              </select>
             </div>
 
-            {/* Product Type */}
+            {/* Product Type - Updated to Dropdown */}
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 Product Type <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 name="product_type"
                 value={formValues.product_type}
                 onChange={handleInputChange}
-                placeholder=""
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 required
-              />
+              >
+                <option value="">Select Product Type</option>
+                <option value="Physical">Physical</option>
+                <option value="Digital">Digital</option>
+                <option value="Service">Service</option>
+                <option value="Online">Online</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
           </div>
 
@@ -229,8 +255,6 @@ const CreateStore = () => {
               />
             </div>
           </div>
-
-          {/* No domain fields as per payload requirements */}
 
           {/* Submit Button */}
           <div className="flex justify-end">

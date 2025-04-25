@@ -18,21 +18,21 @@ const Products = () => {
     (state: RootState) => state.globalState?.selectedStore || null
   );
 
-    const [open, setOpen] = useState(false);
-    const onOpenModal = () => {
-      // e.preventDefault();
-      setOpen(true);
-    };
-    const onCloseModal = () => setOpen(false);
-  
-      useEffect(() => {
-        if (!selectedStore) {
-          onOpenModal();
-        } else {
-          onCloseModal();
-        }
-      }, [selectedStore]);
-      
+  const [open, setOpen] = useState(false);
+  const onOpenModal = () => {
+    // e.preventDefault();
+    setOpen(true);
+  };
+  const onCloseModal = () => setOpen(false);
+
+  useEffect(() => {
+    if (!selectedStore) {
+      onOpenModal();
+    } else {
+      onCloseModal();
+    }
+  }, [selectedStore]);
+
   // console.log("Selected Store Code:", selectedStore);
   // const [stores, setStores] = useState<any>([]);
   const [product, setProduct] = React.useState<any>([]);
@@ -81,8 +81,7 @@ const Products = () => {
         {statusValues.allElement && (
           <>
             <div className="">
-            <ProductsTable product={product} />
-
+              <ProductsTable product={product} />
             </div>
           </>
         )}
@@ -91,15 +90,15 @@ const Products = () => {
         {statusValues.draftElement && (
           <>
             <div className="">
-       <DraftTable product={product}/>
+              <DraftTable product={product} />
             </div>
           </>
         )}
-         {statusValues.flashSalesElement && (
+        {statusValues.flashSalesElement && (
           <>
             <div className="">
-          <FlashSalesTable product={product}/>
-           </div>
+              <FlashSalesTable product={product} />
+            </div>
           </>
         )}
       </>
@@ -152,39 +151,43 @@ const Products = () => {
   // console.log(stores);
   return (
     <DashboardLayout>
-           <Modal
-              classNames={{
-                modal: "rounded-[10px] overflow-visible relative",
-              }}
-              open={open}
-              onClose={() => {}} // Prevents closing the modal
-              closeOnEsc={false} // Prevent closing with the Escape key
-              closeOnOverlayClick={false} // Prevent closing by clicking outside
-              showCloseIcon={false} // Hides the close button
-              center
-            >
-       <div className="flex flex-col items-center">
-         <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
-           {/* Using Font Awesome instead of SVG */}
-           <FaStore className="text-blue-600 text-4xl" />
-         </div>
-         <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Site Selected</h3>
-         <p className="text-gray-600 mb-6">You need to create or select a site before adding products</p>
-         <Link 
-           to="/dashboard/create-site" 
-           className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
-         >
-           <span>Create a New Site</span>
-           <FaArrowRight size={14} />
-         </Link>
-         <Link 
-           to="/dashboard/site" 
-           className="mt-3 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
-         >
-           Select Existing Site
-         </Link>
-       </div>
-            </Modal>
+      <Modal
+        classNames={{
+          modal: "rounded-[10px] overflow-visible relative",
+        }}
+        open={open}
+        onClose={() => {}} // Prevents closing the modal
+        closeOnEsc={false} // Prevent closing with the Escape key
+        closeOnOverlayClick={false} // Prevent closing by clicking outside
+        showCloseIcon={false} // Hides the close button
+        center
+      >
+        <div className="flex flex-col items-center">
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+            {/* Using Font Awesome instead of SVG */}
+            <FaStore className="text-blue-600 text-4xl" />
+          </div>
+          <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+            No Site Selected
+          </h3>
+          <p className="text-gray-600 mb-6">
+            You need to create or select a site before adding products
+          </p>
+          <Link
+            to="/dashboard/create-site"
+            className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <span>Create a New Site</span>
+            <FaArrowRight size={14} />
+          </Link>
+          <Link
+            to="/dashboard/site"
+            className="mt-3 inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            Select Existing Site
+          </Link>
+        </div>
+      </Modal>
       <div>
         <div className="lg:flex gap-3 items-end mb-7">
           <div className="grid lg:grid-cols-4 w-full items gap-2">
@@ -316,38 +319,40 @@ const Products = () => {
           </h5>
         </Link> */}
         <div className="flex gap-2 mb-2">
-        <div
-         className={`${statusValues.allElement ? 
- "bg-primary text-white rounded-full px-8 py-1"
- :  "bg-white text-[#9D9D9D] rounded-full px-8 py-1"
-         } cursor-pointer`}
-         onClick={() => handleAllState()}
-        
-         >
-          <h6 className=" text-[12px] font-[400]">All</h6>
-        </div>
+          <div
+            className={`${
+              statusValues.allElement
+                ? "bg-primary text-white rounded-full px-8 py-1"
+                : "bg-white text-[#9D9D9D] rounded-full px-8 py-1"
+            } cursor-pointer`}
+            onClick={() => handleAllState()}
+          >
+            <h6 className=" text-[12px] font-[400]">All</h6>
+          </div>
 
-        <div 
-             className={`${statusValues.draftElement ? 
-              "bg-primary text-white rounded-full px-6 py-1"
-              :  "bg-white text-[#9D9D9D] rounded-full px-6 py-1"
-                      } cursor-pointer`}
-                      onClick={() => handleDraftState()}>
-          <h6 className="text-[12px] font-[400]">Inactive</h6>
+          <div
+            className={`${
+              statusValues.draftElement
+                ? "bg-primary text-white rounded-full px-6 py-1"
+                : "bg-white text-[#9D9D9D] rounded-full px-6 py-1"
+            } cursor-pointer`}
+            onClick={() => handleDraftState()}
+          >
+            <h6 className="text-[12px] font-[400]">Inactive</h6>
+          </div>
+          <div
+            className={`${
+              statusValues.flashSalesElement
+                ? "bg-primary text-white rounded-full px-4 py-1"
+                : "bg-white text-[#9D9D9D] rounded-full px-4 py-1"
+            } cursor-pointer`}
+            onClick={() => handleFlashSalesState()}
+          >
+            <h6 className=" text-[12px] font-[400]">Flash Sales</h6>
+          </div>
         </div>
-        <div
-            className={`${statusValues.flashSalesElement ? 
-              "bg-primary text-white rounded-full px-4 py-1"
-              :  "bg-white text-[#9D9D9D] rounded-full px-4 py-1"
-                      } cursor-pointer`}
-                      onClick={() => handleFlashSalesState()}
-                     >
-          <h6 className=" text-[12px] font-[400]">Flash Sales</h6>
-        </div>
-      </div>
         {/* <ProductsTable product={product} /> */}
         <div className="pt-3">{showProfileConnector()}</div>
-
       </div>
     </DashboardLayout>
   );

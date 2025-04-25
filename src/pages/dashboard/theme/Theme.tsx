@@ -58,11 +58,20 @@ const themes:any = {
       previewUrl: "/theme-preview/modern",
       category: "website"
     }
+  ],
+  portfolio: [
+    { 
+      theme_name: "portfolio_one", 
+      price: "NGN 5,000", 
+      image: "/images/theme/theme3Modern.png",
+      previewUrl: "/theme-preview/portfolio-one",
+      category: "portfolio"
+    }
   ]
 };
 
 // Flatten the themes for easier lookup
-const allThemes = [...themes.ecommerce, ...themes.website];
+const allThemes = [...themes.ecommerce, ...themes.website, ...themes.portfolio];
 
 const Theme = () => {
   const selectedStore = useSelector(
@@ -201,7 +210,8 @@ const Theme = () => {
                             {selectedTheme.theme_name}
                           </h4>
                           <div className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded w-fit">
-                            {selectedTheme.category === "ecommerce" ? "E-commerce" : "Website"}
+                            {selectedTheme.category === "ecommerce" ? "E-commerce" : 
+                             selectedTheme.category === "portfolio" ? "Portfolio" : "Website"}
                           </div>
                         </div>
                       </div>
@@ -256,12 +266,24 @@ const Theme = () => {
                 >
                   Website Templates
                 </button>
+                <button
+                  onClick={() => setActiveTab("portfolio")}
+                  className={`px-4 py-2 text-sm font-medium ${
+                    activeTab === "portfolio"
+                      ? "border-b-2 border-blue-600 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Portfolio Templates
+                </button>
               </div>
 
               {/* Category description */}
               <h6 className="text-[#9D9D9D] text-[13px] text-start mb-3 font-[500]">
                 {activeTab === "ecommerce" 
                   ? "Themes optimized for selling products online" 
+                  : activeTab === "portfolio"
+                  ? "Themes designed to showcase your work and skills"
                   : "Themes for informational and business websites"}
               </h6>
 

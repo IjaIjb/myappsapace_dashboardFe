@@ -61,10 +61,11 @@ const CheckoutSettings = () => {
     setLoading(true);
     UserApis.getStoreSettings(selectedStore, sectionName)
       .then((response) => {
-        if (response?.data?.settings) {
+        console.log(response)
+        if (response?.data?.checkout) {
           setFormData((prev) => ({
             ...prev,
-            ...response.data.settings.settings, // Populate state with API response
+            ...response.data.checkout.settings, // Populate state with API response
           }));
         }
       })
@@ -151,7 +152,7 @@ const CheckoutSettings = () => {
   return (
     <div className="bg-white rounded-[14px] p-6 shadow-lg">
       <h4 className="text-[#000000] text-[18px] font-bold pb-6">
-        Checkout Settings
+        Checkout and Coupon Settings
       </h4>
 
       <div className="space-y-5">

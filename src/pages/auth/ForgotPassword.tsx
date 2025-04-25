@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import { motion, AnimatePresence } from "framer-motion";
 import { FaArrowRight } from 'react-icons/fa';
+import { authService } from '../../apis/live/login';
 
 const images = [
   "/images/auth/authImage1.svg",
@@ -46,12 +47,12 @@ const ForgotPassword = () => {
     setLoader(true)
     const formData = new FormData()
     formData.append('email', userData?.email)
-    UserApis.forgotPassword(formData).then(
+    authService.forgotPassword(formData).then(
       (response:any) => {
         // console.log(response)
         if (response?.data) {
          
-            // console.log(response)
+            console.log(response)
             const newTimerValue = 60;
             // setTimer(newTimerValue);
             localStorage.setItem('resendOTPTimer', String(Math.floor(Date.now() / 1000) + newTimerValue));
@@ -63,14 +64,16 @@ const ForgotPassword = () => {
             setLoader(false)
           // }
         } 
-        toast.warn(response?.data?.message || "error occured");
+        // console.log(response)
+
+        // toast.error(response?.error);
           setLoader(false)
 
         // toast.success(response?.data?.message);
       }
     ).catch(function (error) {
       setLoader(false)
-      toast.warn('Invalid Credentials');
+      toast.warn(error.response.data);
       console.log(error.response.data);
       // toast.error("Offfline");
     }).finally(() => {

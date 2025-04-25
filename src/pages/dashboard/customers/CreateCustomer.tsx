@@ -17,12 +17,8 @@ const CreateCustomer = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
-  // console.log("Selected Store Code:", selectedStore);
   const [open, setOpen] = useState(false);
-  const onOpenModal = () => {
-    // e.preventDefault();
-    setOpen(true);
-  };
+  const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
   useEffect(() => {
@@ -34,41 +30,96 @@ const CreateCustomer = () => {
   }, [selectedStore]);
 
   const [showPassword, setShowPassword] = useState(false);
-  // const [stores, setStores] = useState<any>([]);
   const [formValues, setFormValues] = useState({
     first_name: "",
     last_name: "",
     store_code: "",
     email: "",
     username: "",
-    phone_number: "", // Use store_code instead of store_name
+    phone_number: "", 
     password: "",
     status: "active",
   });
+  
+  // Add validation state
+  const [errors, setErrors] = useState({
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+  });
+  
   const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   UserApis.getStore()
-  //     .then((response) => {
-  //       if (response?.data) {
-  //         setStores(response?.data || []); // Adjusting to your API response structure
-  //       }
-  //     })
-  //     .catch((error) => console.error("Error fetching stores:", error));
-  // }, []);
-  // console.log(stores);
+  const validateInput = (name:any, value:any) => {
+    let error = "";
+    
+    switch (name) {
+      case "first_name":
+        if (!/^[A-Za-z\s]+$/.test(value)) {
+          error = "First name should contain only letters";
+        }
+        break;
+      case "last_name":
+        if (!/^[A-Za-z\s]+$/.test(value)) {
+          error = "Last name should contain only letters";
+        }
+        break;
+      case "phone_number":
+        // Removing any non-digit characters for validation
+        const digitsOnly = value.replace(/\D/g, '');
+        if (digitsOnly.length !== 11) {
+          error = "Phone number must be exactly 11 digits";
+        }
+        break;
+      default:
+        break;
+    }
+    
+    return error;
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
     const { name, value } = e.target;
+    
+    // Special handling for name fields to prevent numbers
+    if ((name === "first_name" || name === "last_name") && /\d/.test(value)) {
+      return;
+    }
+    
     setFormValues((prev) => ({ ...prev, [name]: value }));
+    
+    // Validate the input and update errors state
+    const error = validateInput(name, value);
+    setErrors(prev => ({ ...prev, [name]: error }));
+  };
+
+  const hasErrors = () => {
+    return Object.values(errors).some(error => error !== "");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validate all fields before submission
+    const newErrors = {
+      first_name: validateInput("first_name", formValues.first_name),
+      last_name: validateInput("last_name", formValues.last_name),
+      phone_number: validateInput("phone_number", formValues.phone_number),
+    };
+    
+    setErrors(newErrors);
+    
+    // Check if there are any errors
+    if (Object.values(newErrors).some(error => error !== "")) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+    
     setLoader(true);
 
     const formData = new FormData();
@@ -80,16 +131,12 @@ const CreateCustomer = () => {
     formData.append("username", formValues.username);
     formData.append("password", formValues.password);
     formData.append("status", formValues.status);
-    // console.log("Submitting payload:", formValues);
 
     try {
-      // console.log("Submitting payload:", formValues);
-
       const response: any = await UserApis.createCustomer(
         selectedStore,
         formData
       );
-      // console.log(response);
 
       if (response?.data) {
         toast.success(
@@ -117,15 +164,14 @@ const CreateCustomer = () => {
           modal: "rounded-[10px] overflow-visible relative",
         }}
         open={open}
-        onClose={() => {}} // Prevents closing the modal
-        closeOnEsc={false} // Prevent closing with the Escape key
-        closeOnOverlayClick={false} // Prevent closing by clicking outside
-        showCloseIcon={false} // Hides the close button
+        onClose={() => {}}
+        closeOnEsc={false}
+        closeOnOverlayClick={false}
+        showCloseIcon={false}
         center
       >
       <div className="flex flex-col items-center">
         <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
-          {/* Using Font Awesome instead of SVG */}
           <FaStore className="text-blue-600 text-4xl" />
         </div>
         <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Site Selected</h3>
@@ -167,10 +213,15 @@ const CreateCustomer = () => {
                 name="first_name"
                 value={formValues.first_name}
                 onChange={handleInputChange}
-                className="block w-full mt-1 border px-3 py-2 rounded"
+                className={`block w-full mt-1 border px-3 py-2 rounded ${errors.first_name ? 'border-red-500' : ''}`}
                 placeholder="Enter first name"
+                pattern="[A-Za-z\s]+"
+                title="First name should contain only letters"
                 required
               />
+              {errors.first_name && (
+                <p className="text-red-500 text-xs mt-1">{errors.first_name}</p>
+              )}
             </div>
 
             <div>
@@ -185,10 +236,15 @@ const CreateCustomer = () => {
                 name="last_name"
                 value={formValues.last_name}
                 onChange={handleInputChange}
-                className="block w-full mt-1 border px-3 py-2 rounded"
+                className={`block w-full mt-1 border px-3 py-2 rounded ${errors.last_name ? 'border-red-500' : ''}`}
                 placeholder="Enter last name"
+                pattern="[A-Za-z\s]+"
+                title="Last name should contain only letters"
                 required
               />
+              {errors.last_name && (
+                <p className="text-red-500 text-xs mt-1">{errors.last_name}</p>
+              )}
             </div>
           </div>
 
@@ -239,14 +295,19 @@ const CreateCustomer = () => {
                 Phone Number
               </label>
               <input
-                type="number"
+                type="tel"
                 name="phone_number"
                 value={formValues.phone_number}
                 onChange={handleInputChange}
-                className="block w-full mt-1 border px-3 py-2 rounded"
-                placeholder="Enter phone number"
+                className={`block w-full mt-1 border px-3 py-2 rounded ${errors.phone_number ? 'border-red-500' : ''}`}
+                placeholder="Enter phone number (11 digits)"
+                pattern="[0-9]{11}"
+                maxLength={11}
                 required
               />
+              {errors.phone_number && (
+                <p className="text-red-500 text-xs mt-1">{errors.phone_number}</p>
+              )}
             </div>
 
             <div className="relative">
@@ -268,9 +329,8 @@ const CreateCustomer = () => {
               />
               <button
                 type="button"
-                // role="button"
                 aria-label="show password"
-                title=" show password"
+                title="show password"
                 onClick={() => setShowPassword(() => !showPassword)}
                 className={`absolute right-4 top-12`}
               >
@@ -287,7 +347,7 @@ const CreateCustomer = () => {
           <div className="flex justify-end items-end h-full">
             <button
               type="submit"
-              disabled={loader}
+              disabled={loader || hasErrors()}
               className={`disabled:bg-gray-500 flex gap-2 items-center py-2 w-fit px-6 bg-secondary text-white rounded-full hover:bg-secondary/[70%]`}
             >
               {loader ? <LoadingSpinner /> : "Proceed"}

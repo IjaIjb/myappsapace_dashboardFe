@@ -40,6 +40,30 @@ export class UserApis {
         }
     } 
     
+    static submitKycStoreQuestionaire(storeCode:any, data:any): AxiosPromise<Array<any>> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.submitKycStoreQuestionaire(storeCode, data);
+        }
+    } 
+
+    static getSingleKycStoreQuestionaire(store_code:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.getSingleKycStoreQuestionaire(store_code);
+        }
+    } 
+
+    static updateKycStoreQuestionaire(store_code:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateKycStoreQuestionaire(store_code, data);
+        }
+    } 
+
     static resendVerificationCode(pageNo:any): AxiosPromise<Array<any>> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;
@@ -160,6 +184,13 @@ export class UserApis {
         }
     } 
 
+    static updateCategory(storeCode:any, category_id:any, data:any): AxiosPromise<any> {
+        if (configs.type === "LOCAL") {
+            return {} as AxiosPromise;
+        } else {
+            return this.authLiveApis.updateCategory(storeCode, category_id, data);
+        }
+    } 
     static updateCoupon(storeCode:any, coupon_id:any, data:any): AxiosPromise<any> {
         if (configs.type === "LOCAL") {
             return {} as AxiosPromise;

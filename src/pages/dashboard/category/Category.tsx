@@ -8,11 +8,13 @@ import { RootState } from "../../../store/store";
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { FaArrowRight, FaStore, FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Category = () => {
   const selectedStore = useSelector(
     (state: RootState) => state.globalState?.selectedStore || null
   );
+  const navigate = useNavigate();
 
   const [categories, setCategories] = useState<any>([]);
   const [open, setOpen] = useState(false);
@@ -65,6 +67,16 @@ const Category = () => {
       default:
         return "bg-yellow-100 text-yellow-800";
     }
+  };
+
+  const handleRowClick = (customerName:any, customer:any) => {
+    navigate(`/dashboard/category-details/${customerName}`,
+      { state: { 
+          categoryId: customer.id, 
+          storeCode: customer.store_code 
+        }
+      }
+    );
   };
 
   return (
@@ -160,12 +172,13 @@ const Category = () => {
                         </span>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm">
-                        <NavLink 
-                          to={`/edit-category/${category.id}`}
+                        <div
+                                           onClick={() => handleRowClick(category.category_name, category)}
+
                           className="text-indigo-600 hover:text-indigo-900 font-medium"
                         >
                           Edit
-                        </NavLink>
+                        </div>
                       </td>
                     </tr>
                   ))

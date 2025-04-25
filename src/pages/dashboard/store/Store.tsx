@@ -26,7 +26,7 @@ const Store = () => {
   }, []);
 
   // Format date string to more readable format
-  const formatDate = (dateString:any) => {
+  const formatDate = (dateString: any) => {
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString();
@@ -36,8 +36,8 @@ const Store = () => {
   };
 
   // Get status style based on status
-  const getStatusStyle = (status:any) => {
-    switch(status) {
+  const getStatusStyle = (status: any) => {
+    switch (status) {
       case "active":
         return "text-green-500";
       case "deleted":
@@ -50,7 +50,8 @@ const Store = () => {
   return (
     <DashboardLayout>
       <div>
-        <div className="flex gap-3 items-center mb-7">
+        <div className="flex justify-between items-center mb-7">
+          <h1 className="text-2xl font-semibold text-gray-800">Site Management</h1>
           <Link
             to={"/dashboard/create-site"}
             className="rounded-full h-fit flex items-center gap-3 px-4 py-2"
@@ -84,12 +85,12 @@ const Store = () => {
                       <th scope="col" className="px-4 py-3 text-left">Site Abbreviation</th>
                       <th scope="col" className="px-4 py-3 text-left">Date Created</th>
                       <th scope="col" className="px-4 py-3 text-left">Status</th>
-                      <th scope="col" className="px-4 py-3 text-left">Action</th>
+                      <th scope="col" className="px-4 py-3 text-left">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {stores?.data?.data?.length > 0 ? (
-                      stores.data.data.map((store:any, index:any) => (
+                      stores.data.data.map((store: any, index: any) => (
                         <tr key={store.id} className="hover:bg-gray-50">
                           <td className="px-4 py-4 whitespace-nowrap">{index + 1}</td>
                           <td className="px-4 py-4 whitespace-nowrap font-medium">{store.store_name}</td>
@@ -101,11 +102,15 @@ const Store = () => {
                             {store.status}
                           </td>
                           <td className="px-4 py-4 whitespace-nowrap">
-                            <NavLink 
-                              to={`/edit-store/${store.id}`}
-                              className="text-blue-500 hover:text-blue-700 underline"
+                            <NavLink
+                              to={{
+                                pathname: `/edit-store/${encodeURIComponent(store.store_name)}`,
+                                search: `?id=${store.id}`
+                              }}
+                              className="text-blue-500 hover:text-blue-700 underline flex items-center gap-1"
                             >
-                              Edit
+                              <FaEdit />
+                              <span>Manage Site</span>
                             </NavLink>
                           </td>
                         </tr>
@@ -125,7 +130,7 @@ const Store = () => {
             {/* Mobile View (shown only on small screens) */}
             <div className="md:hidden space-y-4">
               {stores?.data?.data?.length > 0 ? (
-                stores.data.data.map((store:any, index:any) => (
+                stores.data.data.map((store: any, index: any) => (
                   <div key={store.id} className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
                     <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                       <div>
@@ -136,41 +141,46 @@ const Store = () => {
                         {store.status}
                       </div>
                     </div>
-                    
+
                     <div className="p-4 space-y-3">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <div className="text-xs text-gray-500">Industry Type</div>
                           <div className="font-medium">{store.industry_type}</div>
                         </div>
-                        
+
                         <div>
                           <div className="text-xs text-gray-500">Product Type</div>
                           <div className="font-medium">{store.product_type}</div>
                         </div>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <div className="text-xs text-gray-500">Abbreviation</div>
                           <div className="font-medium">{store.store_abbreviation}</div>
                         </div>
-                        
+
                         <div>
                           <div className="text-xs text-gray-500">Created</div>
                           <div className="font-medium">{formatDate(store.created_at)}</div>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="bg-gray-50 px-4 py-3 flex justify-between items-center">
                       <span className="text-xs text-gray-500">#{index + 1}</span>
-                      <NavLink 
-                        to={`/edit-store/${store.id}`}
-                        className="inline-flex items-center text-blue-600 hover:text-blue-800 gap-1"
-                      >
-                        <FaEdit /> <span>Edit site</span>
-                      </NavLink>
+                      <div className="flex gap-3">
+                        <NavLink
+                          to={{
+                            pathname: `/edit-store/${encodeURIComponent(store.store_name)}`,
+                            search: `?id=${store.id}`
+                          }}
+                          className="inline-flex items-center text-blue-600 hover:text-blue-800 gap-1"
+                        >
+                          <FaEdit /> <span>Manage Site</span>
+                        </NavLink>
+                      </div>
                     </div>
                   </div>
                 ))

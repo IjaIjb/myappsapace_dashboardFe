@@ -36,8 +36,8 @@ const CustomerDetails = () => {
   React.useEffect(() => {
     UserApis.getSingleCustomer(storeCode, productId).then((response) => {
       if (response?.data) {
-        // console.log(response.data?.data?.customer);
-        setFormValues(response?.data?.data?.customer);
+        console.log(response.data);
+        setFormValues(response?.data?.customer);
         // setStoreId(response?.data?.store?.id);
       }
     });
